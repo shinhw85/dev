@@ -1,0 +1,20 @@
+/* 1.Singleton pattern
+Lazy Initialization
+Singleton 클래스에는 LazyHolder 클래스의 변수가 없기 때문에 Singleton 클래스 로딩 시 LazyHolder 클래스를 초기화하지 않는다. 
+LazyHolder 클래스는 Singleton 클래스의 getInstance() 메서드에서 LazyHolder.INSTANCE를 참조하는 순간 Class가 로딩되며 초기화가 진행된다. 
+Class를 로딩하고 초기화하는 시점은 thread-safe를 보장하기 때문에 volatile이나 synchronized 같은 키워드가 없어도 thread-safe 하면서 성능도 보장
+
+*/
+
+public class Singleton {
+    private Singleton() {
+    }
+ 
+    private static class LazyHolder {
+        public static final Singleton INSTANCE = new Singleton();
+    }
+ 
+    public static Singleton getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+}
