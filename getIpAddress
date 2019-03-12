@@ -1,0 +1,14 @@
+Enumeration<NetworkInterface> nienum = NetworkInterface.getNetworkInterfaces();
+while (nienum.hasMoreElements()) {
+  NetworkInterface ni = nienum.nextElement();
+  Enumeration<InetAddress> kk= ni.getInetAddresses();
+  while (kk.hasMoreElements()) {
+    InetAddress inetAddress = kk.nextElement();
+    if (!inetAddress.isLoopbackAddress() && 
+    !inetAddress.isLinkLocalAddress() && 
+    inetAddress.isSiteLocalAddress()) {
+       String hostAddr = inetAddress.getHostAddress().toString();
+    }
+  }
+}
+
