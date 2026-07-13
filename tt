@@ -1,185 +1,25 @@
-package smartsuite.app.api.outbound.service;
+public static Map<String, Object> parseWithUpperKeys(String jsonString, ObjectMapper objectMapper) throws JsonProcessingException {
+        Map<String, Object> map = objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {});
+        return (Map<String, Object>) convert(map);
+    }
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import smartsuite.app.api.model.ApiCommon;
-import smartsuite.app.api.outbound.repository.ApiSenderRepository;
-import smartsuite.app.common.shared.Const;
-import smartsuite.ifproxy.core.entity.ExecutionLevel;
-import smartsuite.ifproxy.restful.entity.RestfulInput;
-import smartsuite.ifproxy.restful.entity.RestfulOutput;
-import smartsuite.ifproxy.web.ExecuteService;
-
-@Service
-@Transactional
-@SuppressWarnings ({ "rawtypes", "unchecked" })
-public class ApiSenderService {
-
-	static final Logger LOG = LoggerFactory.getLogger(ApiSenderService.class);
-
-	private static final DateTimeFormatter DT_FMT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-
-	@Autowired
-    ExecuteService executeService;
-
-	@Autowired
-	ApiSenderRepository apiSenderRepository;
-
-	@Autowired
-	ObjectMapper objectMapper;
-
-	/**
-	 * @param ifId 인터페이스 ID
-	 * @param pamramMap Map<String, Object>
-	 * @return
-	 */
-	public Map<String, Object> call(String ifId, Map<String, Object> pamramMap) {
-		Map<String, Object> resultMap = new HashMap();
-
-		RestfulInput input = new RestfulInput();
-
-		// 헤더
-        Map<String, String> header = new HashMap();
-        header.put("Content-Type", MediaType.APPLICATION_JSON.toString());
-        //  토큰 설정
-        header.put("Authorization", "Bearer " + getEaiToken(ifId));
-        input.setHeaders(header);
-
-        // 바디
-        // 공통
-        pamramMap.put("IS_HEADER", makeReq(ifId));
-
-        input.setBody(pamramMap);
-        LOG.info(input.getBody().toString());
-
-        // 호출
-        RestfulOutput output = executeService.executeRestfulReactiveBlocking(ifId, input, ExecutionLevel.Test);
-        try {
-	        LOG.debug("=========================================================================");
-	        LOG.debug("=========================================================================");
-	        LOG.debug("[REQ]");
-	        LOG.debug("[HEADER] : " + input.getHeaders().toString());
-	        LOG.debug("[BODY] : " + input.getBody().toString());
-	        LOG.debug("[RES] : "+output.getResponseOutput());
-	        LOG.debug("[HEADER] : "+output.getHeaders().toString());
-	        LOG.debug("[BODY] : "+output.getBodyAsString());
-	        LOG.debug("=========================================================================");
-	        LOG.debug("=========================================================================");
-
-	        LOG.warn("\n[REQ]"
-					+ "\nHEADER: {}"
-					+ "\nBODY: {}"
-					+ "\n[RES]"
-					+ "\nHEADER: {}"
-					+ "\nBODY: {}"
-					,getPrettyJson(input.getHeaders().toString())
-					,getPrettyJson(input.getBody().toString())
-					,getPrettyJson(output.getHeaders().toString())
-					,getPrettyJson(output.getBodyAsString())
-					);
-
-	        LOG.debug("=========================================================================");
-	        LOG.debug("=========================================================================");
-	        // TOOD-SHW : EAI api 응답 후처리
-	        if(output.getStatusCode() == 200) {
-	                /** 성공 */
-
-                    resultMap = output.getBodyAsMap();
-
-                    LOG.info("Access : "+resultMap.get("access"));
-                    LOG.info("AccessInfo : "+resultMap.get("accessInfo"));
-
-	        }else {
-	            /** 실패 */
-	        	LOG.info("Restful API 실패");
-	        }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    private static Object convert(Object obj) {
+        if (obj instanceof Map) {
+            Map<String, Object> original = (Map<String, Object>) obj;
+            Map<String, Object> result = new LinkedHashMap<>();
+            for (Map.Entry<String, Object> entry : original.entrySet()) {
+                result.put(entry.getKey().toUpperCase(), convert(entry.getValue()));
+            }
+            return result;
+        } else if (obj instanceof List) {
+            List<Object> original = (List<Object>) obj;
+            List<Object> result = new ArrayList<>(original.size());
+            for (Object item : original) {
+                result.add(convert(item));
+            }
+            return result;
+        } else {
+            // String, Number, Boolean, null 등 리프 값은 그대로 반환
+            return obj;
         }
-        return resultMap;
-
-	}
-
-	private ApiCommon makeReq(String ifId) {
-		// TOOD-SHW :공통 REQ 추가
-        ApiCommon eaiCommon = new ApiCommon();
-        eaiCommon.setTransactionId("TX_001");
-        eaiCommon.setTxSeq("1");
-        eaiCommon.setInterfaceId(ifId);
-        eaiCommon.setSendSystem(Const.EAI_SRM_SYSTEM);
-        eaiCommon.setSapDatetime(LocalDateTime.now().format(DT_FMT));
-
-        return eaiCommon;
-	}
-
-	private String getEaiToken(String ifId) {
-		String accessToken = "";
-
-		// ifId를 이용해서 포트를 구한 다음에 직접 토큰 가져오는 로직 구현
-		String port = apiSenderRepository.selectRestfulPort(ifId);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
-		body.add("grant_type", "client_credentials");
-		body.add("client_id", "paranoid");
-		body.add("client_secret", "survive");
-
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
-		try {
-			ResponseEntity<String> response = RestTemplate.exchange(
-					"http://81.181.70.22:"+port+"/oauth/token",
-					HttpMethod.POST,
-					request,
-					String.class
-					);
-			Map<String, Object> tokenMap = objectMapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>(){});
-			accessToken = (String) tokenMap.get("access_token");
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-
-//		RestfulOutput outputToken = executeService.executeRestfulReactiveBlocking("EAI_GET_TOKEN", new RestfulInput(), ExecutionLevel.Test);
-//        LOG.info("=============" + outputToken.getBodyAsString());
-//		try {
-//			accessToken = (String) outputToken.getBodyAsMap().get("access_token");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		return accessToken;
-	}
-
-
-	private String getPrettyJson(String body) {
-		try {
-			Object json = objectMapper.readValue(body, Object.class);
-			return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		return body;
-	}
-}
-
-오류 메시지 : Cannot make a static reference to the non-static method exchange(String, HttpMethod, HttpEntity<?>, Class<String>, Object...) from the type RestTemplate
+    }
