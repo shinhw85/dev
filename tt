@@ -1,25 +1,33 @@
-public static Map<String, Object> parseWithUpperKeys(String jsonString, ObjectMapper objectMapper) throws JsonProcessingException {
-        Map<String, Object> map = objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {});
-        return (Map<String, Object>) convert(map);
-    }
-
-    private static Object convert(Object obj) {
-        if (obj instanceof Map) {
-            Map<String, Object> original = (Map<String, Object>) obj;
-            Map<String, Object> result = new LinkedHashMap<>();
-            for (Map.Entry<String, Object> entry : original.entrySet()) {
-                result.put(entry.getKey().toUpperCase(), convert(entry.getValue()));
-            }
-            return result;
-        } else if (obj instanceof List) {
-            List<Object> original = (List<Object>) obj;
-            List<Object> result = new ArrayList<>(original.size());
-            for (Object item : original) {
-                result.add(convert(item));
-            }
-            return result;
-        } else {
-            // String, Number, Boolean, null 등 리프 값은 그대로 반환
-            return obj;
-        }
-    }
+[s1srm@A-A-EC2-SRM-WAS01D test]$ pwd
+/home/s1srm/test
+[s1srm@A-A-EC2-SRM-WAS01D test]$ ls -la SignedData_UST_getR_purejava.class
+-rw-r--r-- 1 s1srm staff 8226 Jul 15 09:28 SignedData_UST_getR_purejava.class
+[s1srm@A-A-EC2-SRM-WAS01D test]$ ls -b *.class
+SignedData_UST_getR_purejava.class
+[s1srm@A-A-EC2-SRM-WAS01D test]$ /app/JAVA/jdk-17.0.0.1/bin/javap SignedData_UST_getR_purejava.class
+Compiled from "SignedData_UST_getR_purejava.java"
+public class SignedData_UST_getR_purejava {
+  public SignedData_UST_getR_purejava();
+  public static void main(java.lang.String[]) throws java.lang.Exception;
+  public static java.lang.String getLicenseFromFile();
+  public static void SignData() throws java.lang.Exception;
+  public static void verify() throws java.lang.Exception;
+}
+[s1srm@A-A-EC2-SRM-WAS01D test]$ /app/JAVA/jdk-17.0.0.1/bin/java -version
+openjdk version "17.0.0.1" 2024-07-02
+OpenJDK Runtime Environment (build 17.0.0.1+2-3)
+OpenJDK 64-Bit Server VM (build 17.0.0.1+2-3, mixed mode, sharing)
+[s1srm@A-A-EC2-SRM-WAS01D test]$ /app/JAVA/jdk-17.0.0.1/bin/javac -version
+javac 17.0.0.1
+[s1srm@A-A-EC2-SRM-WAS01D test]$ /app/JAVA/jdk-17.0.0.1/bin/java -cp /home/s1srm/test SignedData_UST_getR_purejava
+Exception in thread "main" java.lang.NoClassDefFoundError: com/crosscert/justoolkit
+        at SignedData_UST_getR_purejava.SignData(SignedData_UST_getR_purejava.java:55)
+        at SignedData_UST_getR_purejava.main(SignedData_UST_getR_purejava.java:14)
+Caused by: java.lang.ClassNotFoundException: com.crosscert.justoolkit
+        at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
+        at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+        at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:520)
+        ... 2 more
+[s1srm@A-A-EC2-SRM-WAS01D test]$ /app/JAVA/jdk-17.0.0.1/bin/java -Dfile.encoding=UTF-8 -cp ./USCryptoJLib-v.1.0.0.jar:./USToolkit_for_Java_v_1_0_0_0_Release_obf.jar SignedData_UST_getR_purejava
+Error: Could not find or load main class SignedData_UST_getR_purejava
+Caused by: java.lang.ClassNotFoundException: SignedData_UST_getR_purejava
