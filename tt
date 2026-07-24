@@ -1,6 +1,12 @@
 =LET(
   name, TRIM(MID(A1, FIND("String ",A1)+7, FIND(";",A1)-FIND("String ",A1)-7)),
   comment, MID(A1, FIND("//",A1), LEN(A1)),
-  "@JsonProperty(value = """&name&""")"&CHAR(10)&
-  "private String "&LOWER(name)&"; "&comment
+  words, TEXTSPLIT(name,"_"),
+  camel, REDUCE("", SEQUENCE(COLUMNS(words)), LAMBDA(acc,i,
+    LET(w, INDEX(words,1,i),
+      acc & IF(i=1, LOWER(w), PROPER(LOWER(w)))
+    )
+  )),
+  "@JsonProperty(value = "&CHAR(34)&name&CHAR(34)&")"&CHAR(10)&
+  "private String "&camel&"; "&comment
 )
