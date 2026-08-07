@@ -1,12 +1,10 @@
-=LET(
-  name, TRIM(MID(A1, FIND("String ",A1)+7, FIND(";",A1)-FIND("String ",A1)-7)),
-  comment, MID(A1, FIND("//",A1), LEN(A1)),
-  words, TEXTSPLIT(name,"_"),
-  camel, REDUCE("", SEQUENCE(COLUMNS(words)), LAMBDA(acc,i,
-    LET(w, INDEX(words,1,i),
-      acc & IF(i=1, LOWER(w), PROPER(LOWER(w)))
-    )
-  )),
-  "@JsonProperty(value = "&CHAR(34)&name&CHAR(34)&")"&CHAR(10)&
-  "private String "&camel&"; "&comment
-)
+org.quartz.JobExecutionException: Failed to execute scheduled job MethodInvokeQuartzJobBean [bean=class smartsuite.app.api.outbound.service.SapmmInterfaceService, method=requestMARKET_PRICE, arguments=[{schedrJobNm=MarketPrice_Job}]] [See nested exception: java.lang.NoSuchMethodException: smartsuite.app.api.outbound.service.SapmmInterfaceService.requestMARKET_PRICE(java.util.HashMap)]
+	at smartsuite.scheduler.core.MethodInvokeQuartzJobBean.executeInternalHook(MethodInvokeQuartzJobBean.java:59)
+	at smartsuite.scheduler.core.MethodInvokeQuartzJobBean.executeInternal(MethodInvokeQuartzJobBean.java:30)
+	at org.springframework.scheduling.quartz.QuartzJobBean.execute(QuartzJobBean.java:75)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:203)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:566)
+Caused by: java.lang.NoSuchMethodException: smartsuite.app.api.outbound.service.SapmmInterfaceService.requestMARKET_PRICE(java.util.HashMap)
+	at java.base/java.lang.Class.getMethod(Class.java:2227)
+	at smartsuite.scheduler.core.MethodInvokeQuartzJobBean.executeInternalHook(MethodInvokeQuartzJobBean.java:46)
+	... 4 more
