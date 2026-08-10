@@ -1,10 +1,22 @@
-org.quartz.JobExecutionException: Failed to execute scheduled job MethodInvokeQuartzJobBean [bean=class smartsuite.app.api.outbound.service.SapmmInterfaceService, method=requestMARKET_PRICE, arguments=[{schedrJobNm=MarketPrice_Job}]] [See nested exception: java.lang.NoSuchMethodException: smartsuite.app.api.outbound.service.SapmmInterfaceService.requestMARKET_PRICE(java.util.HashMap)]
-	at smartsuite.scheduler.core.MethodInvokeQuartzJobBean.executeInternalHook(MethodInvokeQuartzJobBean.java:59)
-	at smartsuite.scheduler.core.MethodInvokeQuartzJobBean.executeInternal(MethodInvokeQuartzJobBean.java:30)
-	at org.springframework.scheduling.quartz.QuartzJobBean.execute(QuartzJobBean.java:75)
-	at org.quartz.core.JobRunShell.run(JobRunShell.java:203)
-	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:566)
-Caused by: java.lang.NoSuchMethodException: smartsuite.app.api.outbound.service.SapmmInterfaceService.requestMARKET_PRICE(java.util.HashMap)
-	at java.base/java.lang.Class.getMethod(Class.java:2227)
-	at smartsuite.scheduler.core.MethodInvokeQuartzJobBean.executeInternalHook(MethodInvokeQuartzJobBean.java:46)
-	... 4 more
+WITH RECURSIVE dept_ancestor AS (
+    SELECT dept_cd AS start_dept_cd, dept_cd, parent_dept_cd, a_yn, 1 AS depth
+    FROM dept
+
+    UNION ALL
+
+    SELECT da.start_dept_cd, d.dept_cd, d.parent_dept_cd, d.a_yn, da.depth + 1
+    FROM dept d
+    JOIN dept_ancestor da ON d.dept_cd = da.parent_dept_cd
+),
+nearest_purchase AS (
+    SELECT DISTINCT ON (start_dept_cd)
+           start_dept_cd,
+           dept_cd AS purchase_dept_cd
+    FROM dept_ancestor
+    WHERE a_yn = 'Y'
+    ORDER BY start_dept_cd, depth
+)
+UPDATE users u
+SET purchase_dept_cd = np.purchase_dept_cd
+FROM nearest_purchase np
+WHERE u.dept_cd = np.start_dept_cd;
