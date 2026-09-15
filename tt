@@ -1,161 +1,272 @@
-\.put\("([^"]+)",\s*resultList\.get\(i\)\.get\("([^"]+)"\)\)
+package smartsuite.app.api.outbound.service;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * IF_ 테이블(수신 저장된 기존 데이터)과 InfoMap(신규/수정/삭제 반영 값)을
- * 계층형 Map/List 구조로 병합하여 송신용 전문을 만드는 유틸리티.
- *
- * 데이터 표현 규칙
- * - 각 레코드는 Map<String, Object> (LinkedHashMap 사용 필수: 첫 필드를 pseudo-key로 쓰기 위해 순서 보존)
- * - 반복 구조(ADDR[], POSTAL[], TEL[], VENGEN[], COMPANY[] 등)는 List<Map<String, Object>>
- * - 그 외 값은 스칼라(String)
- *
- * 병합 규칙 (사용자 요구사항 3케이스)
- * 1) 신규: ifData가 없음(null/empty) -> infoMap 값으로 전부 채움
- * 2-1) 수정: ifData 존재, infoMap에 해당 키 값이 있으면 그 값으로 override
- * 2-2) 삭제: ifData 존재, infoMap에 해당 키가 빈 값("")으로 세팅되어 있으면 그대로 override
- *      (2-1, 2-2는 "infoMap이 해당 키를 갖고 있으면 override"라는 동일 규칙으로 처리됨.
- *       즉 삭제 여부를 별도 플래그로 구분하지 않고, InfoMap을 준비하는 상위 로직에서
- *       삭제 대상 필드에 빈 문자열을 세팅해서 넘기면 된다)
- *
- * 리스트 항목 매칭 규칙 (SEQ/첫 필드가 고유 키를 보장하지 않는 문제 대응)
- * - ifList의 각 레코드에 대해, infoList 중 "첫번째 필드 값"이 같은(그리고 아직 안 쓰인) 레코드를 찾아 매칭
- * - 매칭되면 재귀 병합(수정), 매칭 안 되면 ifRec을 그대로 유지(해당 infoMap에서 손대지 않은 레코드)
- * - infoList 중 끝까지 매칭 안 된 레코드는 신규 추가 항목으로 뒤에 append
- * - 주의: 첫 필드 값이 null/공백이거나 중복되면 매칭이 애매해질 수 있음.
- *   그런 케이스가 실제로 존재한다면(예: 동일 첫 필드값 중복) 상위 로직에서
- *   InfoMap 준비 시 리스트 순서를 ifList와 1:1로 맞춰서 넘기는 방식으로 우회하는 걸 권장.
- */
-public class IfTableMerger {
+import smartsuite.app.api.model.ApiCommon;
+import smartsuite.app.api.outbound.repository.ApiSenderRepository;
+import smartsuite.app.common.util.JsonUtils;
+import smartsuite.app.util.StringUtil;
+import smartsuite.ifproxy.core.entity.ExecutionLevel;
+import smartsuite.ifproxy.restful.entity.RestfulInput;
+import smartsuite.ifproxy.restful.entity.RestfulOutput;
+import smartsuite.ifproxy.web.ExecuteService;
 
-    /**
-     * ifData: IF_ 테이블에서 조회한 기존 구조 (신규 건이면 null 전달 가능)
-     * infoMap: 반영할 값 구조 (신규는 전체 값, 수정/삭제는 바뀌는 필드만 있어도 되고
-     *          전체를 다시 채워서 넘겨도 됨 - 어느 쪽이든 결과는 동일)
-     */
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> merge(Map<String, Object> ifData, Map<String, Object> infoMap) {
-        Map<String, Object> result = new LinkedHashMap<>();
-        Map<String, Object> base = (ifData == null) ? Collections.emptyMap() : ifData;
-        Map<String, Object> override = (infoMap == null) ? Collections.emptyMap() : infoMap;
+@Service
+@Transactional
+@SuppressWarnings ({ "rawtypes", "unchecked" })
+public class ApiSenderService {
 
-        // 순서 유지: IF데이터 순서 우선 + infoMap에만 있는 신규 키는 뒤에 추가
-        Set<String> keys = new LinkedHashSet<>();
-        keys.addAll(base.keySet());
-        keys.addAll(override.keySet());
+	static final Logger LOG = LoggerFactory.getLogger(ApiSenderService.class);
 
-        for (String key : keys) {
-            Object baseVal = base.get(key);
-            Object overrideVal = override.get(key);
+	private static final DateTimeFormatter DT_FMT = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+	private static long lastTimestamp = -1L;
+	private static int sequence = 1;
 
-            if (baseVal instanceof List || overrideVal instanceof List) {
-                result.put(key, mergeList(asList(baseVal), asList(overrideVal)));
-            } else if (baseVal instanceof Map || overrideVal instanceof Map) {
-                result.put(key, merge(asMap(baseVal), asMap(overrideVal)));
-            } else {
-                // 스칼라: infoMap이 해당 키를 갖고 있으면(빈 문자열 포함=삭제 케이스) override, 아니면 기존값 유지
-                result.put(key, override.containsKey(key) ? overrideVal : baseVal);
+	@Autowired
+    ExecuteService executeService;
+
+	@Autowired
+	ApiSenderRepository apiSenderRepository;
+
+	@Autowired
+	ObjectMapper objectMapper;
+
+	@Autowired
+	RestTemplate restTemplate;
+
+	@Value("#{eaiProperties['eai.client.id']}")
+	private String eaiClientId;
+
+	@Value("#{eaiProperties['eai.client.secret']}")
+	private String eaiClientSecret;
+
+	/**
+	 * @param ifId 인터페이스 ID
+	 * @param paramMap Map<String, Object>
+	 * @return
+	 */
+	public synchronized Map<String, Object> call(String ifId, Map<String, Object> paramMap) {
+		Map<String, Object> resultMap = new HashMap();
+
+		RestfulInput input = new RestfulInput();
+
+		LOG.debug("=== I/F ID : " + ifId + "\nApiSenderService > call > reqParam : " + paramMap.toString());
+		LocalDateTime startTime = LocalDateTime.now();
+		
+        Map<String, Object> lowerResultMap = new HashMap<String, Object>();
+        String reqHeader = "";
+        String reqBody = "";
+        String reqBodyString = "";
+        
+        String resCode = "";
+        String resMessage = "";
+        
+        RestfulOutput output = new RestfulOutput();
+        try {
+        	// 헤더
+            Map<String, String> header = new HashMap();
+            header.put("Content-Type", MediaType.APPLICATION_JSON.toString());
+            //  토큰 설정
+            String accessToken = getEaiToken(ifId);
+            if(StringUtil.isEmpty(accessToken)) {
+            	resultMap.put("msg", "access token 발급 실패");
+            	resCode = "E";
+            	resMessage = (String) resultMap.get("msg");
+            	return resultMap;
             }
-        }
-        return result;
-    }
+            header.put("Authorization", "Bearer " + accessToken);
+            input.setHeaders(header);
 
-    @SuppressWarnings("unchecked")
-    private static List<Map<String, Object>> mergeList(List<Map<String, Object>> ifList,
-                                                         List<Map<String, Object>> infoList) {
-        List<Map<String, Object>> result = new ArrayList<>();
-        boolean[] infoUsed = new boolean[infoList.size()];
+            // 바디
+            // 공통
+            paramMap.put("IS_HEADER", makeReq(ifId));
 
-        // 1) ifList 각 레코드에 대해 infoList에서 같은 pseudo-key(첫 필드값)를 가진 레코드를 찾아 병합
-        for (Map<String, Object> ifRec : ifList) {
-            String ifKey = firstFieldValue(ifRec);
-            int matchedIdx = -1;
-            if (ifKey != null && !ifKey.isEmpty()) {
-                for (int i = 0; i < infoList.size(); i++) {
-                    if (infoUsed[i]) continue;
-                    if (ifKey.equals(firstFieldValue(infoList.get(i)))) {
-                        matchedIdx = i;
-                        break;
-                    }
-                }
-            }
-            if (matchedIdx >= 0) {
-                result.add(merge(ifRec, infoList.get(matchedIdx)));
-                infoUsed[matchedIdx] = true;
-            } else {
-                // infoMap에서 이 레코드를 건드리지 않음 -> 기존값 그대로
-                result.add(merge(ifRec, null));
-            }
-        }
+            // param key 대문자 변환
+            Map<String, Object> upperMap = new HashMap<String, Object>();
+    		upperMap = JsonUtils.toUpperKeys(paramMap);
+            input.setBody(upperMap);
+            
+        	reqHeader = JsonUtils.getPrettyJson(objectMapper, input.getHeaders());
+        	reqBody = JsonUtils.getPrettyJson(objectMapper, input.getBody());
+        	reqBodyString = objectMapper.writeValueAsString(input.getBody());
+	        // 호출
+	        output = executeService.executeRestfulReactiveBlocking(ifId, input, ExecutionLevel.Production);
 
-        // 2) infoList 중 끝까지 매칭 안 된 레코드 = 신규 추가 항목
-        for (int i = 0; i < infoList.size(); i++) {
-            if (!infoUsed[i]) {
-                result.add(merge(null, infoList.get(i)));
-            }
-        }
-        return result;
-    }
+	        if(output.getStatusCode() == 200) {
+	                /** 성공 */
+		        	LOG.debug("\nI/F ID : {}" 
+		        			+ "\n[REQ]"
+		        			+ "\nHEADER: {}"
+		        			+ "\nBODY: {}"
+		        			+ "\n[RES]"
+		        			+ "\nHEADER: {}"
+		        			+ "\nBODY: {}"
+		        			,ifId
+		        			,reqHeader
+		        			,reqBody
+		        			,output.getHeaders().toString()
+		        			,JsonUtils.getPrettyJson(objectMapper, output.getBodyAsString())
+		        			);
+                    resultMap = output.getBodyAsMap();
 
-    /** 레코드의 첫번째 필드 값을 pseudo-key로 사용 (LinkedHashMap 순서 보존 전제) */
-    private static String firstFieldValue(Map<String, Object> rec) {
-        if (rec == null || rec.isEmpty()) return null;
-        Object v = rec.values().iterator().next();
-        return v == null ? null : String.valueOf(v);
-    }
+                    // result key 소문자 변환
+                    lowerResultMap = JsonUtils.toLowerKeys(resultMap);
+                    
+                    resCode = (String) ((Map<String, Object>) resultMap.get("ES_RETURN")).get("SAP_CODE");
+                    resMessage = (String) ((Map<String, Object>) resultMap.get("ES_RETURN")).get("MESSAGE");
+	        }else {
+	            /** 실패 */
+	        	LOG.debug("\nRestful API 실패"
+	        			+ "\nI/F ID : {}" 
+						+ "\nStatus Code: {}"
+						+ "\nException Message: {}"
+						,ifId
+						,output.getStatusCode()
+						,output.getException().getMessage()
+						);
+	        	resCode = "F";
+	        	resMessage = output.getException().getMessage();
+	        }
+        } catch (Exception e) {
+        	LOG.debug("\nRestful API 실패"
+        			+ "\nI/F ID : {}"
+        			+ "\nException Message: {}"
+        			+ "\n[REQ]"
+					+ "\nHEADER: {}"
+					+ "\nBODY: {}"
+					,ifId
+					,e.getMessage()
+					,reqHeader
+					,reqBody
+					);
+        	resCode = "E";
+        	resMessage = e.getMessage();
+        	
+            return null;
+        } finally {
+        	LocalDateTime endTime = LocalDateTime.now();
+        	Map<String, Object> hisMap = new HashMap<String, Object>();
+        	hisMap.put("if_id", ifId);
+        	hisMap.put("exec_st_dttm", startTime.format(DT_FMT));
+        	hisMap.put("exec_end_dttm", endTime.format(DT_FMT));
+        	hisMap.put("exec_tm", Duration.between(startTime, endTime).toMillis() / 1000.0);
+        	hisMap.put("snd_dat", reqBodyString);
+        	hisMap.put("rcpt_dat", output.getBodyAsString());
+        	hisMap.put("res_code", resCode);
+        	hisMap.put("res_message", resMessage);
+        	hisMap.put("snd_rcpt_type", "S");
+			apiSenderRepository.insertIfHistory(hisMap);
+		}
+        return lowerResultMap;
 
-    @SuppressWarnings("unchecked")
-    private static List<Map<String, Object>> asList(Object o) {
-        if (o == null) return Collections.emptyList();
-        return (List<Map<String, Object>>) o;
-    }
+	}
 
-    @SuppressWarnings("unchecked")
-    private static Map<String, Object> asMap(Object o) {
-        if (o == null) return Collections.emptyMap();
-        return (Map<String, Object>) o;
-    }
+	private ApiCommon makeReq(String ifId) {
+		// 공통 REQ 추가
 
-    // ------------------------------------------------------------------
-    // 사용 예시
-    // ------------------------------------------------------------------
-    public static void main(String[] args) {
-        // 1) 신규 케이스: IF_ 테이블 데이터 없음 -> InfoMap 전체가 그대로 결과가 됨
-        Map<String, Object> infoMapNew = new LinkedHashMap<>();
-        infoMapNew.put("BP_HEADER", null);       // 신규시 null
-        infoMapNew.put("ZZSRMCD", "SRM001");
+        String[] idArr = ifId.split("_");
+        String sendSystem = idArr[1];
+		String receiveSystem = idArr[2];
 
-        Map<String, Object> addr = new LinkedHashMap<>();
-        addr.put("ADDRNO", null);                // 신규시 null
-        Map<String, Object> postal = new LinkedHashMap<>();
-        postal.put("NATION", "KR");
-        postal.put("POST_CODE1", "12345");
-        postal.put("CITY1", "Seoul");
-        addr.put("POSTAL", Collections.singletonList(postal));
-        infoMapNew.put("ADDR", Collections.singletonList(addr));
+		String curTime = LocalDateTime.now().format(DT_FMT);
+		String datetimeSeq =  generateDtSeq();
 
-        Map<String, Object> newResult = merge(null, infoMapNew);
-        System.out.println(newResult);
+        StringBuffer sb = new StringBuffer();
+        sb.append(sendSystem)
+        .append("_")
+        .append(receiveSystem)
+        .append("_")
+        .append(datetimeSeq);
+        String id = sb.toString();
 
-        // 2) 기존 존재 + 수정 케이스: ifData 기반에 infoMap 값으로 override
-        Map<String, Object> ifDataExisting = new LinkedHashMap<>();
-        ifDataExisting.put("BP_HEADER", "BP0001");
-        ifDataExisting.put("ZZSRMCD", "SRM001");
+        int txSeq = apiSenderRepository.nextTxSeq();
 
-        Map<String, Object> infoMapUpdate = new LinkedHashMap<>();
-        infoMapUpdate.put("ZZSRMCD", "SRM999"); // 이 값만 override
 
-        Map<String, Object> updateResult = merge(ifDataExisting, infoMapUpdate);
-        System.out.println(updateResult); // ZZSRMCD가 SRM999로 override됨
+        ApiCommon eaiCommon = new ApiCommon();
+        eaiCommon.setTransactionId("TX_" + id);
+        eaiCommon.setTxSeq(String.format("%06d", txSeq % 1_000_000));
+        eaiCommon.setInterfaceId(ifId);
+        eaiCommon.setCorrelaionid("CORR_" + id);
+        eaiCommon.setReprocessid("RP_" + id);
+        eaiCommon.setSendSystem(sendSystem);
+        eaiCommon.setReceiveSystem(receiveSystem);
+        eaiCommon.setSapDatetime(curTime);
+        eaiCommon.setSapCode("N");
+        eaiCommon.setSysKey("S1SRM");
 
-        // 3) 삭제 케이스: infoMap에 빈 문자열로 override
-        Map<String, Object> infoMapDelete = new LinkedHashMap<>();
-        infoMapDelete.put("ZZSRMCD", ""); // 삭제 = 빈값으로 override
+        return eaiCommon;
+	}
 
-        Map<String, Object> deleteResult = merge(ifDataExisting, infoMapDelete);
-        System.out.println(deleteResult); // ZZSRMCD가 빈 문자열로 override됨
-    }
+	private synchronized String generateDtSeq() {
+		long now = System.currentTimeMillis();
+		if(now == lastTimestamp) {
+			sequence = (sequence + 1) % 1000;
+		}else {
+			sequence = 1;
+			lastTimestamp = now;
+		}
+
+		String timestamp = Instant.ofEpochMilli(now)
+				.atZone(ZoneId.systemDefault())
+				.format(DT_FMT);
+		return timestamp + "_" + String.format("%03d", sequence);
+	}
+
+	private String getEaiToken(String ifId) {
+		String accessToken = "";
+
+		// ifId를 이용해서 포트를 구한 다음에 직접 토큰 가져오는 로직 구현
+		String addr = apiSenderRepository.selectRestfulAddress(ifId);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
+		body.add("grant_type", "client_credentials");
+		body.add("client_id", eaiClientId);
+		body.add("client_secret", eaiClientSecret);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(
+					addr+"/oauth/token",
+					HttpMethod.POST,
+					request,
+					String.class
+					);
+			Map<String, Object> tokenMap = objectMapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>(){});
+			accessToken = (String) tokenMap.get("access_token");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return accessToken;
+	}
+
+
+
+
 }
