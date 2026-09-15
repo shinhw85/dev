@@ -48,7 +48,6 @@ public class ApiSenderService {
 	private static final long TOKEN_EXPIRY_BUFFER_MILLIS = 60_000L; // 60초 전 갱신
 	private static final AtomicReference<SeqState> seqState = new AtomicReference<>(new SeqState(-1L, 0));
 	
-	private static final AtomicReference<TokenState> tokenState = new AtomicReference<>(new TokenState(null, 0L));	
 	private final ConcurrentHashMap<String, AtomicReference<TokenState>> tokenStateMap = new ConcurrentHashMap<>();
 	
 	@Autowired
@@ -255,7 +254,7 @@ public class ApiSenderService {
 		AtomicReference<TokenState> tokenRef = tokenStateMap.computeIfAbsent(receiveSystem, k -> new AtomicReference<>(new TokenState(null, 0L)));
 
 		long now = System.currentTimeMillis();
-		TokenState current = tokenState.get();
+		TokenState current = tokenRef.get();
 		
 		if(current.isValid(now)) {
 			return current.accessToken;
@@ -292,7 +291,7 @@ public class ApiSenderService {
 				long expiresAt = (expiresIn != null)
 						? now + expiresIn.longValue() * 1000L - TOKEN_EXPIRY_BUFFER_MILLIS
 						: now + 60_000L;
-				tokenState.set(new TokenState(accessToken, expiresAt));
+				tokenRef.set(new TokenState(accessToken, expiresAt));
 				return accessToken;
 			}catch(Exception e) {
 				LOG.error("EAI 토큰 발급 실패", e);
