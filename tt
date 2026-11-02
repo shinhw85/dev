@@ -68,16 +68,6 @@ public class ExcelImportService {
                 if (DateUtil.isCellDateFormatted(c))
                     return new java.sql.Timestamp(c.getDateCellValue().getTime());
                 return new BigDecimal(fmt.formatCellValue(c).replace(",", ""));
-
-
-<insert id="insertBatch">
-  INSERT INTO ${table} (
-    <foreach collection="cols" item="c" separator=",">${c}</foreach>
-  ) VALUES
-  <foreach collection="rows" item="r" separator=",">
-    (<foreach collection="r" item="v" separator=",">#{v,jdbcType=VARCHAR}</foreach>)
-  </foreach>
-</insert>
             case FORMULA:
                 return fmt.formatCellValue(c);
             default:
@@ -86,11 +76,3 @@ public class ExcelImportService {
         }
     }
 }
-
-
-int insertBatch(@Param("table") String table,
-                @Param("cols") List<String> cols,
-                @Param("rows") List<List<Object>> rows);
-
-
-
