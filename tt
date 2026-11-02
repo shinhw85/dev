@@ -1,33 +1,96 @@
-@Intercepts({
-  @Signature(type = Executor.class, method = "update",
-             args = {MappedStatement.class, Object.class}),
-  @Signature(type = Executor.class, method = "query",
-             args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
-  @Signature(type = Executor.class, method = "query",
-             args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class,
-                     CacheKey.class, BoundSql.class})
-})
-public class CryptoInterceptor implements Interceptor {
+@Service
+public class ExcelImportService {
 
-  private final CryptoClient client;               // EG REST 호출 (단건/배열)
-  private final Map<String, Set<String>> targets;  // statementId -> 대상 키
+    private static final Map<String, String> SHEET_TABLE = Map.of(
+        "사용자", "tb_user",
+        "부서",   "tb_dept"
+    );
+    private static final Pattern IDENT = Pattern.compile("^[a-z_][a-z0-9_]*$");
+    private static final int PARAM_LIMIT = 30000; // PG 바인딩 한도 32767
 
-  @Override
-  public Object intercept(Invocation inv) throws Throwable {
-    Object[] args = inv.getArgs();
-    MappedStatement ms = (MappedStatement) args[0];
-    Set<String> keys = targets.get(ms.getId());
-    if (keys == null) return inv.proceed();        // 대상 아님 → 그대로
+    @Autowired private ExcelImportMapper mapper;
 
-    // 1) 파라미터 암호화 (원본 Map 오염 방지를 위해 복사본 사용)
-    args[1] = encryptParam(args[1], keys);
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Integer> importExcel(InputStream in) throws IOException {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        DataFormatter fmt = new DataFormatter();
 
-    Object result = inv.proceed();
+        try (Workbook wb = WorkbookFactory.create(in)) {
+            for (Sheet sheet : wb) {
+                String table = SHEET_TABLE.get(sheet.getSheetName());
+                if (table == null) continue;
 
-    // 2) SELECT 결과 복호화
-    if (result instanceof List<?> list && !list.isEmpty()) {
-      decryptList(list, keys);                     // 값 모아서 String[] 일괄 호출
+                Row head = sheet.getRow(0);
+                List<String> cols = new ArrayList<>();
+                for (Cell c : head) {
+                    String col = fmt.formatCellValue(c).trim().toLowerCase();
+                    if (!IDENT.matcher(col).matches())
+                        throw new IllegalArgumentException(
+                            sheet.getSheetName() + " 헤더 오류: " + col);
+                    cols.add(col);
+                }
+
+                List<List<Object>> rows = new ArrayList<>();
+                for (int r = 1; r <= sheet.getLastRowNum(); r++) {
+                    Row row = sheet.getRow(r);
+                    if (row == null) continue;
+                    List<Object> vals = new ArrayList<>();
+                    boolean empty = true;
+                    for (int i = 0; i < cols.size(); i++) {
+                        Object v = cellValue(row.getCell(i), fmt);
+                        if (v != null) empty = false;
+                        vals.add(v);
+                    }
+                    if (empty) continue;
+                    // 필수값 검증은 여기서 직접 (r+1 행 번호 포함해 예외)
+                    rows.add(vals);
+                }
+
+                int chunk = Math.max(1, PARAM_LIMIT / cols.size());
+                int total = 0;
+                for (int i = 0; i < rows.size(); i += chunk) {
+                    List<List<Object>> part =
+                        rows.subList(i, Math.min(i + chunk, rows.size()));
+                    total += mapper.insertBatch(table, cols, part);
+                }
+                result.put(sheet.getSheetName(), total);
+            }
+        }
+        return result;
     }
-    return result;
-  }
+
+    private Object cellValue(Cell c, DataFormatter fmt) {
+        if (c == null) return null;
+        switch (c.getCellType()) {
+            case BLANK: return null;
+            case BOOLEAN: return c.getBooleanCellValue();
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(c))
+                    return new java.sql.Timestamp(c.getDateCellValue().getTime());
+                return new BigDecimal(fmt.formatCellValue(c).replace(",", ""));
+
+
+<insert id="insertBatch">
+  INSERT INTO ${table} (
+    <foreach collection="cols" item="c" separator=",">${c}</foreach>
+  ) VALUES
+  <foreach collection="rows" item="r" separator=",">
+    (<foreach collection="r" item="v" separator=",">#{v,jdbcType=VARCHAR}</foreach>)
+  </foreach>
+</insert>
+            case FORMULA:
+                return fmt.formatCellValue(c);
+            default:
+                String s = c.getStringCellValue().trim();
+                return s.isEmpty() ? null : s;
+        }
+    }
 }
+
+
+int insertBatch(@Param("table") String table,
+                @Param("cols") List<String> cols,
+                @Param("rows") List<List<Object>> rows);
+
+
+
