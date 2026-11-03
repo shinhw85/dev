@@ -1,160 +1,140 @@
-private static final int PARAM_LIMIT = 30000;   // PG 바인딩 한도 32767
-private static final int MAX_CHUNK = 1000;      // 한 번에 insert할 최대 행 수
+public class ExcelStreamReader {
 
-private static final Set<String> tableNames = Set.of(
-    "if_d4mdz0100_matl",
-    "if_d4mdz0100_matlcharasgn",
-    "if_d4mdz0100_matlclassasgn",
-    "if_d4mdz0100_matldesc",
-    "if_d4mdz0100_matlplnt",
-    "if_d4mdz0100_matlunit",
-    "if_d4mdz0100_matlzappmfr",
-    "if_d4mdz0100_matlzappmfrzuse",
-    "if_d4mdz0300_matl",
-    "if_d4mdz0300_matlcharasgn",
-    "if_d4mdz0300_matlclassasgn",
-    "if_d4mdz0300_matldesc",
-    "if_d4mdz0300_matlplnt",
-    "if_d4mdz0300_matlunit");
+    public interface SheetRowHandler {
+        void startSheet(String sheetName);
+        void row(int rowNum, Map<Integer, String> cells);   // rowNum은 0부터, cells는 열번호 -> 값
+        void endSheet();
+    }
 
-// 모든 테이블 공통 고정값 (if_doc_id는 행별이라 별도 처리)
-private static final Map<String, String> COMMON_FIXED = new LinkedHashMap<>();
-static {
-    COMMON_FIXED.put("ten_id", "SONE");
-    COMMON_FIXED.put("regr_id", "EXCEL");
-}
+    public static void read(File file, SheetRowHandler h) throws Exception {
+        try (OPCPackage pkg = OPCPackage.open(file, PackageAccess.READ)) {   // File로 열어야 메모리를 안 씀
+            ReadOnlySharedStringsTable sst = new ReadOnlySharedStringsTable(pkg);
+            XSSFReader reader = new XSSFReader(pkg);
+            StylesTable styles = reader.getStylesTable();
+            XSSFReader.SheetIterator it = (XSSFReader.SheetIterator) reader.getSheetsData();
 
-@Transactional(rollbackFor = Exception.class)
-public Map<String, Integer> testExcelInsert(Map param) {
-    Map<String, Integer> result = new LinkedHashMap<>();
+            while (it.hasNext()) {
+                try (InputStream is = it.next()) {
+                    h.startSheet(it.getSheetName());
 
-    try {
-        DataFormatter fmt = new DataFormatter();
-        String table = (String) param.get("table");
-
-        if (table == null || !tableNames.contains(table)) {
-            throw new IllegalArgumentException("허용 테이블 아님: " + table);
-        }
-
-        Set<String> tableCols = new HashSet<>(sampleRepository.selectColumnName(table));
-        if (tableCols.isEmpty())
-            throw new IllegalStateException("테이블 없음: " + table);
-
-        // if_doc_id: 업로드 1회당 난수 1개 + 전체 공통 일련번호
-        String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
-        String rnd = String.format("%08d", ThreadLocalRandom.current().nextInt(100_000_000));
-        int docSeq = 0;
-
-        FileList fileList = stdFileService.findFileListWithContents((String) param.get("athg_uuid"));
-        for (FileItem fileItem : fileList.getItems()) {
-            try (Workbook wb = WorkbookFactory.create(fileItem.getInputStreamContents())) {
-                for (Sheet sheet : wb) {
-                    String sheetName = sheet.getSheetName();
-
-                    // 1) 헤더: 테이블에 있는 컬럼만 채택 + 엑셀 열 번호 보관
-                    Row head = sheet.getRow(0);
-                    if (head == null) continue;
-
-                    List<String> cols = new ArrayList<>();
-                    List<Integer> colIdx = new ArrayList<>();
-                    List<String> skipped = new ArrayList<>();
-
-                    for (Cell c : head) {
-                        String col = fmt.formatCellValue(c).trim().toLowerCase();
-                        if (col.isEmpty()) continue;
-                        if (!tableCols.contains(col)) { skipped.add(col); continue; }
-                        if (cols.contains(col))
-                            throw new IllegalArgumentException(sheetName + " 중복 헤더: " + col);
-                        cols.add(col);
-                        colIdx.add(c.getColumnIndex());
-                    }
-                    if (!skipped.isEmpty())
-                        LOG.info("{} 시트: 테이블에 없는 컬럼 건너뜀 {}", sheetName, skipped);
-                    if (cols.isEmpty()) continue;
-
-                    // 2) 고정 컬럼: 엑셀 컬럼 -> 공통 고정 -> if_doc_id 순서
-                    List<String> insertCols = new ArrayList<>(cols);
-                    List<String> fixedVals = new ArrayList<>();
-                    for (Map.Entry<String, String> e : COMMON_FIXED.entrySet()) {
-                        String col = e.getKey();
-                        if (!tableCols.contains(col)) continue;   // 테이블에 없으면 건너뜀
-                        if (cols.contains(col)) continue;         // 엑셀 값 우선
-                        insertCols.add(col);
-                        fixedVals.add(e.getValue());
-                    }
-                    boolean genDocId = tableCols.contains("if_doc_id") && !cols.contains("if_doc_id");
-                    if (genDocId) insertCols.add("if_doc_id");
-
-                    // 3) 행 읽기 + 청크마다 바로 insert
-                    int chunk = Math.max(1, Math.min(MAX_CHUNK, PARAM_LIMIT / insertCols.size()));
-                    List<List<String>> buf = new ArrayList<>(chunk);
-                    int total = 0;
-
-                    for (int r = 1; r <= sheet.getLastRowNum(); r++) {
-                        Row row = sheet.getRow(r);
-                        if (row == null) continue;
-
-                        List<String> vals = new ArrayList<>(insertCols.size());
-                        boolean empty = true;
-                        for (int i = 0; i < cols.size(); i++) {
-                            String v = cellValue(row.getCell(colIdx.get(i)));
-                            if (v != null) empty = false;
-                            vals.add(v);
+                    XSSFSheetXMLHandler.SheetContentsHandler sch = new XSSFSheetXMLHandler.SheetContentsHandler() {
+                        Map<Integer, String> cells = new TreeMap<>();
+                        public void startRow(int rowNum) { cells = new TreeMap<>(); }
+                        public void endRow(int rowNum) { h.row(rowNum, cells); }
+                        public void cell(String ref, String val, XSSFComment c) {
+                            if (ref != null && val != null)
+                                cells.put(new CellReference(ref).getCol(), val);
                         }
-                        if (empty) continue;   // 고정값 붙이기 전에 빈 행 판단
+                    };
 
-                        // 필수값 검증은 여기서 직접 (r + 1 행 번호 포함해 예외)
+                    XMLReader xr = XMLHelper.newXMLReader();
+                    xr.setContentHandler(new XSSFSheetXMLHandler(
+                            styles, null, sst, sch, new DataFormatter(), false));
+                    xr.parse(new InputSource(is));
 
-                        vals.addAll(fixedVals);
-                        if (genDocId)
-                            vals.add(today + "_" + rnd + "_" + String.format("%06d", ++docSeq));
-                        buf.add(vals);
-
-                        if (buf.size() >= chunk) {
-                            total += insertChunk(table, insertCols, buf);
-                            buf.clear();
-                        }
-                    }
-                    if (!buf.isEmpty()) {
-                        total += insertChunk(table, insertCols, buf);
-                        buf.clear();
-                    }
-                    result.merge(sheetName, total, Integer::sum);
+                    h.endSheet();
                 }
             }
         }
-    } catch (Exception e) {
-        LOG.error("엑셀 insert 실패", e);
-        throw new RuntimeException(e);   // 예외를 삼키면 롤백이 안 되므로 다시 던짐
     }
-    return result;
 }
 
-private int insertChunk(String table, List<String> cols, List<List<String>> part) {
-    Map<String, Object> paramMap = new HashMap<>();
-    paramMap.put("table", table);
-    paramMap.put("cols", cols);
-    paramMap.put("rows", new ArrayList<>(part));   // buf.clear() 전에 복사
-    return sampleRepository.insertBatch(paramMap);
-}
 
-private String cellValue(Cell c) {
-    if (c == null) return null;
-    CellType type = c.getCellType() == CellType.FORMULA
-            ? c.getCachedFormulaResultType() : c.getCellType();
-    switch (type) {
-        case BLANK:
-            return null;
-        case BOOLEAN:
-            return String.valueOf(c.getBooleanCellValue());
-        case NUMERIC:
-            if (DateUtil.isCellDateFormatted(c))
-                return new Timestamp(c.getDateCellValue().getTime()).toString();
-            return BigDecimal.valueOf(c.getNumericCellValue())
-                             .stripTrailingZeros().toPlainString();
-        default: {
-            String s = c.getStringCellValue().trim();
-            return s.isEmpty() ? null : s;
+
+
+for (FileItem fileItem : fileList.getItems()) {
+    Path tmp = Files.createTempFile("excel", ".xlsx");
+    try {
+        try (InputStream in = fileItem.getInputStreamContents()) {
+            Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING);
         }
+        SheetImporter imp = new SheetImporter(table, tableCols, today, rnd, docSeq, result);
+        ExcelStreamReader.read(tmp.toFile(), imp);
+        docSeq = imp.docSeq;                     // 다음 파일로 번호 이어가기
+    } finally {
+        Files.deleteIfExists(tmp);
+    }
+}
+
+
+
+
+
+private class SheetImporter implements ExcelStreamReader.SheetRowHandler {
+    final String table, today, rnd;
+    final Set<String> tableCols;
+    final Map<String, Integer> result;
+    int docSeq;
+
+    String sheetName;
+    List<String> cols, insertCols, fixedVals;
+    List<Integer> colIdx;
+    boolean genDocId;
+    int chunk, total;
+    List<List<String>> buf;
+
+    SheetImporter(String table, Set<String> tableCols, String today, String rnd,
+                  int docSeq, Map<String, Integer> result) {
+        this.table = table; this.tableCols = tableCols; this.today = today;
+        this.rnd = rnd; this.docSeq = docSeq; this.result = result;
+    }
+
+    @Override public void startSheet(String name) {
+        sheetName = name; cols = null; total = 0; buf = new ArrayList<>();
+    }
+
+    @Override public void row(int rowNum, Map<Integer, String> cells) {
+        if (rowNum == 0) { readHeader(cells); return; }
+        if (cols == null) return;                 // 유효 컬럼 없는 시트
+
+        List<String> vals = new ArrayList<>(insertCols.size());
+        boolean empty = true;
+        for (int idx : colIdx) {
+            String v = cells.get(idx);
+            if (v != null) { v = v.trim(); if (v.isEmpty()) v = null; }
+            if (v != null) empty = false;
+            vals.add(v);
+        }
+        if (empty) return;
+
+        vals.addAll(fixedVals);
+        if (genDocId)
+            vals.add(today + "_" + rnd + "_" + String.format("%06d", ++docSeq));
+        buf.add(vals);
+        if (buf.size() >= chunk) { total += insertChunk(table, insertCols, buf); buf.clear(); }
+    }
+
+    @Override public void endSheet() {
+        if (cols == null) return;
+        if (!buf.isEmpty()) { total += insertChunk(table, insertCols, buf); buf.clear(); }
+        result.merge(sheetName, total, Integer::sum);
+    }
+
+    private void readHeader(Map<Integer, String> cells) {
+        List<String> hc = new ArrayList<>();
+        List<Integer> hi = new ArrayList<>();
+        List<String> skipped = new ArrayList<>();
+        for (Map.Entry<Integer, String> e : cells.entrySet()) {
+            String col = e.getValue().trim().toLowerCase();
+            if (col.isEmpty()) continue;
+            if (!tableCols.contains(col)) { skipped.add(col); continue; }
+            if (hc.contains(col))
+                throw new IllegalArgumentException(sheetName + " 중복 헤더: " + col);
+            hc.add(col); hi.add(e.getKey());
+        }
+        if (!skipped.isEmpty()) LOG.info("{} 시트: 테이블에 없는 컬럼 건너뜀 {}", sheetName, skipped);
+        if (hc.isEmpty()) { cols = null; return; }
+
+        cols = hc; colIdx = hi;
+        insertCols = new ArrayList<>(cols);
+        fixedVals = new ArrayList<>();
+        for (Map.Entry<String, String> e : COMMON_FIXED.entrySet()) {
+            String c = e.getKey();
+            if (!tableCols.contains(c) || cols.contains(c)) continue;
+            insertCols.add(c); fixedVals.add(e.getValue());
+        }
+        genDocId = tableCols.contains("if_doc_id") && !cols.contains("if_doc_id");
+        if (genDocId) insertCols.add("if_doc_id");
+        chunk = Math.max(1, Math.min(MAX_CHUNK, PARAM_LIMIT / insertCols.size()));
     }
 }
