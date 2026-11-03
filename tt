@@ -1,13 +1,141 @@
-public int insertBatch(Map param) {
-		return sqlSession.insert(NAMESPACE+"insertBatch", param);
-	}
+private static final int PARAM_LIMIT = 10000; // PG 바인딩 한도 32767
+	private static final Set<String> tableNames = Set.of("if_d4mdz0100_matl",
+	    "if_d4mdz0100_matlcharasgn",
+	    "if_d4mdz0100_matlclassasgn",
+	    "if_d4mdz0100_matldesc",
+	    "if_d4mdz0100_matlplnt",
+	    "if_d4mdz0100_matlunit",
+	    "if_d4mdz0100_matlzappmfr",
+	    "if_d4mdz0100_matlzappmfrzuse",
+	    "if_d4mdz0300_matl",
+	    "if_d4mdz0300_matlcharasgn",
+	    "if_d4mdz0300_matlclassasgn",
+	    "if_d4mdz0300_matldesc",
+	    "if_d4mdz0300_matlplnt",
+	    "if_d4mdz0300_matlunit");
+	
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Integer> testExcelInsert(Map param) {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        
+        try {
+	        DataFormatter fmt = new DataFormatter();
+	        String table = (String) param.get("table");
+	
+	        if(!tableNames.contains(table)) {
+	        	throw new Exception("허용 테이블 아님: " + table);
+	        }
+	        
+	        Set<String> tableCols = new HashSet<>(sampleRepository.selectColumnName(table));
+	        if (tableCols.isEmpty())
+	    	    throw new IllegalStateException("테이블 없음: " + table);
+	        
+	        FileList fileList = stdFileService.findFileListWithContents((String) param.get("athg_uuid"));
+	        for (FileItem fileItem : fileList.getItems()) {
+		        try (Workbook wb = WorkbookFactory.create(fileItem.getInputStreamContents())) {
+			        for (Sheet sheet : wb) {
+			            String sheetName = sheet.getSheetName();
+			
+			            // 1) 헤더: 테이블에 있는 컬럼만 채택 + 엑셀 열 번호 보관
+			            Row head = sheet.getRow(0);
+			            if (head == null) continue;
+			
+			            List<String> cols = new ArrayList<>();
+			            List<Integer> colIdx = new ArrayList<>();
+			            List<String> skipped = new ArrayList<>();
+			
+			            for (Cell c : head) {
+			                String col = fmt.formatCellValue(c).trim().toLowerCase();
+			                if (col.isEmpty()) continue;
+			                if (!tableCols.contains(col)) { skipped.add(col); continue; }
+			                if (cols.contains(col))
+			                    throw new IllegalArgumentException(sheetName + " 중복 헤더: " + col);
+			                cols.add(col);
+			                colIdx.add(c.getColumnIndex());
+			            }
+			            if (!skipped.isEmpty())
+			                LOG.info("{} 시트: 테이블에 없는 컬럼 건너뜀 {}", sheetName, skipped);
+			            if (cols.isEmpty()) continue;
+			
+			            // 2) 고정 컬럼: 공통
+			            Map<String, String> fixed = new LinkedHashMap<>();
+			            fixed.put("ten_id", "SONE");
+			            fixed.put("if_doc_id", "");
+			            fixed.put("regr_id", "EXCEL");
+			
+			            List<String> insertCols = new ArrayList<>(cols);
+			            List<String> fixedVals = new ArrayList<>();
+			            for (Map.Entry<String, String> e : fixed.entrySet()) {
+			                String col = e.getKey().toLowerCase();
+			                if (!tableCols.contains(col)) continue;  // 테이블에 없으면 건너뜀
+			                if (cols.contains(col)) continue;        // 엑셀 값 우선
+			                insertCols.add(col);
+			                if("if_doc_id".equals(col)) {
+			                	fixedVals.add(sharedService.generateDocumentNumber("IF"));
+			                }else {
+			                	fixedVals.add(e.getValue());
+			                }
+			            }
+			
+			            // 3) 행 읽기
+			            List<List<String>> rows = new ArrayList<>();
+			            for (int r = 1; r <= sheet.getLastRowNum(); r++) {
+			                Row row = sheet.getRow(r);
+			                if (row == null) continue;
+			
+			                List<String> vals = new ArrayList<>(insertCols.size());
+			                boolean empty = true;
+			                for (int i = 0; i < cols.size(); i++) {
+			                    String v = cellValue(row.getCell(colIdx.get(i)));
+			                    if (v != null) empty = false;
+			                    vals.add(v);
+			                }
+			                if (empty) continue;           // 고정값 붙이기 전에 빈 행 판단
+			
+			                // 필수값 검증은 여기서 직접 (r + 1 행 번호 포함해 예외)
+			                vals.addAll(fixedVals);
+			                rows.add(vals);
+			            }
+			
+			            // 4) 청크 배치 insert
+			            int chunk = Math.max(1, PARAM_LIMIT / insertCols.size());
+			            int total = 0;
+			            for (int i = 0; i < rows.size(); i += chunk) {
+			                List<List<String>> part = rows.subList(i, Math.min(i + chunk, rows.size()));
+			                
+			                Map<String, Object> paramMap = new HashMap<>();
+		                    paramMap.put("table", table);
+		                    paramMap.put("cols", insertCols);
+		                    paramMap.put("rows", part);
+		                    total += sampleRepository.insertBatch(paramMap);
+			            }
+			            result.put(sheetName, total);
+			        }
+		        }
+	        }
+        }catch(Exception e) {
+			e.printStackTrace();
+		}
+        return result;
+    }
 
-
-<insert id="insertBatch" parameterType="map">
-	  INSERT INTO ${p.table} (
-	    <foreach collection="p.cols" item="c" separator=",">${c}</foreach>
-	  ) VALUES
-	  <foreach collection="p.rows" item="r" separator=",">
-	    (<foreach collection="r" item="v" separator=",">#{v,jdbcType=VARCHAR}</foreach>)
-	  </foreach>
-	</insert> 
+    private String cellValue(Cell c) {
+        if (c == null) return null;
+        CellType type = c.getCellType() == CellType.FORMULA
+                ? c.getCachedFormulaResultType() : c.getCellType();
+        switch (type) {
+            case BLANK:
+                return null;
+            case BOOLEAN:
+                return String.valueOf(c.getBooleanCellValue());
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(c))
+                    return new Timestamp(c.getDateCellValue().getTime()).toString();
+                return BigDecimal.valueOf(c.getNumericCellValue())
+                                 .stripTrailingZeros().toPlainString();
+            default: {
+                String s = c.getStringCellValue().trim();
+                return s.isEmpty() ? null : s;
+            }
+        }
+    }
