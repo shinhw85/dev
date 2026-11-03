@@ -1,345 +1,118 @@
-private static final int PAGE_SIZE = 1000;
+public void callEquip(Map<String, Object> param) {   // @Transactional 제거
+    String lastKey = null;
+    while (true) {
+        Map<String, Object> q = new HashMap<>(param);
+        q.put("pageSize", PAGE_SIZE);
+        q.put("lastKey", lastKey);
 
-    @Transactional(rollbackFor = Exception.class)
-	public void callEquip(Map<String, Object> param) {
-	    String lastKey = null;
+        String nextKey = apiSapmdEquipRepository.selectEquipPageLastKey(q);
+        if (nextKey == null) break;
 
-	    try {
-		    while (true) {
-		        Map<String, Object> q = new HashMap<>(param);
-		        q.put("pageSize", PAGE_SIZE);
-		        q.put("lastKey", lastKey);
-	
-		        List<Map<String, Object>> matlList = apiSapmdEquipRepository.selectIF_D4MDZ0300_MATL(q);
-		        if (matlList == null || matlList.isEmpty()) break;
-	
-		        for (Map<String, Object> matlMap : matlList) {
-		        	processEquip(matlMap);
-		        }
-	
-		        lastKey = String.valueOf(matlList.get(matlList.size() - 1).get("if_doc_id"));
-		        if (matlList.size() < PAGE_SIZE) break;
-		    }
-	    } catch (Exception e) {
-	        LOG.error("equip 마이그레이션 실패", e);
-	        throw new RuntimeException(e); 
-	    }
-	}
+        matlPageService.mergeEquipPage(q);   // @Transactional 걸린 별도 빈
+        lastKey = nextKey;
+    }
+}
 
-	private void processEquip(Map<String, Object> matlMap) throws Exception{
-        Map<String, Object> itemMap = new HashMap<>(matlMap);
-        
-        // 플랜트를 확인하여 S1/PM 분기
-		boolean isS1MaterialIncluded = false;
-		boolean isPmMaterialIncluded = false;
-		
-		List<Map<String, Object>> matlplntList = apiSapmdEquipRepository.selectIF_D4MDZ0300_MATLPLNT(matlMap);
-		
-		if(matlplntList != null){
-			for (Map<String, Object> matlplntMap : matlplntList) {
-				isS1MaterialIncluded = isS1MaterialIncluded || matlplntMap.get("werks").equals("LYA0") || matlplntMap.get("werks").equals("VYA0");
-				isPmMaterialIncluded = isPmMaterialIncluded || matlplntMap.get("werks").equals("PYA0");
-			}
-		}
-		
-		if(isS1MaterialIncluded == true){
-			List<Map<String, Object>> matldescList = apiSapmdEquipRepository.selectIF_D4MDZ0300_MATLDESC(matlMap);
-			
-			if(matldescList == null){
-				LOG.debug("empty if statements");					
-			}else{
-				for(Map<String, Object> matldescMap : matldescList) {
-					itemMap.put("maktx", matldescMap.get("maktx"));
-				}
-			}
-
-			
-//				List<Map<String, Object>> matlclassasgnList = apiSapmdEquipRepository.selectIF_D4MDZ0300_MATLCLASSASGN(matlMap);
-//				if(matlclassasgnList == null){
-//					LOG.debug("empty if statements");				
-//				}else{
-//					for(Map<String, Object> matlclassasgnMap : matlclassasgnList) {
-//					}
-//				}
-			
-			
-			List<Map<String, Object>> matlcharasgnList = apiSapmdEquipRepository.selectIF_D4MDZ0300_MATLCHARASGN(matlMap);
-			if(matlcharasgnList == null){
-				LOG.debug("empty if statements");				
-			}else{
-				for(Map<String, Object> matlcharasgnMap : matlcharasgnList) {
-					itemMap.put("serial_yn", "N");
-					
-					//MDG(박경인 차장)요청으로 모델 품목에 대한 기기이력대상체크로직 추가함.
-					if("MCT00060".equals(matlcharasgnMap.get("atnam")) && "M1".equals(matlcharasgnMap.get("atwrt"))){
-						itemMap.put("serial_yn", "Y");
-					}
-					//MDG(박경인 차장)요청으로 부품 품목에 대한 기기이력대상체크로직 추가함.
-					if("PCT00145".equals(matlcharasgnMap.get("atnam")) && "P1".equals(matlcharasgnMap.get("atwrt"))){
-						itemMap.put("serial_yn", "Y");
-					}
-					if("ECT00034".equals(matlcharasgnMap.get("atnam")) && "E1".equals(matlcharasgnMap.get("atwrt"))){
-						itemMap.put("serial_yn", "Y");
-					}
-				}
-			}
-				
-				
-//				List<Map<String, Object>> matlunitList = apiSapmdEquipRepository.selectIF_D4MDZ0300_MATLUNIT(matlMap);
-//				if(matlunitList == null){
-//					LOG.debug("empty if statements");				
-//				}else{
-//					for(Map<String, Object> matlunitMap : matlunitList) {
-//					}
-//				}
-			
-			
-//				List<Map<String, Object>> matlplntList = apiSapmdEquipRepository.selectIF_D4MDZ0300_MATLPLNT(matlMap);
-//				if(matlplntList == null){
-//					LOG.debug("empty if statements");				
-//				}else{
-//					for(Map<String, Object> matlplntMap : matlplntList) {
-//					}
-//				}
-			
-			if(StringUtils.isNotEmpty((String) itemMap.get("matnr"))) {
-				apiSapmdEquipRepository.mergeEquip(itemMap);
-			}
-		}
-	}
+@Transactional(rollbackFor = Exception.class)
+public void mergeEquipPage(Map<String, Object> q) {
+    apiSapmdEquipRepository.mergeEquipBatch(q);
+}
 
 
-	<!-- 	item([CMS] 품목 테이블) Merge로 저장 -->
-	<insert id="mergeEquip" parameterType="map">
-	/*	apiSapmdEquip.mergeEquip :  item([CMS] 품목 테이블) Merge로 저장	*/
-		MERGE INTO item A
-		USING (
-			SELECT  #{p.matnr}        AS matnr
-			) B
-		ON (
-			A.ten_id		= #{g.tenant}
-			AND A.item_cd 	= #{p.matnr}
-		)
-		WHEN MATCHED THEN
-			UPDATE SET
-				 item_nm		 	= #{p.maktx}
-				,item_simword  		= #{p.zzname}
-				,itemcat_lvl_1_cd	= SUBSTR(#{p.matkl}, 1 ,2)
-				,itemcat_lvl_2_cd	= SUBSTR(#{p.matkl}, 1 ,4)
-				,itemcat_lvl_3_cd	= SUBSTR(#{p.matkl}, 1 ,6)
-				,itemcat_lvl_4_cd	= SUBSTR(#{p.matkl}, 1 ,8)
-				,itemcat_cd       	= #{p.matkl}
-				,item_spec       	= #{p.zzdesc}
-				,uom_ccd      		= #{p.meins}
-				,USE_YN      		= 'Y'
-				,sts				= 'U'
-				,modr_id      		= 'MDZ'
-				,mod_dttm         	= #{g.now}
-				,GROSS_WEIGHT		= #{p.brgew}::numeric
-				,WEIGHT_UNIT		= #{p.gewei}
-				,NET_WEIGHT			= #{p.ntgew}::numeric
-				,VOLUME				= #{p.volum}::numeric
-				,DEL_YN				= coalesce(#{p.lvorm}, 'N')
-				,LNGTH				= #{p.laeng}::numeric
-				,WDTH				= #{p.breit}::numeric
-				,HGHT				= #{p.hoehe}::numeric
-				,LNGTH_UNIT			= #{p.meabm}
-				,EAN_CD				= #{p.ean11}
-				,MAT_TYP			= #{p.mtart}
-				,VOL_UNIT			= #{p.voleh}
-				,LABOR				= #{p.labor}
-				,MD_PT_CLS			= 'E'
-				,SERIAL_YN			= #{p.serial_yn}
-		WHEN NOT MATCHED THEN
-		INSERT
-		( 	 ten_id
-			,item_cd
-			,item_nm		
-			,item_simword 
-			,itemcat_lvl_1_cd    
-			,itemcat_lvl_2_cd    
-			,itemcat_lvl_3_cd    
-			,itemcat_lvl_4_cd    
-			,itemcat_cd    
-			,item_spec       	
-			,uom_ccd      	
-			,rep_item_cd_yn
-			,use_yn      	
-			,regr_id      	
-			,reg_dttm
-			,modr_id      	
-			,mod_dttm       
-			,GROSS_WEIGHT	
-			,WEIGHT_UNIT	
-			,NET_WEIGHT	
-			,VOLUME		
-			,DEL_YN		
-			,LNGTH		
-			,WDTH			
-			,HGHT			
-			,LNGTH_UNIT	
-			,EAN_CD		
-			,MAT_TYP		
-			,VOL_UNIT		
-			,LABOR		
-			,MD_PT_CLS	
-			,SERIAL_YN	
-		)
-		VALUES
-		( 	 #{g.tenant}
-			,#{p.matnr}
-			,#{p.maktx}                     
-			,#{p.zzname}                    
-			,SUBSTR(#{p.matkl}, 1 ,2)
-			,SUBSTR(#{p.matkl}, 1 ,4)
-			,SUBSTR(#{p.matkl}, 1 ,6)
-			,SUBSTR(#{p.matkl}, 1 ,8)
-			,#{p.matkl}                     
-			,#{p.zzdesc}                    
-			,#{p.meins}    
-			,'N'                  
-			,'Y'                                
-			,'MDZ'                              
-			,#{g.now}
-			,'MDZ'                              
-			,#{g.now}
-			,#{p.brgew}::numeric
-			,#{p.gewei}                     
-			,#{p.ntgew}::numeric
-			,#{p.volum}::numeric
-			,coalesce(#{p.lvorm}, 'N')           
-			,#{p.laeng}
-			,#{p.breit}::numeric
-			,#{p.hoehe}::numeric
-			,#{p.meabm}                     
-			,#{p.ean11}                     
-			,#{p.mtart}                     
-			,#{p.voleh}                     
-			,#{p.labor}                     
-			,'E'                                
-			,#{p.serial_yn}                                
-		)
-	</insert>
-	
-	
-	<select id="selectIF_D4MDZ0300_MATL" parameterType="map" resultType="map">
-		SELECT IF_DOC_ID
-			 , MATNR
-			 , MBRSH
-			 , MTART
-			 , LVORM
-			 , MEINS
-			 , MATKL
-			 , BISMT
-			 , SPART
-			 , LABOR
-			 , PRDHA
-			 , MSTAE
-			 , MSTDE
-			 , BRGEW
-			 , GEWEI
-			 , LAENG
-			 , BREIT
-			 , HOEHE
-			 , MEABM
-			 , NTGEW
-			 , VOLUM
-			 , VOLEH
-			 , GROES
-			 , EAN11
-			 , NUMTP
-			 , MAGRV
-			 , PROFL
-			 , KZUMW
-			 , IHIVI
-			 , ILOOS
-			 , ZEINR
-			 , KZKFG
-			 , VHART
-			 , ZZMMTYP
-			 , ZZNAME
-			 , ZZSPEC
-			 , ZZDESC
-			 , ZZREGDT
-			 , ZZREGTM
-			 , ZZREGUS
-			 , ZZAPPDT
-			 , ZZAPPTM
-			 , ZZAPPUS
-			 , ZZLAMDT
-			 , ZZLAMTM
-			 , ZZLAMUS
-			 , ZZPRFLG
-			 , MTPOS_MARA
-			 , NORMT
-			 , WRKST
-			 , ZZDATUV_M
-			 , ZZVALTO
-			 , ZZLKMAT
-			 , BSTME
-			 , ZZTAKLV
-			 , ZZEHSYN
-			 , MFRNR
-			 , MFRPN
-			 , ZZMDLNR
-		  FROM IF_D4MDZ0300_MATL
-		 WHERE TEN_ID = #{g.tenant}
-		  AND TO_CHAR(REG_DTTM, 'YYYYMMDD') BETWEEN #{p.from_dt} AND #{p.to_dt}
-		  <if test="p.lastKey != null">
-		  AND IF_DOC_ID > #{p.lastKey}
-		  </if>
-		ORDER BY IF_DOC_ID
-		LIMIT #{p.pageSize}
-	</select>
-	
-	<select id="selectIF_D4MDZ0300_MATLPLNT" parameterType="map" resultType="map">
-		SELECT MATNR
-			 , WERKS
-			 , MMSTA
-			 , MMSTD
-			 , ZZMTARP
-			 , ZZPRFLG
-			 , ZZREGDT
-			 , ZZREGTM
-			 , ZZREGUS
-			 , ZZLAMDT
-			 , ZZLAMTM
-			 , ZZLAMUS
-			 , ITARK
-			 , LVORM
-			 , EKGRP
-			 , PLIFZ
-			 , ZZEHSBY
-			 , ZZEHSDT
-			 , ZZEHSRS
-			 , ZZTRECD
-			 , STAWN
-		  FROM IF_D4MDZ0300_MATLPLNT
-		 WHERE TEN_ID = #{g.tenant}
-		   AND MATNR = #{p.matnr}
-	</select>
-	
-	<select id="selectIF_D4MDZ0300_MATLDESC" parameterType="map" resultType="map">
-		SELECT MATNR
-			 , SPRAS
-			 , MAKTX
-		  FROM IF_D4MDZ0300_MATLDESC
-		 WHERE TEN_ID = #{g.tenant}
-		   AND MATNR = #{p.matnr}
-	</select>
-	
-	<select id="selectIF_D4MDZ0300_MATLCHARASGN" parameterType="map" resultType="map">
-		SELECT MATNR
-			 , CLASS
-			 , KLART
-			 , ATNAM
-			 , ATWRT
-			 , ATFLV
-			 , ATAWE
-			 , ATFLB
-			 , ATAW1
-		  FROM IF_D4MDZ0300_MATLCHARASGN
-		 WHERE TEN_ID = #{g.tenant}
-		   AND MATNR = #{p.matnr}
-	</select>
-	
+<sql id="equipPage">
+  SELECT DISTINCT ON (matnr) *
+    FROM (
+      SELECT *
+        FROM IF_D4MDZ0300_MATL
+       WHERE TEN_ID = #{g.tenant}
+         AND TO_CHAR(REG_DTTM, 'YYYYMMDD') BETWEEN #{p.from_dt} AND #{p.to_dt}
+         <if test="p.lastKey != null">AND IF_DOC_ID > #{p.lastKey}</if>
+       ORDER BY IF_DOC_ID
+       LIMIT #{p.pageSize}
+    ) t
+   WHERE COALESCE(matnr, '') <> ''
+   ORDER BY matnr, if_doc_id DESC
+</sql>
+
+<select id="selectEquipPageLastKey" parameterType="map" resultType="string">
+  SELECT MAX(IF_DOC_ID) FROM (
+    SELECT IF_DOC_ID FROM IF_D4MDZ0300_MATL
+     WHERE TEN_ID = #{g.tenant}
+       AND TO_CHAR(REG_DTTM, 'YYYYMMDD') BETWEEN #{p.from_dt} AND #{p.to_dt}
+       <if test="p.lastKey != null">AND IF_DOC_ID > #{p.lastKey}</if>
+     ORDER BY IF_DOC_ID
+     LIMIT #{p.pageSize}
+  ) t
+</select>
+
+<insert id="mergeEquipBatch" parameterType="map">
+  MERGE INTO item A
+  USING (
+    SELECT m.*,
+           d.maktx,
+           CASE WHEN EXISTS (
+                SELECT 1 FROM IF_D4MDZ0300_MATLCHARASGN c
+                 WHERE c.TEN_ID = m.ten_id AND c.matnr = m.matnr
+                   AND ( (c.atnam = 'MCT00060' AND c.atwrt = 'M1')
+                      OR (c.atnam = 'PCT00145' AND c.atwrt = 'P1')
+                      OR (c.atnam = 'ECT00034' AND c.atwrt = 'E1') )
+           ) THEN 'Y' ELSE 'N' END AS serial_yn
+      FROM (<include refid="equipPage"/>) m
+      LEFT JOIN LATERAL (
+            SELECT maktx FROM IF_D4MDZ0300_MATLDESC
+             WHERE TEN_ID = m.ten_id AND matnr = m.matnr
+             ORDER BY spras DESC LIMIT 1) d ON true
+     WHERE EXISTS (
+            SELECT 1 FROM IF_D4MDZ0300_MATLPLNT p
+             WHERE p.TEN_ID = m.ten_id AND p.matnr = m.matnr
+               AND p.werks IN ('LYA0', 'VYA0'))
+  ) B
+  ON (A.ten_id = #{g.tenant} AND A.item_cd = B.matnr)
+  WHEN MATCHED THEN
+    UPDATE SET
+         item_nm            = B.maktx
+        ,item_simword       = B.zzname
+        ,itemcat_lvl_1_cd   = SUBSTR(B.matkl, 1, 2)
+        ,itemcat_lvl_2_cd   = SUBSTR(B.matkl, 1, 4)
+        ,itemcat_lvl_3_cd   = SUBSTR(B.matkl, 1, 6)
+        ,itemcat_lvl_4_cd   = SUBSTR(B.matkl, 1, 8)
+        ,itemcat_cd         = B.matkl
+        ,item_spec          = B.zzdesc
+        ,uom_ccd            = B.meins
+        ,use_yn             = 'Y'
+        ,sts                = 'U'
+        ,modr_id            = 'MDZ'
+        ,mod_dttm           = #{g.now}
+        ,gross_weight       = B.brgew::numeric
+        ,weight_unit        = B.gewei
+        ,net_weight         = B.ntgew::numeric
+        ,volume             = B.volum::numeric
+        ,del_yn             = coalesce(B.lvorm, 'N')
+        ,lngth              = B.laeng::numeric
+        ,wdth               = B.breit::numeric
+        ,hght               = B.hoehe::numeric
+        ,lngth_unit         = B.meabm
+        ,ean_cd             = B.ean11
+        ,mat_typ            = B.mtart
+        ,vol_unit           = B.voleh
+        ,labor              = B.labor
+        ,md_pt_cls          = 'E'
+        ,serial_yn          = B.serial_yn
+  WHEN NOT MATCHED THEN
+    INSERT
+    ( ten_id, item_cd, item_nm, item_simword
+    , itemcat_lvl_1_cd, itemcat_lvl_2_cd, itemcat_lvl_3_cd, itemcat_lvl_4_cd, itemcat_cd
+    , item_spec, uom_ccd, rep_item_cd_yn, use_yn
+    , regr_id, reg_dttm, modr_id, mod_dttm
+    , gross_weight, weight_unit, net_weight, volume, del_yn
+    , lngth, wdth, hght, lngth_unit, ean_cd, mat_typ, vol_unit
+    , labor, md_pt_cls, serial_yn )
+    VALUES
+    ( #{g.tenant}, B.matnr, B.maktx, B.zzname
+    , SUBSTR(B.matkl, 1, 2), SUBSTR(B.matkl, 1, 4), SUBSTR(B.matkl, 1, 6), SUBSTR(B.matkl, 1, 8), B.matkl
+    , B.zzdesc, B.meins, 'N', 'Y'
+    , 'MDZ', #{g.now}, 'MDZ', #{g.now}
+    , B.brgew::numeric, B.gewei, B.ntgew::numeric, B.volum::numeric, coalesce(B.lvorm, 'N')
+    , B.laeng::numeric, B.breit::numeric, B.hoehe::numeric, B.meabm, B.ean11, B.mtart, B.voleh
+    , B.labor, 'E', B.serial_yn )
+</insert>
