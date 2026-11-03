@@ -1,99 +1,41 @@
+private static final int PAGE_SIZE = 1000;
+
 public void callMatl(Map<String, Object> param) {
-		Map<String, Object> itemMap = new HashMap<String, Object>(); //NOPMD  컬렉션에 ADD 되는 인스턴스:
-		List<Map<String, Object>> matlList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATL(param);
-		
-		for(Map<String, Object> matlMap : matlList) {
-			try{
-				itemMap = new HashMap<String, Object>(); //NOPMD  컬렉션에 ADD 되는 인스턴스:
-				itemMap.putAll(matlMap);
-				
-				List<Map<String, Object>> matldescList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLDESC(matlMap);
-				if(matldescList == null){
-					LOG.debug("empty if statements");					
-				}else{
-					for(Map<String, Object> matldescMap : matldescList) {
-						itemMap.put("maktx", matldescMap.get("maktx"));
-					}
-				}
-				
-//				List<Map<String, Object>> matlclassasgnList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLCLASSASGN(matlMap);
-//				if(matlclassasgnList == null){
-//					LOG.debug("empty if statements");				
-//				}else{
-//					for(Map<String, Object> matlclassasgnMap : matlclassasgnList) {
-//					}
-//				}
-				
-				List<Map<String, Object>> matlcharasgnList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLCHARASGN(matlMap);
-				if(matlcharasgnList == null){
-					LOG.debug("empty if statements");				
-				}else{
-					itemMap.put("serial_yn", "N");
-					
-					for(Map<String, Object> matlcharasgnMap : matlcharasgnList) {
-						if("MCT00060".equals(matlcharasgnMap.get("atnam")) && "M1".equals(matlcharasgnMap.get("atwrt"))){
-							itemMap.put("serial_yn", "Y");
-						}
-						//MDG(박경인 차장)요청으로 부품 품목에 대한 기기이력대상체크로직 추가함.
-						if("PCT00145".equals(matlcharasgnMap.get("atnam")) && "P1".equals(matlcharasgnMap.get("atwrt"))){
-							itemMap.put("serial_yn", "Y");
-						}
-						//MDG(박경인 차장)요청으로 설비 품목에 대한 기기이력대상체크로직 추가함.
-						if("ECT00034".equals(matlcharasgnMap.get("atnam")) && "E1".equals(matlcharasgnMap.get("atwrt"))){
-							itemMap.put("serial_yn", "Y");
-						}
-					}
-				}
-				
-				
-//				List<Map<String, Object>> matlunitList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLUNIT(matlMap);
-//				if(matlunitList == null){
-//					LOG.debug("empty if statements");				
-//				}else{
-//					for(Map<String, Object> matlunitMap : matlunitList) {
-//					}
-//				}
-				
-				
-//				List<Map<String, Object>> matlplntList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLPLNT(matlMap);
-//				if(matlplntList == null){
-//					LOG.debug("empty if statements");				
-//				}else{
-//					for(Map<String, Object> matlplntMap : matlplntList) {
-//					}
-//				}
-				
-				
-				List<Map<String, Object>> matlzappmfrList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLZAPPMFR(matlMap);
-				if(matlzappmfrList == null){
-					LOG.debug("empty if statements");				
-				}else{
-					for(Map<String, Object> matlzappmfrMap : matlzappmfrList) {
-						itemMap.put("mfrnr", matlzappmfrMap.get("mfrnr"));
-						itemMap.put("mfrpn", matlzappmfrMap.get("mfrpn"));
-						matlzappmfrMap.put("item_cd", itemMap.get("matnr"));
-						apiSapmdModelRepository.mergeModelVdName(matlzappmfrMap);
-						
-//						List<Map<String, Object>> matlzappmfrzuseList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLZAPPMFRZUSE(matlzappmfrMap);
-//						if(matlzappmfrzuseList == null){
-//							LOG.debug("empty if statements");				
-//						}else{
-//							for(Map<String, Object> matlzappmfrzuseMap : matlzappmfrzuseList) {
-//								
-//							}
-//						}
-					}
-				}
-				
-				if(StringUtils.isNotEmpty((String) itemMap.get("matnr"))) {
-					apiSapmdModelRepository.mergeModel(itemMap);
-					
-				}
-			}catch(Exception e){
-				LOG.debug("D4_MDZ_0100 인터페이스 도중 에러 발생");
-				e.printStackTrace();
-				LOG.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				
-			}
-		}
-	}
+    String lastKey = null;
+
+    while (true) {
+        Map<String, Object> q = new HashMap<>(param);
+        q.put("pageSize", PAGE_SIZE);
+        q.put("lastKey", lastKey);
+
+        List<Map<String, Object>> matlList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATL(q);
+        if (matlList == null || matlList.isEmpty()) break;
+
+        for (Map<String, Object> matlMap : matlList) {
+            processMatl(matlMap);        // 기존 for 안의 try { ... } catch 블록을 그대로 이동
+        }
+
+        lastKey = String.valueOf(matlList.get(matlList.size() - 1).get("정렬키컬럼"));
+        if (matlList.size() < PAGE_SIZE) break;
+    }
+}
+
+private void processMatl(Map<String, Object> matlMap) {
+    try {
+        Map<String, Object> itemMap = new HashMap<>(matlMap);
+        // ... 기존 로직 그대로 (matldesc, matlcharasgn, matlzappmfr, mergeModel)
+    } catch (Exception e) {
+        LOG.error("D4_MDZ_0100 인터페이스 도중 에러 발생", e);
+    }
+}
+
+
+
+<select id="selectIF_D4MDZ0100_MATL" parameterType="map" resultType="map">
+  SELECT ...
+  FROM if_d4mdz0100_matl
+  WHERE (기존 조건)
+  <if test="lastKey != null">AND 정렬키컬럼 > #{lastKey}</if>
+  ORDER BY 정렬키컬럼
+  LIMIT #{pageSize}
+</select>
