@@ -1,141 +1,148 @@
-private static final int PARAM_LIMIT = 10000; // PG 바인딩 한도 32767
-	private static final Set<String> tableNames = Set.of("if_d4mdz0100_matl",
-	    "if_d4mdz0100_matlcharasgn",
-	    "if_d4mdz0100_matlclassasgn",
-	    "if_d4mdz0100_matldesc",
-	    "if_d4mdz0100_matlplnt",
-	    "if_d4mdz0100_matlunit",
-	    "if_d4mdz0100_matlzappmfr",
-	    "if_d4mdz0100_matlzappmfrzuse",
-	    "if_d4mdz0300_matl",
-	    "if_d4mdz0300_matlcharasgn",
-	    "if_d4mdz0300_matlclassasgn",
-	    "if_d4mdz0300_matldesc",
-	    "if_d4mdz0300_matlplnt",
-	    "if_d4mdz0300_matlunit");
-	
-    @Transactional(rollbackFor = Exception.class)
-    public Map<String, Integer> testExcelInsert(Map param) {
-        Map<String, Integer> result = new LinkedHashMap<>();
-        
-        try {
-	        DataFormatter fmt = new DataFormatter();
-	        String table = (String) param.get("table");
-	
-	        if(!tableNames.contains(table)) {
-	        	throw new Exception("허용 테이블 아님: " + table);
-	        }
-	        
-	        Set<String> tableCols = new HashSet<>(sampleRepository.selectColumnName(table));
-	        if (tableCols.isEmpty())
-	    	    throw new IllegalStateException("테이블 없음: " + table);
-	        
-	        FileList fileList = stdFileService.findFileListWithContents((String) param.get("athg_uuid"));
-	        for (FileItem fileItem : fileList.getItems()) {
-		        try (Workbook wb = WorkbookFactory.create(fileItem.getInputStreamContents())) {
-			        for (Sheet sheet : wb) {
-			            String sheetName = sheet.getSheetName();
-			
-			            // 1) 헤더: 테이블에 있는 컬럼만 채택 + 엑셀 열 번호 보관
-			            Row head = sheet.getRow(0);
-			            if (head == null) continue;
-			
-			            List<String> cols = new ArrayList<>();
-			            List<Integer> colIdx = new ArrayList<>();
-			            List<String> skipped = new ArrayList<>();
-			
-			            for (Cell c : head) {
-			                String col = fmt.formatCellValue(c).trim().toLowerCase();
-			                if (col.isEmpty()) continue;
-			                if (!tableCols.contains(col)) { skipped.add(col); continue; }
-			                if (cols.contains(col))
-			                    throw new IllegalArgumentException(sheetName + " 중복 헤더: " + col);
-			                cols.add(col);
-			                colIdx.add(c.getColumnIndex());
-			            }
-			            if (!skipped.isEmpty())
-			                LOG.info("{} 시트: 테이블에 없는 컬럼 건너뜀 {}", sheetName, skipped);
-			            if (cols.isEmpty()) continue;
-			
-			            // 2) 고정 컬럼: 공통
-			            Map<String, String> fixed = new LinkedHashMap<>();
-			            fixed.put("ten_id", "SONE");
-			            fixed.put("if_doc_id", "");
-			            fixed.put("regr_id", "EXCEL");
-			
-			            List<String> insertCols = new ArrayList<>(cols);
-			            List<String> fixedVals = new ArrayList<>();
-			            for (Map.Entry<String, String> e : fixed.entrySet()) {
-			                String col = e.getKey().toLowerCase();
-			                if (!tableCols.contains(col)) continue;  // 테이블에 없으면 건너뜀
-			                if (cols.contains(col)) continue;        // 엑셀 값 우선
-			                insertCols.add(col);
-			                if("if_doc_id".equals(col)) {
-			                	fixedVals.add(sharedService.generateDocumentNumber("IF"));
-			                }else {
-			                	fixedVals.add(e.getValue());
-			                }
-			            }
-			
-			            // 3) 행 읽기
-			            List<List<String>> rows = new ArrayList<>();
-			            for (int r = 1; r <= sheet.getLastRowNum(); r++) {
-			                Row row = sheet.getRow(r);
-			                if (row == null) continue;
-			
-			                List<String> vals = new ArrayList<>(insertCols.size());
-			                boolean empty = true;
-			                for (int i = 0; i < cols.size(); i++) {
-			                    String v = cellValue(row.getCell(colIdx.get(i)));
-			                    if (v != null) empty = false;
-			                    vals.add(v);
-			                }
-			                if (empty) continue;           // 고정값 붙이기 전에 빈 행 판단
-			
-			                // 필수값 검증은 여기서 직접 (r + 1 행 번호 포함해 예외)
-			                vals.addAll(fixedVals);
-			                rows.add(vals);
-			            }
-			
-			            // 4) 청크 배치 insert
-			            int chunk = Math.max(1, PARAM_LIMIT / insertCols.size());
-			            int total = 0;
-			            for (int i = 0; i < rows.size(); i += chunk) {
-			                List<List<String>> part = rows.subList(i, Math.min(i + chunk, rows.size()));
-			                
-			                Map<String, Object> paramMap = new HashMap<>();
-		                    paramMap.put("table", table);
-		                    paramMap.put("cols", insertCols);
-		                    paramMap.put("rows", part);
-		                    total += sampleRepository.insertBatch(paramMap);
-			            }
-			            result.put(sheetName, total);
-			        }
-		        }
-	        }
-        }catch(Exception e) {
-			e.printStackTrace();
-		}
-        return result;
-    }
-
-    private String cellValue(Cell c) {
-        if (c == null) return null;
-        CellType type = c.getCellType() == CellType.FORMULA
-                ? c.getCachedFormulaResultType() : c.getCellType();
-        switch (type) {
-            case BLANK:
-                return null;
-            case BOOLEAN:
-                return String.valueOf(c.getBooleanCellValue());
-            case NUMERIC:
-                if (DateUtil.isCellDateFormatted(c))
-                    return new Timestamp(c.getDateCellValue().getTime()).toString();
-                return BigDecimal.valueOf(c.getNumericCellValue())
-                                 .stripTrailingZeros().toPlainString();
-            default: {
-                String s = c.getStringCellValue().trim();
-                return s.isEmpty() ? null : s;
-            }
-        }
-    }
+12:39:23.897 [QuartzScheduler_defaultScheduler-A-A-EC2-SRM-WAS01D1793676680063_ClusterManager] ERROR o.s.s.quartz.LocalDataSourceJobStore [EID:] [SS-ID:] [USER-ID:] - ClusterManager: Error managing cluster: Failure identifying failed instances when checking-in: Timeout after 153787ms of waiting for a connection.[END]
+org.quartz.JobPersistenceException: Failure identifying failed instances when checking-in: Timeout after 153787ms of waiting for a connection.
+        at org.quartz.impl.jdbcjobstore.JobStoreSupport.findFailedInstances(JobStoreSupport.java:3301)
+        at org.quartz.impl.jdbcjobstore.JobStoreSupport.clusterCheckIn(JobStoreSupport.java:3349)
+        at org.quartz.impl.jdbcjobstore.JobStoreSupport.doCheckin(JobStoreSupport.java:3213)
+        at org.quartz.impl.jdbcjobstore.JobStoreSupport$ClusterManager.manage(JobStoreSupport.java:3802)
+        at org.quartz.impl.jdbcjobstore.JobStoreSupport$ClusterManager.run(JobStoreSupport.java:3837)
+Caused by: java.sql.SQLTimeoutException: Timeout after 153787ms of waiting for a connection.
+        at com.zaxxer.hikari.pool.BaseHikariPool.getConnection(BaseHikariPool.java:233)
+        at com.zaxxer.hikari.pool.BaseHikariPool.getConnection(BaseHikariPool.java:183)
+        at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:93)
+        at net.ttddyy.dsproxy.support.ProxyDataSource.getConnection(ProxyDataSource.java:42)
+        at org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy$LazyConnectionInvocationHandler.getTargetConnection(LazyConnectionDataSourceProxy.java:484)
+        at org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy$LazyConnectionInvocationHandler.invoke(LazyConnectionDataSourceProxy.java:449)
+        at jdk.proxy3/jdk.proxy3.$Proxy95.prepareStatement(Unknown Source)
+        at jdk.internal.reflect.GeneratedMethodAccessor144.invoke(Unknown Source)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+        at org.quartz.impl.jdbcjobstore.AttributeRestoringConnectionInvocationHandler.invoke(AttributeRestoringConnectionInvocationHandler.java:78)
+        at jdk.proxy3/jdk.proxy3.$Proxy282.prepareStatement(Unknown Source)
+        at org.quartz.impl.jdbcjobstore.StdJDBCDelegate.selectSchedulerStateRecords(StdJDBCDelegate.java:2962)
+        at org.quartz.impl.jdbcjobstore.JobStoreSupport.findFailedInstances(JobStoreSupport.java:3267)
+        ... 4 common frames omitted
+12:39:24.444 [http-nio-8080-exec-5] ERROR        s.e.SpringWebExceptionHandler [EID:bpCOMMON-96b5665a-1774-4ed0-8b7f-d542f6bd7041] [SS-ID:5A3F683DFF50430060AE2C70369DD17B.srm11] [USER-ID:ADMIN] - Handler dispatch failed: java.lang.OutOfMemoryError: Java heap space[END]
+jakarta.servlet.ServletException: Handler dispatch failed: java.lang.OutOfMemoryError: Java heap space
+        at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1104)
+        at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+        at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+        at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+        at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+        at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+        at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+        at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365)
+        at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125)
+        at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+        at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at smartsuite.security.spring.web.session.SessionInvalidateFilter.doFilter(SessionInvalidateFilter.java:55)
+at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.authentication.www.BasicAuthenticationFilter.doFilterInternal(BasicAuthenticationFilter.java:181)
+        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at smartsuite.security.spring.web.session.ConcurrentSessionFilter.doFilter(ConcurrentSessionFilter.java:66)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+        at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+        at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.csrf.CsrfFilter.doFilterInternal(CsrfFilter.java:134)
+        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+        at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at smartsuite.security.web.filter.advanced.XssRequestFilter.doFilter(XssRequestFilter.java:60)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:117)
+        at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:87)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+		at smartsuite.security.web.filter.advanced.XssRequestFilter.doFilter(XssRequestFilter.java:60)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:117)
+        at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:87)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at smartsuite.security.web.filter.DecryptRequestFilter.doFilter(DecryptRequestFilter.java:46)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at smartsuite.spring.tenancy.web.filter.DefaultTenancyFilter.doFilter(DefaultTenancyFilter.java:95)
+        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+        at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+        at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+        at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
+        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+        at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+        at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
+        at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+        at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+        at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+        at smartsuite.log.spring.executelog.ExecutionLoggingFilter.doFilter(ExecutionLoggingFilter.java:38)
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+        at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+        at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
+        at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88)
+        at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492)
+        at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
+        at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
+        at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:782)
+        at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
+        at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+        at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+        at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+        at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:1272)
+        at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1797)
+        at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+        at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973)
+        at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491)
+        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+        at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: java.lang.OutOfMemoryError: Java heap space
