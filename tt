@@ -1,118 +1,19 @@
-public void callEquip(Map<String, Object> param) {   // @Transactional 제거
-    String lastKey = null;
-    while (true) {
-        Map<String, Object> q = new HashMap<>(param);
-        q.put("pageSize", PAGE_SIZE);
-        q.put("lastKey", lastKey);
-
-        String nextKey = apiSapmdEquipRepository.selectEquipPageLastKey(q);
-        if (nextKey == null) break;
-
-        matlPageService.mergeEquipPage(q);   // @Transactional 걸린 별도 빈
-        lastKey = nextKey;
-    }
-}
-
-@Transactional(rollbackFor = Exception.class)
-public void mergeEquipPage(Map<String, Object> q) {
-    apiSapmdEquipRepository.mergeEquipBatch(q);
-}
-
-
-<sql id="equipPage">
-  SELECT DISTINCT ON (matnr) *
-    FROM (
-      SELECT *
-        FROM IF_D4MDZ0300_MATL
-       WHERE TEN_ID = #{g.tenant}
-         AND TO_CHAR(REG_DTTM, 'YYYYMMDD') BETWEEN #{p.from_dt} AND #{p.to_dt}
-         <if test="p.lastKey != null">AND IF_DOC_ID > #{p.lastKey}</if>
-       ORDER BY IF_DOC_ID
-       LIMIT #{p.pageSize}
-    ) t
-   WHERE COALESCE(matnr, '') <> ''
-   ORDER BY matnr, if_doc_id DESC
-</sql>
-
-<select id="selectEquipPageLastKey" parameterType="map" resultType="string">
-  SELECT MAX(IF_DOC_ID) FROM (
-    SELECT IF_DOC_ID FROM IF_D4MDZ0300_MATL
-     WHERE TEN_ID = #{g.tenant}
-       AND TO_CHAR(REG_DTTM, 'YYYYMMDD') BETWEEN #{p.from_dt} AND #{p.to_dt}
-       <if test="p.lastKey != null">AND IF_DOC_ID > #{p.lastKey}</if>
-     ORDER BY IF_DOC_ID
-     LIMIT #{p.pageSize}
-  ) t
-</select>
-
-<insert id="mergeEquipBatch" parameterType="map">
-  MERGE INTO item A
+<insert id="mergeEquipOorgBatch" parameterType="map">
+  MERGE INTO item_oorg A
   USING (
-    SELECT m.*,
-           d.maktx,
-           CASE WHEN EXISTS (
-                SELECT 1 FROM IF_D4MDZ0300_MATLCHARASGN c
-                 WHERE c.TEN_ID = m.ten_id AND c.matnr = m.matnr
-                   AND ( (c.atnam = 'MCT00060' AND c.atwrt = 'M1')
-                      OR (c.atnam = 'PCT00145' AND c.atwrt = 'P1')
-                      OR (c.atnam = 'ECT00034' AND c.atwrt = 'E1') )
-           ) THEN 'Y' ELSE 'N' END AS serial_yn
+    SELECT m.matnr AS item_cd
       FROM (<include refid="equipPage"/>) m
-      LEFT JOIN LATERAL (
-            SELECT maktx FROM IF_D4MDZ0300_MATLDESC
-             WHERE TEN_ID = m.ten_id AND matnr = m.matnr
-             ORDER BY spras DESC LIMIT 1) d ON true
      WHERE EXISTS (
             SELECT 1 FROM IF_D4MDZ0300_MATLPLNT p
              WHERE p.TEN_ID = m.ten_id AND p.matnr = m.matnr
                AND p.werks IN ('LYA0', 'VYA0'))
   ) B
-  ON (A.ten_id = #{g.tenant} AND A.item_cd = B.matnr)
+  ON (A.ten_id = #{g.tenant}
+      AND A.oorg_cd = 'IOY1AO'
+      AND A.item_cd = B.item_cd)
   WHEN MATCHED THEN
-    UPDATE SET
-         item_nm            = B.maktx
-        ,item_simword       = B.zzname
-        ,itemcat_lvl_1_cd   = SUBSTR(B.matkl, 1, 2)
-        ,itemcat_lvl_2_cd   = SUBSTR(B.matkl, 1, 4)
-        ,itemcat_lvl_3_cd   = SUBSTR(B.matkl, 1, 6)
-        ,itemcat_lvl_4_cd   = SUBSTR(B.matkl, 1, 8)
-        ,itemcat_cd         = B.matkl
-        ,item_spec          = B.zzdesc
-        ,uom_ccd            = B.meins
-        ,use_yn             = 'Y'
-        ,sts                = 'U'
-        ,modr_id            = 'MDZ'
-        ,mod_dttm           = #{g.now}
-        ,gross_weight       = B.brgew::numeric
-        ,weight_unit        = B.gewei
-        ,net_weight         = B.ntgew::numeric
-        ,volume             = B.volum::numeric
-        ,del_yn             = coalesce(B.lvorm, 'N')
-        ,lngth              = B.laeng::numeric
-        ,wdth               = B.breit::numeric
-        ,hght               = B.hoehe::numeric
-        ,lngth_unit         = B.meabm
-        ,ean_cd             = B.ean11
-        ,mat_typ            = B.mtart
-        ,vol_unit           = B.voleh
-        ,labor              = B.labor
-        ,md_pt_cls          = 'E'
-        ,serial_yn          = B.serial_yn
+    UPDATE SET item_ldtm = 0
   WHEN NOT MATCHED THEN
-    INSERT
-    ( ten_id, item_cd, item_nm, item_simword
-    , itemcat_lvl_1_cd, itemcat_lvl_2_cd, itemcat_lvl_3_cd, itemcat_lvl_4_cd, itemcat_cd
-    , item_spec, uom_ccd, rep_item_cd_yn, use_yn
-    , regr_id, reg_dttm, modr_id, mod_dttm
-    , gross_weight, weight_unit, net_weight, volume, del_yn
-    , lngth, wdth, hght, lngth_unit, ean_cd, mat_typ, vol_unit
-    , labor, md_pt_cls, serial_yn )
-    VALUES
-    ( #{g.tenant}, B.matnr, B.maktx, B.zzname
-    , SUBSTR(B.matkl, 1, 2), SUBSTR(B.matkl, 1, 4), SUBSTR(B.matkl, 1, 6), SUBSTR(B.matkl, 1, 8), B.matkl
-    , B.zzdesc, B.meins, 'N', 'Y'
-    , 'MDZ', #{g.now}, 'MDZ', #{g.now}
-    , B.brgew::numeric, B.gewei, B.ntgew::numeric, B.volum::numeric, coalesce(B.lvorm, 'N')
-    , B.laeng::numeric, B.breit::numeric, B.hoehe::numeric, B.meabm, B.ean11, B.mtart, B.voleh
-    , B.labor, 'E', B.serial_yn )
+    INSERT (ten_id, oorg_cd, item_cd, item_ldtm)
+    VALUES (#{g.tenant}, 'IOY1AO', B.item_cd, 0)
 </insert>
