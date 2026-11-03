@@ -1,41 +1,129 @@
-Set<String> tableCols = new HashSet<>(mapper.selectColumnNames(table));
-if (tableCols.isEmpty())
-    throw new IllegalStateException("테이블 없음: " + table);
+@Service
+public class ExcelImportService {
 
-List<String> cols = new ArrayList<>();      // insert 대상 컬럼명
-List<Integer> colIdx = new ArrayList<>();   // 엑셀 열 번호
-List<String> skipped = new ArrayList<>();
+    private static final Logger log = LoggerFactory.getLogger(ExcelImportService.class);
 
-Row head = sheet.getRow(0);
-for (Cell c : head) {
-    String col = fmt.formatCellValue(c).trim().toLowerCase();
-    if (col.isEmpty()) continue;
-    if (!tableCols.contains(col)) {         // 테이블에 없으면 건너뜀
-        skipped.add(col);
-        continue;
+    // 시트명 -> 테이블명
+    private static final Map<String, String> SHEET_TABLE = Map.of(
+        "사용자", "tb_user",
+        "부서",   "tb_dept"
+    );
+
+    // 테이블별 고정값
+    private static final Map<String, Map<String, String>> TABLE_FIXED = Map.of(
+        "tb_user", Map.of("use_yn", "Y"),
+        "tb_dept", Map.of("use_yn", "Y", "dept_type", "A")
+    );
+
+    private static final int PARAM_LIMIT = 30000; // PG 바인딩 한도 32767
+
+    @Autowired private ExcelImportMapper mapper;
+
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Integer> importExcel(InputStream in, String userId) throws IOException {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        DataFormatter fmt = new DataFormatter();
+        String now = new Timestamp(System.currentTimeMillis()).toString();
+
+        try (Workbook wb = WorkbookFactory.create(in)) {
+            for (Sheet sheet : wb) {
+                String sheetName = sheet.getSheetName();
+                String table = SHEET_TABLE.get(sheetName);
+                if (table == null) continue;
+
+                Set<String> tableCols = new HashSet<>(mapper.selectColumnNames(table));
+                if (tableCols.isEmpty())
+                    throw new IllegalStateException("테이블 없음: " + table);
+
+                // 1) 헤더: 테이블에 있는 컬럼만 채택 + 엑셀 열 번호 보관
+                Row head = sheet.getRow(0);
+                if (head == null) continue;
+
+                List<String> cols = new ArrayList<>();
+                List<Integer> colIdx = new ArrayList<>();
+                List<String> skipped = new ArrayList<>();
+
+                for (Cell c : head) {
+                    String col = fmt.formatCellValue(c).trim().toLowerCase();
+                    if (col.isEmpty()) continue;
+                    if (!tableCols.contains(col)) { skipped.add(col); continue; }
+                    if (cols.contains(col))
+                        throw new IllegalArgumentException(sheetName + " 중복 헤더: " + col);
+                    cols.add(col);
+                    colIdx.add(c.getColumnIndex());
+                }
+                if (!skipped.isEmpty())
+                    log.warn("{} 시트: 테이블에 없는 컬럼 건너뜀 {}", sheetName, skipped);
+                if (cols.isEmpty()) continue;
+
+                // 2) 고정 컬럼: 공통 + 테이블별 (엑셀에 있으면 엑셀 값 우선)
+                Map<String, String> fixed = new LinkedHashMap<>();
+                fixed.put("reg_user", userId);
+                fixed.put("reg_dt", now);
+                fixed.put("src_type", "EXCEL");
+                fixed.putAll(TABLE_FIXED.getOrDefault(table, Map.of()));
+
+                List<String> insertCols = new ArrayList<>(cols);
+                List<String> fixedVals = new ArrayList<>();
+                for (Map.Entry<String, String> e : fixed.entrySet()) {
+                    String col = e.getKey().toLowerCase();
+                    if (!tableCols.contains(col)) continue;  // 테이블에 없으면 건너뜀
+                    if (cols.contains(col)) continue;        // 엑셀 값 우선
+                    insertCols.add(col);
+                    fixedVals.add(e.getValue());
+                }
+
+                // 3) 행 읽기
+                List<List<String>> rows = new ArrayList<>();
+                for (int r = 1; r <= sheet.getLastRowNum(); r++) {
+                    Row row = sheet.getRow(r);
+                    if (row == null) continue;
+
+                    List<String> vals = new ArrayList<>(insertCols.size());
+                    boolean empty = true;
+                    for (int i = 0; i < cols.size(); i++) {
+                        String v = cellValue(row.getCell(colIdx.get(i)));
+                        if (v != null) empty = false;
+                        vals.add(v);
+                    }
+                    if (empty) continue;           // 고정값 붙이기 전에 빈 행 판단
+
+                    // 필수값 검증은 여기서 직접 (r + 1 행 번호 포함해 예외)
+                    vals.addAll(fixedVals);
+                    rows.add(vals);
+                }
+
+                // 4) 청크 배치 insert
+                int chunk = Math.max(1, PARAM_LIMIT / insertCols.size());
+                int total = 0;
+                for (int i = 0; i < rows.size(); i += chunk) {
+                    List<List<String>> part = rows.subList(i, Math.min(i + chunk, rows.size()));
+                    total += mapper.insertBatch(table, insertCols, part);
+                }
+                result.put(sheetName, total);
+            }
+        }
+        return result;
     }
-    if (cols.contains(col))
-        throw new IllegalArgumentException(sheetName + " 중복 헤더: " + col);
-    cols.add(col);
-    colIdx.add(c.getColumnIndex());
-}
-if (cols.isEmpty()) continue;   // 유효 컬럼 없으면 시트 스킵
 
-List<List<Object>> rows = new ArrayList<>();
-for (int r = 1; r <= sheet.getLastRowNum(); r++) {
-    Row row = sheet.getRow(r);
-    if (row == null) continue;
-
-    List<Object> vals = new ArrayList<>(cols.size());
-    boolean empty = true;
-    for (int i = 0; i < cols.size(); i++) {
-        Object v = cellValue(row.getCell(colIdx.get(i)), fmt);
-        if (v != null) empty = false;
-        vals.add(v);
+    private String cellValue(Cell c) {
+        if (c == null) return null;
+        CellType type = c.getCellType() == CellType.FORMULA
+                ? c.getCachedFormulaResultType() : c.getCellType();
+        switch (type) {
+            case BLANK:
+                return null;
+            case BOOLEAN:
+                return String.valueOf(c.getBooleanCellValue());
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(c))
+                    return new Timestamp(c.getDateCellValue().getTime()).toString();
+                return BigDecimal.valueOf(c.getNumericCellValue())
+                                 .stripTrailingZeros().toPlainString();
+            default: {
+                String s = c.getStringCellValue().trim();
+                return s.isEmpty() ? null : s;
+            }
+        }
     }
-    if (empty) continue;
-    rows.add(vals);
 }
-
-if (!skipped.isEmpty())
-    log.warn("{} 시트: 테이블에 없는 컬럼 건너뜀 {}", sheetName, skipped);
