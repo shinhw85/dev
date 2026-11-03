@@ -1,140 +1,99 @@
-public class ExcelStreamReader {
-
-    public interface SheetRowHandler {
-        void startSheet(String sheetName);
-        void row(int rowNum, Map<Integer, String> cells);   // rowNum은 0부터, cells는 열번호 -> 값
-        void endSheet();
-    }
-
-    public static void read(File file, SheetRowHandler h) throws Exception {
-        try (OPCPackage pkg = OPCPackage.open(file, PackageAccess.READ)) {   // File로 열어야 메모리를 안 씀
-            ReadOnlySharedStringsTable sst = new ReadOnlySharedStringsTable(pkg);
-            XSSFReader reader = new XSSFReader(pkg);
-            StylesTable styles = reader.getStylesTable();
-            XSSFReader.SheetIterator it = (XSSFReader.SheetIterator) reader.getSheetsData();
-
-            while (it.hasNext()) {
-                try (InputStream is = it.next()) {
-                    h.startSheet(it.getSheetName());
-
-                    XSSFSheetXMLHandler.SheetContentsHandler sch = new XSSFSheetXMLHandler.SheetContentsHandler() {
-                        Map<Integer, String> cells = new TreeMap<>();
-                        public void startRow(int rowNum) { cells = new TreeMap<>(); }
-                        public void endRow(int rowNum) { h.row(rowNum, cells); }
-                        public void cell(String ref, String val, XSSFComment c) {
-                            if (ref != null && val != null)
-                                cells.put(new CellReference(ref).getCol(), val);
-                        }
-                    };
-
-                    XMLReader xr = XMLHelper.newXMLReader();
-                    xr.setContentHandler(new XSSFSheetXMLHandler(
-                            styles, null, sst, sch, new DataFormatter(), false));
-                    xr.parse(new InputSource(is));
-
-                    h.endSheet();
-                }
-            }
-        }
-    }
-}
-
-
-
-
-for (FileItem fileItem : fileList.getItems()) {
-    Path tmp = Files.createTempFile("excel", ".xlsx");
-    try {
-        try (InputStream in = fileItem.getInputStreamContents()) {
-            Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING);
-        }
-        SheetImporter imp = new SheetImporter(table, tableCols, today, rnd, docSeq, result);
-        ExcelStreamReader.read(tmp.toFile(), imp);
-        docSeq = imp.docSeq;                     // 다음 파일로 번호 이어가기
-    } finally {
-        Files.deleteIfExists(tmp);
-    }
-}
-
-
-
-
-
-private class SheetImporter implements ExcelStreamReader.SheetRowHandler {
-    final String table, today, rnd;
-    final Set<String> tableCols;
-    final Map<String, Integer> result;
-    int docSeq;
-
-    String sheetName;
-    List<String> cols, insertCols, fixedVals;
-    List<Integer> colIdx;
-    boolean genDocId;
-    int chunk, total;
-    List<List<String>> buf;
-
-    SheetImporter(String table, Set<String> tableCols, String today, String rnd,
-                  int docSeq, Map<String, Integer> result) {
-        this.table = table; this.tableCols = tableCols; this.today = today;
-        this.rnd = rnd; this.docSeq = docSeq; this.result = result;
-    }
-
-    @Override public void startSheet(String name) {
-        sheetName = name; cols = null; total = 0; buf = new ArrayList<>();
-    }
-
-    @Override public void row(int rowNum, Map<Integer, String> cells) {
-        if (rowNum == 0) { readHeader(cells); return; }
-        if (cols == null) return;                 // 유효 컬럼 없는 시트
-
-        List<String> vals = new ArrayList<>(insertCols.size());
-        boolean empty = true;
-        for (int idx : colIdx) {
-            String v = cells.get(idx);
-            if (v != null) { v = v.trim(); if (v.isEmpty()) v = null; }
-            if (v != null) empty = false;
-            vals.add(v);
-        }
-        if (empty) return;
-
-        vals.addAll(fixedVals);
-        if (genDocId)
-            vals.add(today + "_" + rnd + "_" + String.format("%06d", ++docSeq));
-        buf.add(vals);
-        if (buf.size() >= chunk) { total += insertChunk(table, insertCols, buf); buf.clear(); }
-    }
-
-    @Override public void endSheet() {
-        if (cols == null) return;
-        if (!buf.isEmpty()) { total += insertChunk(table, insertCols, buf); buf.clear(); }
-        result.merge(sheetName, total, Integer::sum);
-    }
-
-    private void readHeader(Map<Integer, String> cells) {
-        List<String> hc = new ArrayList<>();
-        List<Integer> hi = new ArrayList<>();
-        List<String> skipped = new ArrayList<>();
-        for (Map.Entry<Integer, String> e : cells.entrySet()) {
-            String col = e.getValue().trim().toLowerCase();
-            if (col.isEmpty()) continue;
-            if (!tableCols.contains(col)) { skipped.add(col); continue; }
-            if (hc.contains(col))
-                throw new IllegalArgumentException(sheetName + " 중복 헤더: " + col);
-            hc.add(col); hi.add(e.getKey());
-        }
-        if (!skipped.isEmpty()) LOG.info("{} 시트: 테이블에 없는 컬럼 건너뜀 {}", sheetName, skipped);
-        if (hc.isEmpty()) { cols = null; return; }
-
-        cols = hc; colIdx = hi;
-        insertCols = new ArrayList<>(cols);
-        fixedVals = new ArrayList<>();
-        for (Map.Entry<String, String> e : COMMON_FIXED.entrySet()) {
-            String c = e.getKey();
-            if (!tableCols.contains(c) || cols.contains(c)) continue;
-            insertCols.add(c); fixedVals.add(e.getValue());
-        }
-        genDocId = tableCols.contains("if_doc_id") && !cols.contains("if_doc_id");
-        if (genDocId) insertCols.add("if_doc_id");
-        chunk = Math.max(1, Math.min(MAX_CHUNK, PARAM_LIMIT / insertCols.size()));
-    }
-}
+public void callMatl(Map<String, Object> param) {
+		Map<String, Object> itemMap = new HashMap<String, Object>(); //NOPMD  컬렉션에 ADD 되는 인스턴스:
+		List<Map<String, Object>> matlList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATL(param);
+		
+		for(Map<String, Object> matlMap : matlList) {
+			try{
+				itemMap = new HashMap<String, Object>(); //NOPMD  컬렉션에 ADD 되는 인스턴스:
+				itemMap.putAll(matlMap);
+				
+				List<Map<String, Object>> matldescList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLDESC(matlMap);
+				if(matldescList == null){
+					LOG.debug("empty if statements");					
+				}else{
+					for(Map<String, Object> matldescMap : matldescList) {
+						itemMap.put("maktx", matldescMap.get("maktx"));
+					}
+				}
+				
+//				List<Map<String, Object>> matlclassasgnList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLCLASSASGN(matlMap);
+//				if(matlclassasgnList == null){
+//					LOG.debug("empty if statements");				
+//				}else{
+//					for(Map<String, Object> matlclassasgnMap : matlclassasgnList) {
+//					}
+//				}
+				
+				List<Map<String, Object>> matlcharasgnList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLCHARASGN(matlMap);
+				if(matlcharasgnList == null){
+					LOG.debug("empty if statements");				
+				}else{
+					itemMap.put("serial_yn", "N");
+					
+					for(Map<String, Object> matlcharasgnMap : matlcharasgnList) {
+						if("MCT00060".equals(matlcharasgnMap.get("atnam")) && "M1".equals(matlcharasgnMap.get("atwrt"))){
+							itemMap.put("serial_yn", "Y");
+						}
+						//MDG(박경인 차장)요청으로 부품 품목에 대한 기기이력대상체크로직 추가함.
+						if("PCT00145".equals(matlcharasgnMap.get("atnam")) && "P1".equals(matlcharasgnMap.get("atwrt"))){
+							itemMap.put("serial_yn", "Y");
+						}
+						//MDG(박경인 차장)요청으로 설비 품목에 대한 기기이력대상체크로직 추가함.
+						if("ECT00034".equals(matlcharasgnMap.get("atnam")) && "E1".equals(matlcharasgnMap.get("atwrt"))){
+							itemMap.put("serial_yn", "Y");
+						}
+					}
+				}
+				
+				
+//				List<Map<String, Object>> matlunitList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLUNIT(matlMap);
+//				if(matlunitList == null){
+//					LOG.debug("empty if statements");				
+//				}else{
+//					for(Map<String, Object> matlunitMap : matlunitList) {
+//					}
+//				}
+				
+				
+//				List<Map<String, Object>> matlplntList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLPLNT(matlMap);
+//				if(matlplntList == null){
+//					LOG.debug("empty if statements");				
+//				}else{
+//					for(Map<String, Object> matlplntMap : matlplntList) {
+//					}
+//				}
+				
+				
+				List<Map<String, Object>> matlzappmfrList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLZAPPMFR(matlMap);
+				if(matlzappmfrList == null){
+					LOG.debug("empty if statements");				
+				}else{
+					for(Map<String, Object> matlzappmfrMap : matlzappmfrList) {
+						itemMap.put("mfrnr", matlzappmfrMap.get("mfrnr"));
+						itemMap.put("mfrpn", matlzappmfrMap.get("mfrpn"));
+						matlzappmfrMap.put("item_cd", itemMap.get("matnr"));
+						apiSapmdModelRepository.mergeModelVdName(matlzappmfrMap);
+						
+//						List<Map<String, Object>> matlzappmfrzuseList = apiSapmdModelRepository.selectIF_D4MDZ0100_MATLZAPPMFRZUSE(matlzappmfrMap);
+//						if(matlzappmfrzuseList == null){
+//							LOG.debug("empty if statements");				
+//						}else{
+//							for(Map<String, Object> matlzappmfrzuseMap : matlzappmfrzuseList) {
+//								
+//							}
+//						}
+					}
+				}
+				
+				if(StringUtils.isNotEmpty((String) itemMap.get("matnr"))) {
+					apiSapmdModelRepository.mergeModel(itemMap);
+					
+				}
+			}catch(Exception e){
+				LOG.debug("D4_MDZ_0100 인터페이스 도중 에러 발생");
+				e.printStackTrace();
+				LOG.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				
+			}
+		}
+	}
