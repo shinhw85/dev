@@ -1,5 +1,12 @@
 package smartsuite.mybatis;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.function.Consumer;
+
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -12,13 +19,8 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.function.Consumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 대상 statement의 지정 키만 EG 암복호화를 적용하는 MyBatis 플러그인.
@@ -37,16 +39,22 @@ import java.util.function.Consumer;
                 args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})
 })
 public class CryptoInterceptor implements Interceptor {
-
+	static final Logger LOG = LoggerFactory.getLogger(CryptoInterceptor.class);
+	
     /** 파라미터가 String 하나뿐인 쿼리(예: selectByTel(String tel))의 대상 키 이름 */
     public static final String SINGLE_PARAM = "_parameter";
-
+    public final String paramPrefix;    
     private final CryptoClient client;
     private final CryptoTargets targets;
 
     public CryptoInterceptor(CryptoClient client, CryptoTargets targets) {
-        this.client = client;
-        this.targets = targets;
+        this(client, targets, "");
+    }
+    
+    public CryptoInterceptor(CryptoClient client, CryptoTargets targets, String paramPrefix) {
+    	this.client = client;
+    	this.targets = targets;
+    	this.paramPrefix = paramPrefix == null ? "" : paramPrefix;    	
     }
 
     @Override
@@ -59,6 +67,12 @@ public class CryptoInterceptor implements Interceptor {
             return invocation.proceed();               // 대상 아님 → 그대로
         }
 
+        Object p = args[1];
+        LOG.info("[crypto] paramClass={} keys={}", p == null ? null : p.getClass().getName(), p instanceof Map<?, ?> m ? m.keySet() : "(not Map)");
+        ms.getBoundSql(p).getParameterMappings() .forEach(pm -> LOG.info("[crypto] SQL param property={}", pm.getProperty()));
+        
+        LOG.info("[crypto] id={} cmd={} paramKey={} resultKey={}", ms.getId(), ms.getSqlCommandType(), target.paramKeys(), target.resultKeys());
+        
         Object originalParam = args[1];
         List<Slot> encrypted = new ArrayList<>();
         try {
@@ -117,18 +131,26 @@ public class CryptoInterceptor implements Interceptor {
 
     /** Map: 키 그대로(중첩 "dto.field" 허용), DTO: 프로퍼티명(대소문자/언더스코어 무시) */
     private String resolveParamProperty(MetaObject mo, String key) {
-        try {
-            Object obj = mo.getOriginalObject();
-            if (obj instanceof Map<?, ?> m) {
-                if (m.containsKey(key)) return key;
-                if (key.indexOf('.') > 0 && mo.hasGetter(key) && mo.hasSetter(key)) return key;
-                return null;
-            }
-            String prop = mo.findProperty(key, true);
-            return (prop != null && mo.hasGetter(prop) && mo.hasSetter(prop)) ? prop : null;
-        } catch (RuntimeException e) {
-            return null;                                // 없는 키 접근 시 예외 → 대상 아님
-        }
+    	if(!paramPrefix.isEmpty()) {
+    		String prefixed = resolveRow(mo, paramPrefix+key);
+    		if(prefixed != null) return prefixed;
+    	}
+    	return resolveRow(mo, key);
+    }
+    
+    private String resolveRow(MetaObject mo, String key) {
+    	try {
+    		Object obj = mo.getOriginalObject();
+    		if (obj instanceof Map<?, ?> m) {
+    			if (m.containsKey(key)) return key;
+    			if (key.indexOf('.') > 0 && mo.hasGetter(key) && mo.hasSetter(key)) return key;
+    			return null;
+    		}
+    		String prop = mo.findProperty(key, true);
+    		return (prop != null && mo.hasGetter(prop) && mo.hasSetter(prop)) ? prop : null;
+    	} catch (RuntimeException e) {
+    		return null;                                // 없는 키 접근 시 예외 → 대상 아님
+    	}
     }
 
     // ---------------------------------------------------------------- 결과 복호화
@@ -178,6 +200,8 @@ public class CryptoInterceptor implements Interceptor {
 
     /** 모은 값을 배열로 1회 호출해 같은 순서로 되돌려 넣는다. */
     private void convert(List<Slot> slots, boolean encrypt) {
+    	LOG.info("[crypto] {} {}건", encrypt ? "ENC" : "DEC", slots.size());
+    	
         String[] in = new String[slots.size()];
         for (int i = 0; i < in.length; i++) {
             in[i] = slots.get(i).value;
