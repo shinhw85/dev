@@ -1,6 +1,0 @@
-// CryptoInterceptor.intercept(), target null 체크 아래
-Object p = args[1];
-log.info("[crypto] paramClass={} keys={}", p == null ? null : p.getClass().getName(),
-        p instanceof Map<?, ?> m ? m.keySet() : "(not Map)");
-ms.getBoundSql(p).getParameterMappings()
-        .forEach(pm -> log.info("[crypto] SQL param property={}", pm.getProperty()));
