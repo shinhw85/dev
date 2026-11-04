@@ -1,4 +1,1329 @@
-user-session.findUserSessionInfo#result=mob
-shared.updateUserInfoByLoginSession=mob
-
-
+16:09:18.976 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/oauth2/*'][END]
+16:09:18.976 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/oauth2/*'][END]
+16:09:18.976 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/api/**'][END]
+16:09:18.976 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/api/**'][END]
+16:09:18.976 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - No matches found[END]
+16:09:18.976 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - No matches found[END]
+16:09:18.976 [http-nio-8080-exec-9] DEBUG    o.s.security.web.FilterChainProxy [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Securing POST /ui/smartsuite/mdi/popup/saveCurrentUserFormatter.do[END]
+16:09:18.976 [http-nio-8080-exec-10] DEBUG    o.s.security.web.FilterChainProxy [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Securing POST /ui/smartsuite/mdi/saveUser.do[END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=smartsuite.security.userdetails.User@e0e7123, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[A100, A200, ROLE_CURRENT_USER]]][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=smartsuite.security.userdetails.User@e0e7123, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[A100, A200, ROLE_CURRENT_USER]]][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=smartsuite.security.userdetails.User@e0e7123, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[A100, A200, ROLE_CURRENT_USER]]][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/index.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Set SecurityContextHolder to SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=smartsuite.security.userdetails.User@e0e7123, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[A100, A200, ROLE_CURRENT_USER]]][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sp/edoc/contract/findSignContract.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/index.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sp/edoc/contract/findSignContract.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sp/edoc/contract/saveSign.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/rest/api/**'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sp/edoc/contract/saveSign.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sgic/recv.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/rest/api/**'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/ssoLoginProcess.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sgic/recv.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/mobileLogin.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/ssoLoginProcess.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/eformSignLogin.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/mobileLogin.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/eformSignLogin.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/eformSignPwLogin.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/eformSignPwLogin.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/eformSignPwLoginProcess.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/eformSignPwLoginProcess.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/findSignTargetInfoFormerNByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/rejectSignDocumentByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/findSignTargetInfoFormerNByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/rejectSignDocumentByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/sendNextSignTargetByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/findCompanyStampListByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/sendNextSignTargetByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/findUserStampListByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/findCompanyStampListByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/findUserStampListByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/createTextSignaturesByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/oauth2/**'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/createTextSignaturesByMail.do'][END]
+16:09:18.977 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/oauth2/**'][END]
+16:09:18.978 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/api/**'][END]
+16:09:18.978 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/api/**'][END]
+16:09:18.978 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/openCertSelectionPage.do'][END]
+16:09:18.978 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/newVendor.do'][END]
+16:09:18.978 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/supplierAuthNumberVerifyProcess.do'][END]
+16:09:18.978 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/openAuthSignPopup.do'][END]
+16:09:18.978 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/openCertSelectionPage.do'][END]
+16:09:18.978 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sone/api/**'][END]
+16:09:18.978 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/newVendor.do'][END]
+16:09:18.978 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/completeIntegriAuth.do'][END]
+16:09:18.978 [http-nio-8080-exec-10] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - No matches found[END]
+16:09:18.978 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/supplierAuthNumberVerifyProcess.do'][END]
+16:09:18.978 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/openAuthSignPopup.do'][END]
+16:09:18.978 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sone/api/**'][END]
+16:09:18.978 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/completeIntegriAuth.do'][END]
+16:09:18.978 [http-nio-8080-exec-9] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - No matches found[END]
+16:09:18.978 [http-nio-8080-exec-9] DEBUG    o.s.security.web.FilterChainProxy [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Secured POST /ui/smartsuite/mdi/popup/saveCurrentUserFormatter.do[END]
+16:09:18.978 [http-nio-8080-exec-10] DEBUG    o.s.security.web.FilterChainProxy [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Secured POST /ui/smartsuite/mdi/saveUser.do[END]
+16:09:18.978 [http-nio-8080-exec-9] DEBUG    o.s.web.servlet.DispatcherServlet [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - POST "/ui/smartsuite/mdi/popup/saveCurrentUserFormatter.do", parameters={}[END]
+16:09:18.978 [http-nio-8080-exec-10] DEBUG    o.s.web.servlet.DispatcherServlet [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - POST "/ui/smartsuite/mdi/saveUser.do", parameters={}[END]
+16:09:18.989 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Creating a new SqlSession[END]
+16:09:18.990 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4a0655e2] was not registered for synchronization because synchronization is not active[END]
+16:09:18.990 [http-nio-8080-exec-9] DEBUG  o.s.jdbc.datasource.DataSourceUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Fetching JDBC Connection from DataSource[END]
+16:09:18.992 [http-nio-8080-exec-9] DEBUG     o.m.s.t.SpringManagedTransaction [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - JDBC Connection [Lazy Connection proxy for target DataSource [net.ttddyy.dsproxy.support.ProxyDataSource@3ffbfe35]] will not be managed by Spring[END]
+16:09:18.992 [http-nio-8080-exec-9] DEBUG                account.ipAddressLoad [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* account.xml ipAddressLoad */ SELECT TEN_ID, ADMIN_IP FROM ADMIN_IP WHERE TEN_ID = ?[END]
+16:09:18.993 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Creating a new SqlSession[END]
+16:09:18.994 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@78ee1436] was not registered for synchronization because synchronization is not active[END]
+16:09:18.994 [http-nio-8080-exec-10] DEBUG  o.s.jdbc.datasource.DataSourceUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Fetching JDBC Connection from DataSource[END]
+16:09:18.995 [http-nio-8080-exec-10] DEBUG     o.m.s.t.SpringManagedTransaction [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - JDBC Connection [Lazy Connection proxy for target DataSource [net.ttddyy.dsproxy.support.ProxyDataSource@3ffbfe35]] will not be managed by Spring[END]
+16:09:18.995 [http-nio-8080-exec-10] DEBUG                account.ipAddressLoad [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* account.xml ipAddressLoad */ SELECT TEN_ID, ADMIN_IP FROM ADMIN_IP WHERE TEN_ID = ?[END]
+16:09:19.037 [http-nio-8080-exec-9] DEBUG                account.ipAddressLoad [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: SONE(String)[END]
+16:09:19.038 [http-nio-8080-exec-10] DEBUG                account.ipAddressLoad [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: SONE(String)[END]
+16:09:19.086 [http-nio-8080-exec-9] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:49 [QET:NORMAL] Num:1 Batch:False/0 SqlId:account.ipAddressLoad Query:{
+/* account.xml ipAddressLoad */
+		SELECT TEN_ID,
+			   ADMIN_IP
+		FROM ADMIN_IP
+		WHERE TEN_ID = 'SONE'
+}[END]
+16:09:19.086 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:48 [QET:NORMAL] Num:1 Batch:False/0 SqlId:account.ipAddressLoad Query:{
+/* account.xml ipAddressLoad */
+		SELECT TEN_ID,
+			   ADMIN_IP
+		FROM ADMIN_IP
+		WHERE TEN_ID = 'SONE'
+}[END]
+16:09:19.086 [http-nio-8080-exec-10] DEBUG                account.ipAddressLoad [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - <==      Total: 0[END]
+16:09:19.086 [http-nio-8080-exec-9] DEBUG                account.ipAddressLoad [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - <==      Total: 0[END]
+16:09:19.086 [http-nio-8080-exec-10] INFO       s.m.ResultSetLoggingInterceptor [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ResultSetCount:0 [RSC:NORMAL][END]
+16:09:19.086 [http-nio-8080-exec-9] INFO       s.m.ResultSetLoggingInterceptor [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ResultSetCount:0 [RSC:NORMAL][END]
+16:09:19.086 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@78ee1436][END]
+16:09:19.086 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4a0655e2][END]
+16:09:19.086 [http-nio-8080-exec-10] DEBUG o.s.s.a.i.a.MethodSecurityInterceptor [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Authorized ReflectiveMethodInvocation: public smartsuite.app.common.shared.ResultMap smartsuite.app.common.shared.SharedController.saveUser(java.util.Map); target is of class [smartsuite.app.common.shared.SharedController] with attributes [[authorize: 'isBuyer() || isSupplier()', filter: 'null', filterTarget: 'null']][END]
+16:09:19.086 [http-nio-8080-exec-9] DEBUG o.s.s.a.i.a.MethodSecurityInterceptor [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Authorized ReflectiveMethodInvocation: public java.util.Map smartsuite.app.common.shared.FormatterController.saveCurrentUserFormatter(java.util.Map); target is of class [smartsuite.app.common.shared.FormatterController] with attributes [[authorize: 'isBuyer() || isSupplier()', filter: 'null', filterTarget: 'null']][END]
+16:09:19.086 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Creating a new SqlSession[END]
+16:09:19.086 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2cb2c02a][END]
+16:09:19.086 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Creating a new SqlSession[END]
+16:09:19.086 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a28a9f3][END]
+16:09:19.086 [http-nio-8080-exec-9] DEBUG     o.m.s.t.SpringManagedTransaction [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - JDBC Connection [Lazy Connection proxy for target DataSource [net.ttddyy.dsproxy.support.ProxyDataSource@3ffbfe35]] will be managed by Spring[END]
+16:09:19.086 [http-nio-8080-exec-9] DEBUG f.findCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* formatter.findCurrentUserFormatLinkByUserExpressionClass */ SELECT LOC_FMT_EXPR_UUID, USR_ID, TEN_ID, LOC_FMT_TYP_CCD, REGR_ID, REG_DTTM FROM LOC_FMT_EXPR_USR_MAPG WHERE TEN_ID = ? AND LOC_FMT_TYP_CCD = ? AND USR_ID = ?[END]
+16:09:19.086 [http-nio-8080-exec-10] INFO           s.mybatis.CryptoInterceptor [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - [crypto] id=shared.updateUserInfoByLoginSession cmd=UPDATE paramKey=[mob] resultKey=[mob][END]
+16:09:19.086 [http-nio-8080-exec-9] DEBUG f.findCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: SONE(String), DATE(String), ADMIN(String)[END]
+16:09:19.089 [http-nio-8080-exec-10] DEBUG     o.m.s.t.SpringManagedTransaction [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - JDBC Connection [Lazy Connection proxy for target DataSource [net.ttddyy.dsproxy.support.ProxyDataSource@3ffbfe35]] will be managed by Spring[END]
+16:09:19.089 [http-nio-8080-exec-10] DEBUG  shared.updateUserInfoByLoginSession [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* shared.saveUser: 내부 사용자 정보 수정 */ UPDATE USR SET USR_NM = ? ,USR_NM_EN = ? ,DEPT_CD = ? ,USE_YN = ? ,MOB = ? ,TEL = ? ,FAX = ? ,EML = ? ,EML_RCPT_YN = ? ,SMS_RCPT_YN = ? ,TMZ_CCD = ? ,JOBTIT_CCD = ? ,HOME_SCR_TYP_CCD = ? ,LBL_SORT_TYP_CCD = ? ,JOBPOSI_CCD = ? ,STS = 'U' ,MODR_ID = ? ,MOD_DTTM = ? WHERE TEN_ID = ? AND USR_ID = ?[END]
+16:09:19.140 [http-nio-8080-exec-9] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:54 [QET:NORMAL] Num:1 Batch:False/0 SqlId:formatter.findCurrentUserFormatLinkByUserExpressionClass Query:{
+/* formatter.findCurrentUserFormatLinkByUserExpressionClass */
+		SELECT LOC_FMT_EXPR_UUID,
+			USR_ID,
+			TEN_ID,
+			LOC_FMT_TYP_CCD,
+			REGR_ID,
+			REG_DTTM
+		FROM LOC_FMT_EXPR_USR_MAPG
+		WHERE TEN_ID = 'SONE'
+		AND LOC_FMT_TYP_CCD = 'DATE'
+		AND USR_ID  = 'ADMIN'
+}[END]
+16:09:19.141 [http-nio-8080-exec-10] DEBUG  shared.updateUserInfoByLoginSession [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: 관리자(OP)(String), SystemManager(OP)(String), E80001302(String), Y(String), 010-1111-3434(String), 02-0000-1234(String), 533511357(String), engl_yoon@emro.co.kr(String), Y(String), Y(String), Asia/Seoul(String), TMLD(String), PURC_PIC(String), HORIZ(String), STF(String), ADMIN(String), 2026-11-04 16:09:19.14(Timestamp), SONE(String), ADMIN(String)[END]
+16:09:19.141 [http-nio-8080-exec-9] DEBUG f.findCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - <==      Total: 1[END]
+16:09:19.141 [http-nio-8080-exec-9] INFO       s.m.ResultSetLoggingInterceptor [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ResultSetCount:1 [RSC:NORMAL][END]
+16:09:19.141 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2cb2c02a][END]
+16:09:19.141 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a28a9f3][END]
+16:09:19.141 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2cb2c02a] from current transaction[END]
+16:09:19.141 [http-nio-8080-exec-10] INFO           s.mybatis.CryptoInterceptor [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - [crypto] id=user-session.findUserSessionInfo cmd=SELECT paramKey=[mob] resultKey=[mob][END]
+16:09:19.186 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a28a9f3] from current transaction[END]
+16:09:19.186 [http-nio-8080-exec-9] DEBUG f.updateCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* formatter.updateCurrentUserFormatLinkByUserExpressionClass */ UPDATE LOC_FMT_EXPR_USR_MAPG SET LOC_FMT_EXPR_UUID = ? WHERE TEN_ID = ? AND LOC_FMT_TYP_CCD = ? AND USR_ID = ?[END]
+16:09:19.186 [http-nio-8080-exec-9] DEBUG f.updateCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: e860d0b6-ea23-4c07-8bf8-ebaedb1f0f58(String), SONE(String), DATE(String), ADMIN(String)[END]
+16:09:19.186 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a28a9f3][END]
+16:09:19.187 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a28a9f3][END]
+16:09:19.194 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:53 [QET:NORMAL] Num:1 Batch:True/1 SqlId:user-session.findUserSessionInfo Query:{
+/* shared.saveUser: 내부 사용자 정보 수정 */	
+		UPDATE USR
+		SET
+				USR_NM = '관리자(OP)'
+				 
+				,USR_NM_EN = 'SystemManager(OP)'
+				 
+				,DEPT_CD = 'E80001302'
+				 
+				,USE_YN = 'Y'
+				,MOB = '010-1111-3434'
+				,TEL = '02-0000-1234'
+				,FAX = '533511357'
+				,EML = 'engl_yoon@emro.co.kr'
+				,EML_RCPT_YN = 'Y'
+				,SMS_RCPT_YN = 'Y'
+				,TMZ_CCD = 'Asia/Seoul'
+				,JOBTIT_CCD = 'TMLD'
+				,HOME_SCR_TYP_CCD = 'PURC_PIC'
+				,LBL_SORT_TYP_CCD = 'HORIZ'
+				,JOBPOSI_CCD = 'STF'
+				,STS = 'U'
+				,MODR_ID = 'ADMIN'
+				,MOD_DTTM = '2026-11-04 16:09:19.14'
+		WHERE TEN_ID = 'SONE'
+		AND USR_ID = 'ADMIN'
+}[END]
+16:09:19.194 [http-nio-8080-exec-10] DEBUG     user-session.findUserSessionInfo [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* user-session.findUserSessionInfo */ SELECT US.USR_ID , US.CO_CD , CASE WHEN 'en_US' = ? THEN OG.LOGIC_ORG_NM_EN ELSE OG.LOGIC_ORG_NM END AS COMP_NM , US.USR_NM , US.USR_NM_EN , CASE WHEN 'en_US' = ? THEN US.USR_NM_EN ELSE US.USR_NM END AS DISP_USR_NM , US.USR_TYP_CCD , US.JOBPOSI_CCD , (SELECT A.DTLCD_NM FROM DTLCD_MULTLANG A WHERE A.TEN_ID = ? AND A.CCD = 'C005' AND A.DTLCD = US.JOBPOSI_CCD AND A.LANG_CCD = ? ) AS POSI_NM , US.EMPNO , US.DEPT_CD , DP.DEPT_NM , DP.DEPT_NM_EN , CASE WHEN 'en_US' = ? THEN DP.DEPT_NM_EN ELSE DP.DEPT_NM END AS DISP_DEPT_NM , US.VD_CD , US.MOB , US.TEL , US.FAX , US.EML , US.ACCT_EXP_YN , US.ACCT_LCKD_YN , US.PWD_CHG_REQD_YN , US.PRE_LOGIN_DTTM , US.PRE_LOGIN_IP , US.LAST_LOGIN_DTTM , US.LAST_LOGIN_IP , US.USE_YN , US.PWD_INIT_YN , US.PWD_CHG_DTTM , US.EML_RCPT_YN , US.SMS_RCPT_YN , US.TMZ_CCD , US.JOBTIT_CCD , (SELECT A.DTLCD_NM FROM DTLCD_MULTLANG A WHERE A.TEN_ID = ? AND A.CCD = 'G012' AND A.DTLCD = US.JOBTIT_CCD AND A.LANG_CCD = ? ) AS DISP_JOBTIT_NM , US.HOME_SCR_TYP_CCD , US.LBL_SORT_TYP_CCD , US.ACCT_STS_CCD , US.LCKD_TYP_CCD , ORG.CTRY_CCD FROM USR US LEFT OUTER JOIN LOGIC_ORG OG ON US.TEN_ID = OG.TEN_ID AND US.CO_CD = OG.LOGIC_ORG_CD AND OG.ORG_TYP_CD = 'COMPANY' AND OG.STS != 'D' LEFT OUTER JOIN ORG ORG ON OG.TEN_ID = ORG.TEN_ID AND OG.ORG_CD = ORG.ORG_CD LEFT OUTER JOIN DEPT DP ON US.TEN_ID = DP.TEN_ID AND US.CO_CD = DP.CO_CD AND US.DEPT_CD = DP.DEPT_CD AND DP.STS != 'D' WHERE US.TEN_ID = ? AND US.USR_ID = ? AND US.STS != 'D'[END]
+16:09:19.195 [http-nio-8080-exec-10] DEBUG     user-session.findUserSessionInfo [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: ko_KR(String), ko_KR(String), SONE(String), ko_KR(String), ko_KR(String), SONE(String), ko_KR(String), SONE(String), ADMIN(String)[END]
+16:09:19.241 [http-nio-8080-exec-9] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:54 [QET:NORMAL] Num:1 Batch:True/1 SqlId:formatter.updateCurrentUserFormatLinkByUserExpressionClass Query:{
+/* formatter.updateCurrentUserFormatLinkByUserExpressionClass */
+		 UPDATE LOC_FMT_EXPR_USR_MAPG
+			 SET LOC_FMT_EXPR_UUID   = 'e860d0b6-ea23-4c07-8bf8-ebaedb1f0f58'
+		  WHERE TEN_ID = 'SONE'
+			AND LOC_FMT_TYP_CCD = 'DATE'
+			AND USR_ID  = 'ADMIN'
+}[END]
+16:09:19.241 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a28a9f3][END]
+16:09:19.241 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a28a9f3][END]
+16:09:19.251 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:56 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+/* user-session.findUserSessionInfo */
+    SELECT US.USR_ID
+         , US.CO_CD
+         , CASE WHEN 'en_US' = 'ko_KR' THEN OG.LOGIC_ORG_NM_EN
+                ELSE OG.LOGIC_ORG_NM
+           END AS COMP_NM
+         , US.USR_NM
+         , US.USR_NM_EN
+         , CASE WHEN 'en_US' = 'ko_KR' THEN US.USR_NM_EN
+                ELSE US.USR_NM
+            END AS DISP_USR_NM
+         , US.USR_TYP_CCD
+         , US.JOBPOSI_CCD
+		 , (SELECT A.DTLCD_NM FROM DTLCD_MULTLANG A
+			WHERE A.TEN_ID = 'SONE' AND A.CCD = 'C005' AND A.DTLCD = US.JOBPOSI_CCD
+			AND A.LANG_CCD = 'ko_KR' ) AS POSI_NM
+         , US.EMPNO
+         , US.DEPT_CD
+         , DP.DEPT_NM
+         , DP.DEPT_NM_EN
+         , CASE WHEN 'en_US' = 'ko_KR' THEN DP.DEPT_NM_EN
+                ELSE DP.DEPT_NM
+            END AS DISP_DEPT_NM
+         , US.VD_CD
+         , US.MOB
+         , US.TEL
+         , US.FAX
+         , US.EML
+         , US.ACCT_EXP_YN
+         , US.ACCT_LCKD_YN
+         , US.PWD_CHG_REQD_YN
+         , US.PRE_LOGIN_DTTM
+         , US.PRE_LOGIN_IP
+         , US.LAST_LOGIN_DTTM
+         , US.LAST_LOGIN_IP
+         , US.USE_YN
+         , US.PWD_INIT_YN
+         , US.PWD_CHG_DTTM
+         , US.EML_RCPT_YN
+         , US.SMS_RCPT_YN
+         , US.TMZ_CCD
+         , US.JOBTIT_CCD
+         , (SELECT A.DTLCD_NM
+              FROM DTLCD_MULTLANG A
+			 WHERE A.TEN_ID = 'SONE'
+			   AND A.CCD = 'G012'
+			   AND A.DTLCD = US.JOBTIT_CCD
+			   AND A.LANG_CCD = 'ko_KR' ) AS DISP_JOBTIT_NM
+         , US.HOME_SCR_TYP_CCD
+         , US.LBL_SORT_TYP_CCD
+         , US.ACCT_STS_CCD
+         , US.LCKD_TYP_CCD
+         , ORG.CTRY_CCD
+      FROM USR US
+     LEFT OUTER JOIN LOGIC_ORG OG
+        ON US.TEN_ID = OG.TEN_ID
+       AND US.CO_CD = OG.LOGIC_ORG_CD
+       AND OG.ORG_TYP_CD = 'COMPANY'
+       AND OG.STS != 'D'
+      LEFT OUTER JOIN ORG ORG
+        ON OG.TEN_ID = ORG.TEN_ID
+        AND OG.ORG_CD = ORG.ORG_CD
+      LEFT OUTER JOIN DEPT DP
+        ON US.TEN_ID = DP.TEN_ID
+       AND US.CO_CD = DP.CO_CD
+       AND US.DEPT_CD = DP.DEPT_CD
+       AND DP.STS != 'D'
+     WHERE US.TEN_ID = 'SONE'
+       AND US.USR_ID = 'ADMIN'
+       AND US.STS != 'D'
+}[END]
+16:09:19.251 [http-nio-8080-exec-10] DEBUG     user-session.findUserSessionInfo [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - <==      Total: 1[END]
+16:09:19.251 [http-nio-8080-exec-10] INFO       s.m.ResultSetLoggingInterceptor [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ResultSetCount:1 [RSC:NORMAL][END]
+16:09:19.251 [http-nio-8080-exec-10] INFO           s.mybatis.CryptoInterceptor [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - [crypto] DEC 1건[END]
+16:09:19.251 [http-nio-8080-exec-10] INFO          s.app.crypto.EgCryptoService [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - [crypto] EG call type=dec, size=1[END]
+16:09:19.251 [http-nio-8080-exec-10] DEBUG     s.a.a.o.service.ApiSenderService [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - === I/F ID : EG_ENC
+ApiSenderService > call > reqParam : {input=[010-1111-3434], item=S1APIDEK_DEV, type=dec}[END]
+16:09:19.303 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Creating a new SqlSession[END]
+16:09:19.303 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b42261][END]
+16:09:19.303 [http-nio-8080-exec-9] DEBUG     o.m.s.t.SpringManagedTransaction [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - JDBC Connection [Lazy Connection proxy for target DataSource [net.ttddyy.dsproxy.support.ProxyDataSource@3ffbfe35]] will be managed by Spring[END]
+16:09:19.304 [http-nio-8080-exec-9] DEBUG f.findCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* formatter.findCurrentUserFormatLinkByUserExpressionClass */ SELECT LOC_FMT_EXPR_UUID, USR_ID, TEN_ID, LOC_FMT_TYP_CCD, REGR_ID, REG_DTTM FROM LOC_FMT_EXPR_USR_MAPG WHERE TEN_ID = ? AND LOC_FMT_TYP_CCD = ? AND USR_ID = ?[END]
+16:09:19.304 [http-nio-8080-exec-9] DEBUG f.findCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: SONE(String), PREC(String), ADMIN(String)[END]
+16:09:19.308 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:57 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+select idje1_0.IF_ID,idje1_0.TEN_ID,idje1_0.EXEC_HISTREC_ALRM_TYP,idje1_0.HISTREC_CSTD_DCNT,idje1_0.IF_CLASS,idje1_0.IF_EXPLN,idje1_0.MOD_DTTM,idje1_0.MODR_ID,idje1_0.RCPT_CLASS,idje1_0.REG_DTTM,idje1_0.REGR_ID,idje1_0.RMK,idje1_0.SND_CLASS,idje1_0.STS,idje1_0.USE_YN from IF_SETUP idje1_0 where (idje1_0.IF_ID,idje1_0.TEN_ID) in (('EG_ENC','SONE'))
+}[END]
+16:09:19.366 [http-nio-8080-exec-9] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:62 [QET:NORMAL] Num:1 Batch:False/0 SqlId:formatter.findCurrentUserFormatLinkByUserExpressionClass Query:{
+/* formatter.findCurrentUserFormatLinkByUserExpressionClass */
+		SELECT LOC_FMT_EXPR_UUID,
+			USR_ID,
+			TEN_ID,
+			LOC_FMT_TYP_CCD,
+			REGR_ID,
+			REG_DTTM
+		FROM LOC_FMT_EXPR_USR_MAPG
+		WHERE TEN_ID = 'SONE'
+		AND LOC_FMT_TYP_CCD = 'PREC'
+		AND USR_ID  = 'ADMIN'
+}[END]
+16:09:19.366 [http-nio-8080-exec-9] DEBUG f.findCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - <==      Total: 1[END]
+16:09:19.366 [http-nio-8080-exec-9] INFO       s.m.ResultSetLoggingInterceptor [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ResultSetCount:1 [RSC:NORMAL][END]
+16:09:19.366 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b42261][END]
+16:09:19.366 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b42261] from current transaction[END]
+16:09:19.366 [http-nio-8080-exec-9] DEBUG f.updateCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* formatter.updateCurrentUserFormatLinkByUserExpressionClass */ UPDATE LOC_FMT_EXPR_USR_MAPG SET LOC_FMT_EXPR_UUID = ? WHERE TEN_ID = ? AND LOC_FMT_TYP_CCD = ? AND USR_ID = ?[END]
+16:09:19.367 [http-nio-8080-exec-9] DEBUG f.updateCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: bacd685c-d679-4fd9-933f-ef1ba80667de(String), SONE(String), PREC(String), ADMIN(String)[END]
+16:09:19.367 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b42261][END]
+16:09:19.367 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b42261][END]
+16:09:19.374 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:61 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+select count(*) from AXIS2_SETUP asdje1_0 where asdje1_0.TEN_ID='SONE' and asdje1_0.IF_ID='EG_ENC'
+}[END]
+16:09:19.431 [http-nio-8080-exec-9] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:64 [QET:NORMAL] Num:1 Batch:True/1 SqlId:formatter.updateCurrentUserFormatLinkByUserExpressionClass Query:{
+/* formatter.updateCurrentUserFormatLinkByUserExpressionClass */
+		 UPDATE LOC_FMT_EXPR_USR_MAPG
+			 SET LOC_FMT_EXPR_UUID   = 'bacd685c-d679-4fd9-933f-ef1ba80667de'
+		  WHERE TEN_ID = 'SONE'
+			AND LOC_FMT_TYP_CCD = 'PREC'
+			AND USR_ID  = 'ADMIN'
+}[END]
+16:09:19.431 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b42261][END]
+16:09:19.431 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b42261][END]
+16:09:19.437 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:62 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+select count(*) from CXF_SETUP csdje1_0 where csdje1_0.IF_ID='EG_ENC' and csdje1_0.TEN_ID='SONE'
+}[END]
+16:09:19.495 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Creating a new SqlSession[END]
+16:09:19.495 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@43e886d3][END]
+16:09:19.495 [http-nio-8080-exec-9] DEBUG     o.m.s.t.SpringManagedTransaction [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - JDBC Connection [Lazy Connection proxy for target DataSource [net.ttddyy.dsproxy.support.ProxyDataSource@3ffbfe35]] will be managed by Spring[END]
+16:09:19.495 [http-nio-8080-exec-9] DEBUG f.findCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* formatter.findCurrentUserFormatLinkByUserExpressionClass */ SELECT LOC_FMT_EXPR_UUID, USR_ID, TEN_ID, LOC_FMT_TYP_CCD, REGR_ID, REG_DTTM FROM LOC_FMT_EXPR_USR_MAPG WHERE TEN_ID = ? AND LOC_FMT_TYP_CCD = ? AND USR_ID = ?[END]
+16:09:19.495 [http-nio-8080-exec-9] DEBUG f.findCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: SONE(String), THOUSAND(String), ADMIN(String)[END]
+16:09:19.500 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:60 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+select rdje1_0.TEN_ID,rdje1_0.ATTR_ID from RESTFUL_ATTR rdje1_0 where rdje1_0.TEN_ID='SONE' and rdje1_0.IF_ID='EG_ENC' fetch first '1' rows only
+}[END]
+16:09:19.557 [http-nio-8080-exec-9] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:61 [QET:NORMAL] Num:1 Batch:False/0 SqlId:formatter.findCurrentUserFormatLinkByUserExpressionClass Query:{
+/* formatter.findCurrentUserFormatLinkByUserExpressionClass */
+		SELECT LOC_FMT_EXPR_UUID,
+			USR_ID,
+			TEN_ID,
+			LOC_FMT_TYP_CCD,
+			REGR_ID,
+			REG_DTTM
+		FROM LOC_FMT_EXPR_USR_MAPG
+		WHERE TEN_ID = 'SONE'
+		AND LOC_FMT_TYP_CCD = 'THOUSAND'
+		AND USR_ID  = 'ADMIN'
+}[END]
+16:09:19.557 [http-nio-8080-exec-9] DEBUG f.findCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - <==      Total: 1[END]
+16:09:19.558 [http-nio-8080-exec-9] INFO       s.m.ResultSetLoggingInterceptor [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ResultSetCount:1 [RSC:NORMAL][END]
+16:09:19.559 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@43e886d3][END]
+16:09:19.559 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@43e886d3] from current transaction[END]
+16:09:19.559 [http-nio-8080-exec-9] DEBUG f.updateCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* formatter.updateCurrentUserFormatLinkByUserExpressionClass */ UPDATE LOC_FMT_EXPR_USR_MAPG SET LOC_FMT_EXPR_UUID = ? WHERE TEN_ID = ? AND LOC_FMT_TYP_CCD = ? AND USR_ID = ?[END]
+16:09:19.560 [http-nio-8080-exec-9] DEBUG f.updateCurrentUserFormatLinkByUserExpressionClass [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: e8d210b8-a7ba-43b9-89b4-c8d35b24079b(String), SONE(String), THOUSAND(String), ADMIN(String)[END]
+16:09:19.560 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@43e886d3][END]
+16:09:19.560 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@43e886d3][END]
+16:09:19.562 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:59 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+select count(*) from AXIS2_SETUP asdje1_0 where asdje1_0.TEN_ID='SONE' and asdje1_0.IF_ID='EG_ENC'
+}[END]
+16:09:19.623 [http-nio-8080-exec-9] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:60 [QET:NORMAL] Num:1 Batch:True/1 SqlId:formatter.updateCurrentUserFormatLinkByUserExpressionClass Query:{
+/* formatter.updateCurrentUserFormatLinkByUserExpressionClass */
+		 UPDATE LOC_FMT_EXPR_USR_MAPG
+			 SET LOC_FMT_EXPR_UUID   = 'e8d210b8-a7ba-43b9-89b4-c8d35b24079b'
+		  WHERE TEN_ID = 'SONE'
+			AND LOC_FMT_TYP_CCD = 'THOUSAND'
+			AND USR_ID  = 'ADMIN'
+}[END]
+16:09:19.623 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@43e886d3][END]
+16:09:19.623 [http-nio-8080-exec-9] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@43e886d3][END]
+16:09:19.627 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:60 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+select count(*) from CXF_SETUP csdje1_0 where csdje1_0.IF_ID='EG_ENC' and csdje1_0.TEN_ID='SONE'
+}[END]
+16:09:19.689 [http-nio-8080-exec-9] DEBUG    o.s.web.servlet.DispatcherServlet [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Completed 200 OK[END]
+16:09:19.689 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter [EID:req-03fd595c-ccba-4374-a431-ba3166a38e06] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Cleared SecurityContextHolder to complete request[END]
+16:09:19.693 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:63 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+select rdje1_0.TEN_ID,rdje1_0.ATTR_ID from RESTFUL_ATTR rdje1_0 where rdje1_0.TEN_ID='SONE' and rdje1_0.IF_ID='EG_ENC' fetch first '1' rows only
+}[END]
+16:09:19.741 [getThreadPoolExecutorFactoryBean-1] INFO  s.log.core.SLF4JQueryLoggingListener [EID:] [SS-ID:] [USER-ID:] - Tenancy:SONE/null Datasource:default Time:49 [QET:NORMAL] Num:1 Batch:False/0 SqlId:null Query:{
+select ual1_0.TEN_ID,ual1_0.USR_EXEC_HISTREC_UUID,ual1_0.CALL_CLASS,ual1_0.CALL_METH,ual1_0.CO_CD,ual1_0.MENU_CD,ual1_0.MOD_DTTM,ual1_0.MODR_ID,ual1_0.REG_DTTM,ual1_0.REGR_ID,ual1_0.REQ_CMPLD_DTTM,ual1_0.REQ_ST_DTTM,ual1_0.REQR_IP,ual1_0.RMK,ual1_0.STS,ual1_0.USR_ID,ual1_0.USR_TYP_CCD from USR_EXEC_HISTREC ual1_0 where (ual1_0.TEN_ID,ual1_0.USR_EXEC_HISTREC_UUID) in (('SONE','03fd595c-ccba-4374-a431-ba3166a38e06'))
+}[END]
+16:09:19.742 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:46 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+select rdje1_0.ATTR_ID,rdje1_0.TEN_ID,rdje1_0.ATTR_ADDR_DTL,rdje1_0.ATTR_DAT,rdje1_0.ATTR_REQ_METH,rdje1_0.IF_ID,rdje1_0.MOD_DTTM,rdje1_0.MODR_ID,rdje1_0.REG_DTTM,rdje1_0.REGR_ID,rdje1_0.REST_ID,rdje1_0.RMK,rdje1_0.STS from RESTFUL_ATTR rdje1_0 where rdje1_0.TEN_ID='SONE' and rdje1_0.IF_ID='EG_ENC'
+}[END]
+16:09:19.789 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:44 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+select rrdje1_0.REST_ID,rrdje1_0.TEN_ID,rrdje1_0.AUTH_SETUP_DAT,rrdje1_0.MOD_DTTM,rrdje1_0.MODR_ID,rrdje1_0.REG_DTTM,rrdje1_0.REGR_ID,rrdje1_0.REST_ADDR,rrdje1_0.REST_EXPLN,rrdje1_0.RMK,rrdje1_0.STS from RESTFUL rrdje1_0 where (rrdje1_0.REST_ID,rrdje1_0.TEN_ID) in (('EG_STAGE','SONE'))
+}[END]
+16:09:19.793 [http-nio-8080-exec-10] DEBUG   o.s.w.r.f.client.ExchangeFunctions [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - [1ecdde6] HTTP POST http://81.181.68.101:8080/apijwt/enc[END]
+16:09:19.793 [http-nio-8080-exec-10] DEBUG o.s.h.codec.json.Jackson2JsonEncoder [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - [1ecdde6] Encoding [{input=[010-1111-3434], item=S1APIDEK_DEV, type=dec}][END]
+16:09:19.794 [http-nio-8080-exec-10] INFO  s.i.r.e.r.a.WebClientLogginRequestFilter [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - {"REQUEST":{"METHOD":"POST","HEADER":[{"Authorization":["Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTMVNSTSIsImF1dGgiOiJST0xFX0EsUk9MRV9MIiwidHYiOjAsIndnIjoiQS1BLUVDMi1EQkUtQVAwMUQiLCJleHAiOjE3OTM3ODY5MjN9.FIPDkEWm88-5HgjFFJFun4cqJTr1oHg-jHj8a0IbMe4"]},{"Content-Type":["application/json"]}],"URI":"http://81.181.68.101:8080/apijwt/enc","BODY":"{\"input\":[\"010-1111-3434\"],\"item\":\"S1APIDEK_DEV\",\"type\":\"dec\"}"}}[END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG o.a.h.c.h.i.a.InternalAbstractHttpAsyncClient [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ex-0000000003 preparing request execution[END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG  o.a.h.c.h.i.async.AsyncProtocolExec [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ex-0000000003 proxy auth state: UNCHALLENGED[END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG   o.a.h.c.h.i.async.AsyncConnectExec [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ex-0000000003 acquiring connection with route {}->[http://81.181.68.101:8080][END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG o.a.h.c.h.i.a.InternalHttpAsyncClient [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ex-0000000003 acquiring endpoint (60000 MILLISECONDS)[END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG o.a.h.c.h.i.n.PoolingAsyncClientConnectionManager [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ex-0000000003 endpoint lease request (60000 MILLISECONDS) [route: {}->[http://81.181.68.101:8080]][total available: 1; route allocated: 1 of 5; total allocated: 1 of 25][END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG o.a.h.c.h.i.n.PoolingAsyncClientConnectionManager [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ex-0000000003 endpoint leased [route: {}->[http://81.181.68.101:8080]][total available: 0; route allocated: 1 of 5; total allocated: 1 of 25][END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG o.a.h.c.h.i.n.PoolingAsyncClientConnectionManager [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ex-0000000003 acquired ep-0000000003[END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG o.a.h.c.h.i.a.InternalHttpAsyncClient [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ex-0000000003 acquired endpoint ep-0000000003[END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG o.a.h.c.h.i.a.HttpAsyncMainClientExec [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ex-0000000003 executing POST /apijwt/enc[END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG o.a.h.c.h.i.a.InternalHttpAsyncClient [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ep-0000000003 start execution ex-0000000003[END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG o.a.h.c.h.i.n.PoolingAsyncClientConnectionManager [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ep-0000000003 executing exchange ex-0000000003 over c-0000000000[END]
+16:09:19.794 [http-nio-8080-exec-10] DEBUG o.a.h.c.h.i.n.DefaultManagedAsyncClientConnection [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - c-0000000000 RequestExecutionCommand with NORMAL priority[END]
+16:09:19.795 [http-nio-8080-exec-10] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - c-0000000000[ACTIVE][rw:r] Enqueued RequestExecutionCommand with priority IMMEDIATE[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:w] Event cleared [w][END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG o.a.h.c.h.protocol.RequestAddCookies [EID:] [SS-ID:] [USER-ID:] - ex-0000000003 Cookie spec selected: strict[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.HttpAsyncMainClientExec [EID:] [SS-ID:] [USER-ID:] - ex-0000000003 send request POST /apijwt/enc, entity len 62[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 >> POST /apijwt/enc HTTP/1.1[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 >> Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTMVNSTSIsImF1dGgiOiJST0xFX0EsUk9MRV9MIiwidHYiOjAsIndnIjoiQS1BLUVDMi1EQkUtQVAwMUQiLCJleHAiOjE3OTM3ODY5MjN9.FIPDkEWm88-5HgjFFJFun4cqJTr1oHg-jHj8a0IbMe4[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 >> Content-Type: application/json[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 >> Accept: */*[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 >> Host: 81.181.68.101:8080[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 >> Content-Length: 62[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 >> Connection: keep-alive[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 >> User-Agent: Apache-HttpAsyncClient/5.4.3 (Java/17.0.12)[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] Event set [w][END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.HttpAsyncMainClientExec [EID:] [SS-ID:] [USER-ID:] - ex-0000000003: produce request data[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] Event set [w][END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] Event set [w][END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.HttpAsyncMainClientExec [EID:] [SS-ID:] [USER-ID:] - ex-0000000003: produce request data, len 62 bytes[END]
+16:09:19.795 [httpclient-dispatch-1] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] Event set [w][END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] 468 bytes written[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> POST /apijwt/enc  50 4f 53 54 20 2f 61 70 69 6a 77 74 2f 65 6e 63[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >>  HTTP/1.1  Autho  20 48 54 54 50 2f 31 2e 31 0d 0a 41 75 74 68 6f[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> rization: Bearer  72 69 7a 61 74 69 6f 6e 3a 20 42 65 61 72 65 72[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >>  eyJhbGciOiJIUzI  20 65 79 4a 68 62 47 63 69 4f 69 4a 49 55 7a 49[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> 1NiJ9.eyJzdWIiOi  31 4e 69 4a 39 2e 65 79 4a 7a 64 57 49 69 4f 69[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> JTMVNSTSIsImF1dG  4a 54 4d 56 4e 53 54 53 49 73 49 6d 46 31 64 47[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> giOiJST0xFX0EsUk  67 69 4f 69 4a 53 54 30 78 46 58 30 45 73 55 6b[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> 9MRV9MIiwidHYiOj  39 4d 52 56 39 4d 49 69 77 69 64 48 59 69 4f 6a[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> AsIndnIjoiQS1BLU  41 73 49 6e 64 6e 49 6a 6f 69 51 53 31 42 4c 55[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> VDMi1EQkUtQVAwMU  56 44 4d 69 31 45 51 6b 55 74 51 56 41 77 4d 55[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> QiLCJleHAiOjE3OT  51 69 4c 43 4a 6c 65 48 41 69 4f 6a 45 33 4f 54[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> M3ODY5MjN9.FIPDk  4d 33 4f 44 59 35 4d 6a 4e 39 2e 46 49 50 44 6b[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> EWm88-5HgjFFJFun  45 57 6d 38 38 2d 35 48 67 6a 46 46 4a 46 75 6e[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> 4cqJTr1oHg-jHj8a  34 63 71 4a 54 72 31 6f 48 67 2d 6a 48 6a 38 61[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> 0IbMe4  Content-  30 49 62 4d 65 34 0d 0a 43 6f 6e 74 65 6e 74 2d[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> Type: applicatio  54 79 70 65 3a 20 61 70 70 6c 69 63 61 74 69 6f[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> n/json  Accept:   6e 2f 6a 73 6f 6e 0d 0a 41 63 63 65 70 74 3a 20[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> */*  Host: 81.18  2a 2f 2a 0d 0a 48 6f 73 74 3a 20 38 31 2e 31 38[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> 1.68.101:8080  C  31 2e 36 38 2e 31 30 31 3a 38 30 38 30 0d 0a 43[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> ontent-Length: 6  6f 6e 74 65 6e 74 2d 4c 65 6e 67 74 68 3a 20 36[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> 2  Connection: k  32 0d 0a 43 6f 6e 6e 65 63 74 69 6f 6e 3a 20 6b[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> eep-alive  User-  65 65 70 2d 61 6c 69 76 65 0d 0a 55 73 65 72 2d[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> Agent: Apache-Ht  41 67 65 6e 74 3a 20 41 70 61 63 68 65 2d 48 74[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> tpAsyncClient/5.  74 70 41 73 79 6e 63 43 6c 69 65 6e 74 2f 35 2e[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> 4.3 (Java/17.0.1  34 2e 33 20 28 4a 61 76 61 2f 31 37 2e 30 2e 31[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> 2)    {"input":[  32 29 0d 0a 0d 0a 7b 22 69 6e 70 75 74 22 3a 5b[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> "010-1111-3434"]  22 30 31 30 2d 31 31 31 31 2d 33 34 33 34 22 5d[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> ,"item":"S1APIDE  2c 22 69 74 65 6d 22 3a 22 53 31 41 50 49 44 45[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> K_DEV","type":"d  4b 5f 44 45 56 22 2c 22 74 79 70 65 22 3a 22 64[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] >> ec"}              65 63 22 7d[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.HttpAsyncMainClientExec [EID:] [SS-ID:] [USER-ID:] - ex-0000000003: produce request data[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.HttpAsyncMainClientExec [EID:] [SS-ID:] [USER-ID:] - ex-0000000003: end of request data[END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][rw:w] Event set [w][END]
+16:09:19.797 [httpclient-dispatch-1] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:w] Event cleared [w][END]
+16:09:19.828 [getThreadPoolExecutorFactoryBean-1] INFO  s.log.core.SLF4JQueryLoggingListener [EID:] [SS-ID:] [USER-ID:] - Tenancy:SONE/null Datasource:default Time:39 [QET:NORMAL] Num:1 Batch:False/0 SqlId:null Query:{
+insert into USR_EXEC_HISTREC (CALL_CLASS,CALL_METH,CO_CD,MENU_CD,REG_DTTM,REGR_ID,REQ_CMPLD_DTTM,REQ_ST_DTTM,REQR_IP,RMK,STS,USR_ID,USR_TYP_CCD,TEN_ID,USR_EXEC_HISTREC_UUID) values ('smartsuite.app.common.shared.FormatterController','saveCurrentUserFormatter','Y1A0','HOME','2026-11-04 16:09:19.69','anonymous','2026-11-04 16:09:19.689','2026-11-04 16:09:18.987','127.0.0.1','NULL(VARCHAR)','C','ADMIN','BUYER','SONE','03fd595c-ccba-4374-a431-ba3166a38e06')
+}[END]
+16:09:19.842 [httpclient-dispatch-1] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] 445 bytes read[END]
+16:09:19.842 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << HTTP/1.1 200   V  48 54 54 50 2f 31 2e 31 20 32 30 30 20 0d 0a 56[END]
+16:09:19.842 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << ary: Origin  Var  61 72 79 3a 20 4f 72 69 67 69 6e 0d 0a 56 61 72[END]
+16:09:19.842 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << y: Access-Contro  79 3a 20 41 63 63 65 73 73 2d 43 6f 6e 74 72 6f[END]
+16:09:19.842 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << l-Request-Method  6c 2d 52 65 71 75 65 73 74 2d 4d 65 74 68 6f 64[END]
+16:09:19.842 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] <<   Vary: Access-C  0d 0a 56 61 72 79 3a 20 41 63 63 65 73 73 2d 43[END]
+16:09:19.842 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << ontrol-Request-H  6f 6e 74 72 6f 6c 2d 52 65 71 75 65 73 74 2d 48[END]
+16:09:19.842 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << eaders  X-Conten  65 61 64 65 72 73 0d 0a 58 2d 43 6f 6e 74 65 6e[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << t-Type-Options:   74 2d 54 79 70 65 2d 4f 70 74 69 6f 6e 73 3a 20[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << nosniff  X-XSS-P  6e 6f 73 6e 69 66 66 0d 0a 58 2d 58 53 53 2d 50[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << rotection: 0  Ca  72 6f 74 65 63 74 69 6f 6e 3a 20 30 0d 0a 43 61[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << che-Control: no-  63 68 65 2d 43 6f 6e 74 72 6f 6c 3a 20 6e 6f 2d[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << cache, no-store,  63 61 63 68 65 2c 20 6e 6f 2d 73 74 6f 72 65 2c[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] <<  max-age=0, must  20 6d 61 78 2d 61 67 65 3d 30 2c 20 6d 75 73 74[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << -revalidate  Pra  2d 72 65 76 61 6c 69 64 61 74 65 0d 0a 50 72 61[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << gma: no-cache  E  67 6d 61 3a 20 6e 6f 2d 63 61 63 68 65 0d 0a 45[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << xpires: 0  X-Fra  78 70 69 72 65 73 3a 20 30 0d 0a 58 2d 46 72 61[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << me-Options: DENY  6d 65 2d 4f 70 74 69 6f 6e 73 3a 20 44 45 4e 59[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] <<   Content-Type:   0d 0a 43 6f 6e 74 65 6e 74 2d 54 79 70 65 3a 20[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << application/json  61 70 70 6c 69 63 61 74 69 6f 6e 2f 6a 73 6f 6e[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] <<   Content-Length  0d 0a 43 6f 6e 74 65 6e 74 2d 4c 65 6e 67 74 68[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << : 32  Date: Wed,  3a 20 33 32 0d 0a 44 61 74 65 3a 20 57 65 64 2c[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] <<  04 Nov 2026 07:  20 30 34 20 4e 6f 76 20 32 30 32 36 20 30 37 3a[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << 09:19 GMT  Keep-  30 39 3a 31 39 20 47 4d 54 0d 0a 4b 65 65 70 2d[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << Alive: timeout=2  41 6c 69 76 65 3a 20 74 69 6d 65 6f 75 74 3d 32[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << 0  Connection: k  30 0d 0a 43 6f 6e 6e 65 63 74 69 6f 6e 3a 20 6b[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << eep-alive    {"r  65 65 70 2d 61 6c 69 76 65 0d 0a 0d 0a 7b 22 72[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << esult":false,"va  65 73 75 6c 74 22 3a 66 61 6c 73 65 2c 22 76 61[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG      org.apache.hc.client5.http.wire [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] << lue":"20014"}     6c 75 65 22 3a 22 32 30 30 31 34 22 7d[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << HTTP/1.1 200 [END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Vary: Origin[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Vary: Access-Control-Request-Method[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Vary: Access-Control-Request-Headers[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << X-Content-Type-Options: nosniff[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << X-XSS-Protection: 0[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Cache-Control: no-cache, no-store, max-age=0, must-revalidate[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Pragma: no-cache[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Expires: 0[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << X-Frame-Options: DENY[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Content-Type: application/json[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Content-Length: 32[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Date: Wed, 04 Nov 2026 07:09:19 GMT[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Keep-Alive: timeout=20[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG   org.apache.hc.client5.http.headers [EID:] [SS-ID:] [USER-ID:] - c-0000000000 << Connection: keep-alive[END]
+16:09:19.843 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.HttpAsyncMainClientExec [EID:] [SS-ID:] [USER-ID:] - ex-0000000003: consume response 200, entity len 32[END]
+16:09:19.844 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.AsyncHttpRequestRetryExec [EID:] [SS-ID:] [USER-ID:] - ex-0000000003 cannot retry non-repeatable request[END]
+16:09:19.844 [httpclient-dispatch-1] DEBUG   o.s.w.r.f.client.ExchangeFunctions [EID:] [SS-ID:] [USER-ID:] - [1ecdde6] [1dfa9b8a] Response 200 OK[END]
+16:09:19.844 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.HttpAsyncMainClientExec [EID:] [SS-ID:] [USER-ID:] - ex-0000000003: consume response data, len 32 bytes[END]
+16:09:19.844 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.HttpAsyncMainClientExec [EID:] [SS-ID:] [USER-ID:] - ex-0000000003: end of response data[END]
+16:09:19.844 [httpclient-dispatch-1] DEBUG         o.s.core.codec.StringDecoder [EID:] [SS-ID:] [USER-ID:] - [1ecdde6] [1dfa9b8a] Decoded "{"result":false,"value":"20014"}"[END]
+16:09:19.846 [httpclient-dispatch-1] INFO  s.i.r.e.r.a.WebClientLoggingResponseFilter [EID:] [SS-ID:] [USER-ID:] - {"RESPONSE":{"STATUS CODE":"OK","HEADER":[{"Vary":["Origin","Access-Control-Request-Method","Access-Control-Request-Headers"]},{"X-Content-Type-Options":["nosniff"]},{"X-XSS-Protection":["0"]},{"Cache-Control":["no-cache, no-store, max-age=0, must-revalidate"]},{"Pragma":["no-cache"]},{"Expires":["0"]},{"X-Frame-Options":["DENY"]},{"Content-Type":["application/json"]},{"Content-Length":["32"]},{"Date":["Wed, 04 Nov 2026 07:09:19 GMT"]},{"Keep-Alive":["timeout=20"]},{"Connection":["keep-alive"]}],"URI":"http://81.181.68.101:8080/apijwt/enc","BODY":"{\"result\":false,\"value\":\"20014\"}"}}[END]
+16:09:19.846 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.InternalAbstractHttpAsyncClient [EID:] [SS-ID:] [USER-ID:] - ex-0000000003 message exchange successfully completed[END]
+16:09:19.846 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.InternalHttpAsyncClient [EID:] [SS-ID:] [USER-ID:] - ep-0000000003 releasing valid endpoint[END]
+16:09:19.846 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.n.PoolingAsyncClientConnectionManager [EID:] [SS-ID:] [USER-ID:] - ep-0000000003 releasing endpoint[END]
+16:09:19.847 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.n.PoolingAsyncClientConnectionManager [EID:] [SS-ID:] [USER-ID:] - ep-0000000003 connection c-0000000000 can be kept alive for 20 SECONDS[END]
+16:09:19.847 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.n.PoolingAsyncClientConnectionManager [EID:] [SS-ID:] [USER-ID:] - ep-0000000003 connection released [route: {}->[http://81.181.68.101:8080]][total available: 1; route allocated: 1 of 5; total allocated: 1 of 25][END]
+16:09:19.847 [httpclient-dispatch-1] DEBUG   o.a.hc.core5.reactor.IOSessionImpl [EID:] [SS-ID:] [USER-ID:] - c-0000000000[ACTIVE][r:r] Event set [r][END]
+16:09:19.847 [httpclient-dispatch-1] DEBUG o.a.h.c.h.i.a.InternalHttpAsyncClient [EID:] [SS-ID:] [USER-ID:] - c-0000000000 Connection is kept alive[END]
+16:09:19.847 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization suspending SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2cb2c02a][END]
+16:09:19.911 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:31 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+select idje1_0.IF_ID,idje1_0.TEN_ID,idje1_0.EXEC_HISTREC_ALRM_TYP,idje1_0.HISTREC_CSTD_DCNT,idje1_0.IF_CLASS,idje1_0.IF_EXPLN,idje1_0.MOD_DTTM,idje1_0.MODR_ID,idje1_0.RCPT_CLASS,idje1_0.REG_DTTM,idje1_0.REGR_ID,idje1_0.RMK,idje1_0.SND_CLASS,idje1_0.STS,idje1_0.USE_YN from IF_SETUP idje1_0 where (idje1_0.IF_ID,idje1_0.TEN_ID) in (('EG_ENC','SONE'))
+}[END]
+16:09:19.967 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:29 [QET:NORMAL] Num:1 Batch:False/0 SqlId:user-session.findUserSessionInfo Query:{
+insert into IF_EXEC_HISTREC (CALL_CLASS,CALL_METH,EXEC_CMPLD_DTTM,EXEC_ERR_INFO,EXEC_INP_DAT,EXEC_LVL_CD,EXEC_OUTP_DAT,EXEC_ST_DTTM,EXEC_STS,IF_ID,RCPT_DAT,RCPT_ORIG_DAT,REG_DTTM,REGR_ID,RMK,SND_DAT,SND_ORIG_DAT,STS,IF_EXEC_HISTREC_UUID,TEN_ID) values ('smartsuite.app.common.shared.SharedController','saveUser','2026-11-04 16:09:19.847','NULL(LONGVARCHAR)','{"input":["010-1111-3434"],"item":"S1APIDEK_DEV","type":"dec"}','Production','{"result":false,"value":"20014"}','2026-11-04 16:09:19.251','1','EG_ENC','{"RESPONSE":{"STATUS CODE":"OK","HEADER":[{"Vary":["Origin","Access-Control-Request-Method","Access-Control-Request-Headers"]},{"X-Content-Type-Options":["nosniff"]},{"X-XSS-Protection":["0"]},{"Cache-Control":["no-cache, no-store, max-age=0, must-revalidate"]},{"Pragma":["no-cache"]},{"Expires":["0"]},{"X-Frame-Options":["DENY"]},{"Content-Type":["application/json"]},{"Content-Length":["32"]},{"Date":["Wed, 04 Nov 2026 07:09:19 GMT"]},{"Keep-Alive":["timeout=20"]},{"Connection":["keep-alive"]}],"URI":"http://81.181.68.101:8080/apijwt/enc","BODY":"{\"result\":false,\"value\":\"20014\"}"}}','NULL(LONGVARCHAR)','2026-11-04 16:09:19.912','ADMIN','NULL(VARCHAR)','{"REQUEST":{"METHOD":"POST","HEADER":[{"Authorization":["Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTMVNSTSIsImF1dGgiOiJST0xFX0EsUk9MRV9MIiwidHYiOjAsIndnIjoiQS1BLUVDMi1EQkUtQVAwMUQiLCJleHAiOjE3OTM3ODY5MjN9.FIPDkEWm88-5HgjFFJFun4cqJTr1oHg-jHj8a0IbMe4"]},{"Content-Type":["application/json"]}],"URI":"http://81.181.68.101:8080/apijwt/enc","BODY":"{\"input\":[\"010-1111-3434\"],\"item\":\"S1APIDEK_DEV\",\"type\":\"dec\"}"}}','NULL(LONGVARCHAR)','C','efb0a511-7cd9-4044-bd84-918f692e820c','SONE')
+}[END]
+16:09:19.997 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization resuming SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2cb2c02a][END]
+16:09:19.997 [http-nio-8080-exec-10] DEBUG     s.a.a.o.service.ApiSenderService [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - 
+I/F ID : EG_ENC
+[REQ]
+HEADER: {
+  "Authorization" : "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTMVNSTSIsImF1dGgiOiJST0xFX0EsUk9MRV9MIiwidHYiOjAsIndnIjoiQS1BLUVDMi1EQkUtQVAwMUQiLCJleHAiOjE3OTM3ODY5MjN9.FIPDkEWm88-5HgjFFJFun4cqJTr1oHg-jHj8a0IbMe4",
+  "Content-Type" : "application/json"
+}
+BODY: {
+  "input" : [ "010-1111-3434" ],
+  "item" : "S1APIDEK_DEV",
+  "type" : "dec"
+}
+[RES]
+HEADER: [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY", Content-Type:"application/json", Content-Length:"32", Date:"Wed, 04 Nov 2026 07:09:19 GMT", Keep-Alive:"timeout=20", Connection:"keep-alive"]
+BODY: {
+  "result" : false,
+  "value" : "20014"
+}[END]
+16:09:19.997 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2cb2c02a] from current transaction[END]
+16:09:19.997 [http-nio-8080-exec-10] DEBUG            apiSender.insertIfHistory [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: /* apiSender.insertIfHistory : 인터페이스 이력 등록 */ INSERT INTO IF_HISTREC ( TEN_ID , IF_HISTREC_UUID , IF_ID , EXEC_ST_DTTM , EXEC_END_DTTM , EXEC_TM , SND_DAT , RCPT_DAT , RES_CODE , RES_MESSAGE , SND_RCPT_TYPE , IP_ADDRESS , REGR_ID , REG_DTTM ) VALUES ( ? , randomuuid() , ? , TO_TIMESTAMP(?,'YYYYMMDDHH24MISSMS') , TO_TIMESTAMP(?,'YYYYMMDDHH24MISSMS') , ? , ? , ? , ? , ? , ? , ? , COALESCE(?, 'EAI_USER') , ? )[END]
+16:09:19.998 [http-nio-8080-exec-10] DEBUG            apiSender.insertIfHistory [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: SONE(String), EG_ENC(String), 20261104160919251(String), 20261104160919997(String), 0.746(Double), {"input":["010-1111-3434"],"item":"S1APIDEK_DEV","type":"dec"}(String), {"result":false,"value":"20014"}(String), E(String), 20014(String), S(String), 127.0.0.1(String), ADMIN(String), 2026-11-04 16:09:19.998(Timestamp)[END]
+16:09:19.998 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2cb2c02a][END]
+16:09:20.002 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2cb2c02a][END]
+16:09:20.002 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2cb2c02a][END]
+16:09:20.002 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2cb2c02a][END]
+16:09:20.029 [http-nio-8080-exec-10] ERROR        s.e.SpringWebExceptionHandler [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - 
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)[END]
+org.mybatis.spring.MyBatisSystemException: 
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:99)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:347)
+	at jdk.proxy3/jdk.proxy3.$Proxy142.selectOne(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:154)
+	at smartsuite.security.account.repository.UserSessionRepository.findUserSessionInfo(UserSessionRepository.java:26)
+	at smartsuite.security.account.service.AccountService.findUserSessionInfo(AccountService.java:181)
+	at smartsuite.security.authentication.AuthenticationPostService.authenticationUpdate(AuthenticationPostService.java:137)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+	at smartsuite.security.authentication.AuthenticationPostService$$SpringCGLIB$$0.authenticationUpdate(<generated>)
+	at smartsuite.app.common.shared.service.SharedService.saveUser(SharedService.java:948)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+	at smartsuite.app.common.shared.service.SharedService$$SpringCGLIB$$0.saveUser(<generated>)
+	at smartsuite.app.common.shared.SharedController.saveUser(SharedController.java:1154)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor.invoke(MethodSecurityInterceptor.java:67)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+	at smartsuite.app.common.shared.SharedController$$SpringCGLIB$$0.saveUser(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.spring.web.session.SessionInvalidateFilter.doFilter(SessionInvalidateFilter.java:55)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.www.BasicAuthenticationFilter.doFilterInternal(BasicAuthenticationFilter.java:181)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.spring.web.session.ConcurrentSessionFilter.doFilter(ConcurrentSessionFilter.java:66)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.csrf.CsrfFilter.doFilterInternal(CsrfFilter.java:134)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.web.filter.advanced.XssRequestFilter.doFilter(XssRequestFilter.java:60)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:117)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:87)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.web.filter.DecryptRequestFilter.doFilter(DecryptRequestFilter.java:46)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.spring.tenancy.web.filter.DefaultTenancyFilter.doFilter(DefaultTenancyFilter.java:95)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at smartsuite.log.spring.executelog.ExecutionLoggingFilter.doFilter(ExecutionLoggingFilter.java:38)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:654)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1775)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.ibatis.exceptions.PersistenceException: 
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+	at org.apache.ibatis.exceptions.ExceptionFactory.wrapException(ExceptionFactory.java:30)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:156)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:147)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:142)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:75)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:333)
+	... 171 common frames omitted
+Caused by: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+	at smartsuite.mybatis.EgCryptoClient.run(EgCryptoClient.java:55)
+	at smartsuite.mybatis.EgCryptoClient.decrypt(EgCryptoClient.java:33)
+	at smartsuite.mybatis.CryptoInterceptor.convert(CryptoInterceptor.java:196)
+	at smartsuite.mybatis.CryptoInterceptor.decryptRows(CryptoInterceptor.java:181)
+	at smartsuite.mybatis.CryptoInterceptor.intercept(CryptoInterceptor.java:78)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor143.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:61)
+	at smartsuite.mybatis.plugin.page.interceptor.PageInterceptor.intercept(PageInterceptor.java:103)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor143.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:61)
+	at smartsuite.mybatis.plugin.parameter.interceptor.ParameterInjectInterceptor.intercept(ParameterInjectInterceptor.java:61)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor143.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:61)
+	at smartsuite.mybatis.SqlIdLoggingInterceptor.intercept(SqlIdLoggingInterceptor.java:44)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:154)
+	... 179 common frames omitted
+Caused by: java.lang.Exception: EG 암복호화 오류 발생 : 20014
+	at smartsuite.app.crypto.EgCryptoService.call(EgCryptoService.java:63)
+	at smartsuite.app.crypto.EgCryptoService.dec(EgCryptoService.java:46)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:724)
+	at smartsuite.app.crypto.EgCryptoService$$SpringCGLIB$$0.dec(<generated>)
+	at smartsuite.mybatis.EgCryptoClient.run(EgCryptoClient.java:43)
+	... 207 common frames omitted
+16:09:20.040 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Creating a new SqlSession[END]
+16:09:20.040 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4b5d585b][END]
+16:09:20.041 [http-nio-8080-exec-10] DEBUG     o.m.s.t.SpringManagedTransaction [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - JDBC Connection [Lazy Connection proxy for target DataSource [net.ttddyy.dsproxy.support.ProxyDataSource@3ffbfe35]] will be managed by Spring[END]
+16:09:20.042 [http-nio-8080-exec-10] DEBUG                error.insertErrorInfo [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==>  Preparing: INSERT INTO ERR_LOG ( TEN_ID, USR_ID, ERR_UUID, EXEC_UUID, SESS_ID, ERR_OCCR_TYP, ERR_OCCR_SRC_PATH, ERR_COL_NO, ERR_LN_NO, SYS_ERR_MSG, USR_ERR_MSG, STK_TRCE_CONT, IMG_ATH_UUID, ERR_OCCR_DTTM, CLASS_NM, METH_NM, USR_EXEC_HISTREC, USR_WEBBR_KIND, MENU_CD, SVR_IP, REG_DTTM ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )[END]
+16:09:20.044 [http-nio-8080-exec-10] DEBUG                error.insertErrorInfo [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - ==> Parameters: SONE(String), ADMIN(String), 06d46cda-4621-40f9-b189-2f602ab0d984(String), null, 10EDF25B19680788712FE41FBEC22055(String), S(String), null, null, null, 
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)(String), null, 
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)org.mybatis.spring.MyBatisSystemException: 
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:99)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:347)
+	at jdk.proxy3/jdk.proxy3.$Proxy142.selectOne(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:154)
+	at smartsuite.security.account.repository.UserSessionRepository.findUserSessionInfo(UserSessionRepository.java:26)
+	at smartsuite.security.account.service.AccountService.findUserSessionInfo(AccountService.java:181)
+	at smartsuite.security.authentication.AuthenticationPostService.authenticationUpdate(AuthenticationPostService.java:137)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+	at smartsuite.security.authentication.AuthenticationPostService$$SpringCGLIB$$0.authenticationUpdate(<generated>)
+	at smartsuite.app.common.shared.service.SharedService.saveUser(SharedService.java:948)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+	at smartsuite.app.common.shared.service.SharedService$$SpringCGLIB$$0.saveUser(<generated>)
+	at smartsuite.app.common.shared.SharedController.saveUser(SharedController.java:1154)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor.invoke(MethodSecurityInterceptor.java:67)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+	at smartsuite.app.common.shared.SharedController$$SpringCGLIB$$0.saveUser(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.spring.web.session.SessionInvalidateFilter.doFilter(SessionInvalidateFilter.java:55)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.www.BasicAuthenticationFilter.doFilterInternal(BasicAuthenticationFilter.java:181)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.spring.web.session.ConcurrentSessionFilter.doFilter(ConcurrentSessionFilter.java:66)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.csrf.CsrfFilter.doFilterInternal(CsrfFilter.java:134)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.web.filter.advanced.XssRequestFilter.doFilter(XssRequestFilter.java:60)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:117)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:87)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.web.filter.DecryptRequestFilter.doFilter(DecryptRequestFilter.java:46)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.spring.tenancy.web.filter.DefaultTenancyFilter.doFilter(DefaultTenancyFilter.java:95)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at smartsuite.log.spring.executelog.ExecutionLoggingFilter.doFilter(ExecutionLoggingFilter.java:38)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:654)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1775)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.ibatis.exceptions.PersistenceException: 
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+	at org.apache.ibatis.exceptions.ExceptionFactory.wrapException(ExceptionFactory.java:30)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:156)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:147)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:142)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:75)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:333)
+	... 171 more
+Caused by: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+	at smartsuite.mybatis.EgCryptoClient.run(EgCryptoClient.java:55)
+	at smartsuite.mybatis.EgCryptoClient.decrypt(EgCryptoClient.java:33)
+	at smartsuite.mybatis.CryptoInterceptor.convert(CryptoInterceptor.java:196)
+	at smartsuite.mybatis.CryptoInterceptor.decryptRows(CryptoInterceptor.java:181)
+	at smartsuite.mybatis.CryptoInterceptor.intercept(CryptoInterceptor.java:78)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor143.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:61)
+	at smartsuite.mybatis.plugin.page.interceptor.PageInterceptor.intercept(PageInterceptor.java:103)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor143.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:61)
+	at smartsuite.mybatis.plugin.parameter.interceptor.ParameterInjectInterceptor.intercept(ParameterInjectInterceptor.java:61)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor143.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:61)
+	at smartsuite.mybatis.SqlIdLoggingInterceptor.intercept(SqlIdLoggingInterceptor.java:44)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:154)
+	... 179 more
+Caused by: java.lang.Exception: EG 암복호화 오류 발생 : 20014
+	at smartsuite.app.crypto.EgCryptoService.call(EgCryptoService.java:63)
+	at smartsuite.app.crypto.EgCryptoService.dec(EgCryptoService.java:46)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:724)
+	at smartsuite.app.crypto.EgCryptoService$$SpringCGLIB$$0.dec(<generated>)
+	at smartsuite.mybatis.EgCryptoClient.run(EgCryptoClient.java:43)
+	... 207 more
+(String), null, 2026-11-04 16:09:20.038(Timestamp), smartsuite.security.account.repository.UserSessionRepository(String), findUserSessionInfo(String), null, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0(String), HOME(String), 81.2.20.21(String), 2026-11-04 16:09:20.043(Timestamp)[END]
+16:09:20.044 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4b5d585b][END]
+16:09:20.044 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4b5d585b][END]
+16:09:20.074 [http-nio-8080-exec-10] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:29 [QET:NORMAL] Num:1 Batch:True/1 SqlId:error.insertErrorInfo Query:{
+INSERT INTO ERR_LOG (
+    		TEN_ID,
+    		USR_ID,
+    		ERR_UUID,
+    		EXEC_UUID,
+    		SESS_ID,
+    		ERR_OCCR_TYP,
+    		ERR_OCCR_SRC_PATH,
+    		ERR_COL_NO,
+    		ERR_LN_NO,
+    		SYS_ERR_MSG,
+    		USR_ERR_MSG,
+    		STK_TRCE_CONT,
+    		IMG_ATH_UUID,
+    		ERR_OCCR_DTTM,
+    	    CLASS_NM,
+    		METH_NM,
+    		USR_EXEC_HISTREC,
+    		USR_WEBBR_KIND,
+    		MENU_CD,
+    		SVR_IP,
+    		REG_DTTM
+    	) VALUES (
+    		'SONE',
+    		'ADMIN',
+    		'06d46cda-4621-40f9-b189-2f602ab0d984',
+    		'NULL(NULL)',
+    		'10EDF25B19680788712FE41FBEC22055',
+    		'S',
+    		'NULL(NULL)',
+    		'NULL(NULL)',
+    		'NULL(NULL)',
+    		'
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)',
+    		'NULL(NULL)',
+    		'
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)org.mybatis.spring.MyBatisSystemException: 
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:99)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:347)
+	at jdk.proxy3/jdk.proxy3.$Proxy142.selectOne(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:154)
+	at smartsuite.security.account.repository.UserSessionRepository.findUserSessionInfo(UserSessionRepository.java:26)
+	at smartsuite.security.account.service.AccountService.findUserSessionInfo(AccountService.java:181)
+	at smartsuite.security.authentication.AuthenticationPostService.authenticationUpdate(AuthenticationPostService.java:137)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+	at smartsuite.security.authentication.AuthenticationPostService$$SpringCGLIB$$0.authenticationUpdate(<generated>)
+	at smartsuite.app.common.shared.service.SharedService.saveUser(SharedService.java:948)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+	at smartsuite.app.common.shared.service.SharedService$$SpringCGLIB$$0.saveUser(<generated>)
+	at smartsuite.app.common.shared.SharedController.saveUser(SharedController.java:1154)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor.invoke(MethodSecurityInterceptor.java:67)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
+	at smartsuite.app.common.shared.SharedController$$SpringCGLIB$$0.saveUser(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.spring.web.session.SessionInvalidateFilter.doFilter(SessionInvalidateFilter.java:55)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.www.BasicAuthenticationFilter.doFilterInternal(BasicAuthenticationFilter.java:181)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.spring.web.session.ConcurrentSessionFilter.doFilter(ConcurrentSessionFilter.java:66)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.csrf.CsrfFilter.doFilterInternal(CsrfFilter.java:134)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.web.filter.advanced.XssRequestFilter.doFilter(XssRequestFilter.java:60)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:117)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:87)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.security.web.filter.DecryptRequestFilter.doFilter(DecryptRequestFilter.java:46)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at smartsuite.spring.tenancy.web.filter.DefaultTenancyFilter.doFilter(DefaultTenancyFilter.java:95)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at smartsuite.log.spring.executelog.ExecutionLoggingFilter.doFilter(ExecutionLoggingFilter.java:38)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:654)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1775)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.ibatis.exceptions.PersistenceException: 
+### Error querying database.  Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+### Cause: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+	at org.apache.ibatis.exceptions.ExceptionFactory.wrapException(ExceptionFactory.java:30)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:156)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:147)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:142)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:75)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:333)
+	... 171 more
+Caused by: java.lang.IllegalStateException: EG 암복호화 실패(dec)
+	at smartsuite.mybatis.EgCryptoClient.run(EgCryptoClient.java:55)
+	at smartsuite.mybatis.EgCryptoClient.decrypt(EgCryptoClient.java:33)
+	at smartsuite.mybatis.CryptoInterceptor.convert(CryptoInterceptor.java:196)
+	at smartsuite.mybatis.CryptoInterceptor.decryptRows(CryptoInterceptor.java:181)
+	at smartsuite.mybatis.CryptoInterceptor.intercept(CryptoInterceptor.java:78)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor143.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:61)
+	at smartsuite.mybatis.plugin.page.interceptor.PageInterceptor.intercept(PageInterceptor.java:103)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor143.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:61)
+	at smartsuite.mybatis.plugin.parameter.interceptor.ParameterInjectInterceptor.intercept(ParameterInjectInterceptor.java:61)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor143.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:61)
+	at smartsuite.mybatis.SqlIdLoggingInterceptor.intercept(SqlIdLoggingInterceptor.java:44)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy276.query(Unknown Source)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:154)
+	... 179 more
+Caused by: java.lang.Exception: EG 암복호화 오류 발생 : 20014
+	at smartsuite.app.crypto.EgCryptoService.call(EgCryptoService.java:63)
+	at smartsuite.app.crypto.EgCryptoService.dec(EgCryptoService.java:46)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:724)
+	at smartsuite.app.crypto.EgCryptoService$$SpringCGLIB$$0.dec(<generated>)
+	at smartsuite.mybatis.EgCryptoClient.run(EgCryptoClient.java:43)
+	... 207 more
+',
+    		'NULL(NULL)',
+    		'2026-11-04 16:09:20.038',
+    		'smartsuite.security.account.repository.UserSessionRepository',
+    		'findUserSessionInfo',
+    		'NULL(NULL)',
+    		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0',
+    		'HOME',
+    		'81.2.20.21',
+    		'2026-11-04 16:09:20.043'
+    	)
+}[END]
+16:09:20.077 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4b5d585b][END]
+16:09:20.077 [http-nio-8080-exec-10] DEBUG   org.mybatis.spring.SqlSessionUtils [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4b5d585b][END]
+16:09:20.104 [http-nio-8080-exec-10] DEBUG    o.s.web.servlet.DispatcherServlet [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Completed 500 INTERNAL_SERVER_ERROR[END]
+16:09:20.104 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter [EID:req-9c8a37fc-87d7-48f1-b88d-d66f5b42d377] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Cleared SecurityContextHolder to complete request[END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG    o.s.security.web.FilterChainProxy [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Securing POST /i18n/getByKeys.do[END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/index.do'][END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sp/edoc/contract/findSignContract.do'][END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sp/edoc/contract/saveSign.do'][END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/rest/api/**'][END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sgic/recv.do'][END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/ssoLoginProcess.do'][END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/mobileLogin.do'][END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/eformSignLogin.do'][END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/eformSignPwLogin.do'][END]
+16:09:21.134 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/eformSignPwLoginProcess.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/findSignTargetInfoFormerNByMail.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/rejectSignDocumentByMail.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/sendNextSignTargetByMail.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/findCompanyStampListByMail.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/findUserStampListByMail.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/bp/edoc/eform/notUser/createTextSignaturesByMail.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/oauth2/**'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/api/**'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/openCertSelectionPage.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/newVendor.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/supplierAuthNumberVerifyProcess.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/openAuthSignPopup.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/sone/api/**'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Trying to match using Ant [pattern='/completeIntegriAuth.do'][END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG  s.s.s.w.u.m.NegatedOrRequestMatcher [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - No matches found[END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG    o.s.security.web.FilterChainProxy [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Secured POST /i18n/getByKeys.do[END]
+16:09:21.135 [http-nio-8080-exec-6] DEBUG    o.s.web.servlet.DispatcherServlet [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - POST "/i18n/getByKeys.do", parameters={}[END]
+16:09:21.188 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Retrieved SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=smartsuite.security.userdetails.User@e0e7123, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[A100, A200, ROLE_CURRENT_USER]]][END]
+16:09:21.188 [http-nio-8080-exec-6] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:24 [QET:NORMAL] Num:1 Batch:False/0 SqlId:shared.findListCommonCodeAttributeCode Query:{
+select ml1_0.MULTLANG_CCD,ml1_0.MULTLANG_KEY,ml1_0.MULTLANG_TYP,ml1_0.TEN_ID,ml1_0.MOD_DTTM,ml1_0.MODR_ID,ml1_0.MULTLANG_ABBR_USE_YN,ml1_0.MULTLANG_MOD_DTTM,ml1_0.MULTLANG_TRANSL_CONT,ml1_0.MULTLANG_TRANSL_CONT_ABBR,ml1_0.MULTLANG_TRANSL_FNL_CONT,ml1_0.REG_DTTM,ml1_0.REGR_ID,ml1_0.RMK,ml1_0.STS from MULTLANG ml1_0 where (ml1_0.MULTLANG_CCD,ml1_0.MULTLANG_KEY,ml1_0.MULTLANG_TYP,ml1_0.TEN_ID) in (('ko_KR','닫기','label','SONE'))
+}[END]
+16:09:21.275 [http-nio-8080-exec-6] INFO  s.log.core.SLF4JQueryLoggingListener [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Tenancy:SONE/Y1A0 Datasource:default Time:65 [QET:NORMAL] Num:1 Batch:False/0 SqlId:shared.findListCommonCodeAttributeCode Query:{
+select mlc1_0.ELEMT_NM,mlc1_0.MENU_CD,mlc1_0.MODL_NM,mlc1_0.MULTLANG_CCD,mlc1_0.MULTLANG_KEY,mlc1_0.TEN_ID,mlc1_0.MOD_DTTM,mlc1_0.MODR_ID,mlc1_0.MULTLANG_MOD_DTTM,mlc1_0.MULTLANG_TRANSL_CONT,mlc1_0.REG_DTTM,mlc1_0.REGR_ID,mlc1_0.RMK,mlc1_0.STS from MULTLANG_COLL mlc1_0 where mlc1_0.TEN_ID='SONE' and mlc1_0.MULTLANG_CCD='ko_KR' and mlc1_0.MULTLANG_KEY='닫기'
+}[END]
+16:09:21.302 [http-nio-8080-exec-6] DEBUG    o.s.web.servlet.DispatcherServlet [EID:req-65323e73-84eb-4237-ac9f-ee3873ba6683] [SS-ID:10EDF25B19680788712FE41FBEC22055] [USER-ID:ADMIN] - Completed 200 OK[END]
+16:09:21.350 [getThreadPoolExecutorFactoryBean-1] INFO  s.log.core.SLF4JQueryLoggingListener [EID:] [SS-ID:] [USER-ID:] - Tenancy:SONE/null Datasource:default Time:23 [QET:NORMAL] Num:1 Batch:False/0 SqlId:null Query:{
+select ual1_0.TEN_ID,ual1_0.USR_EXEC_HISTREC_UUID,ual1_0.CALL_CLASS,ual1_0.CALL_METH,ual1_0.CO_CD,ual1_0.MENU_CD,ual1_0.MOD_DTTM,ual1_0.MODR_ID,ual1_0.REG_DTTM,ual1_0.REGR_ID,ual1_0.REQ_CMPLD_DTTM,ual1_0.REQ_ST_DTTM,ual1_0.REQR_IP,ual1_0.RMK,ual1_0.STS,ual1_0.USR_ID,ual1_0.USR_TYP_CCD from USR_EXEC_HISTREC ual1_0 where (ual1_0.TEN_ID,ual1_0.USR_EXEC_HISTREC_UUID) in (('SONE','65323e73-84eb-4237-ac9f-ee3873ba6683'))
+}[END]
+16:09:21.401 [getThreadPoolExecutorFactoryBean-1] INFO  s.log.core.SLF4JQueryLoggingListener [EID:] [SS-ID:] [USER-ID:] - Tenancy:SONE/null Datasource:default Time:24 [QET:NORMAL] Num:1 Batch:False/0 SqlId:null Query:{
+insert into USR_EXEC_HISTREC (CALL_CLASS,CALL_METH,CO_CD,MENU_CD,REG_DTTM,REGR_ID,REQ_CMPLD_DTTM,REQ_ST_DTTM,REQR_IP,RMK,STS,USR_ID,USR_TYP_CCD,TEN_ID,USR_EXEC_HISTREC_UUID) values ('smartsuite.messagesource.web.MessageSourceController','getByKeys','Y1A0','NULL(VARCHAR)','2026-11-04 16:09:21.302','anonymous','2026-11-04 16:09:21.301','2026-11-04 16:09:21.137','127.0.0.1','NULL(VARCHAR)','C','ADMIN','BUYER','SONE','65323e73-84eb-4237-ac9f-ee3873ba6683')
+}[END]
