@@ -1,41 +1,50 @@
-<insert id="mergeModelOorgBatch" parameterType="map">
-	  MERGE INTO item_oorg A
-	  USING (
-	    SELECT i.item_cd
-	      FROM item i
-	     WHERE i.ten_id = #{g.tenant}
-	       AND i.md_pt_cls = 'M'
-	       AND TO_CHAR(REG_DTTM, 'YYYYMMDD') BETWEEN #{p.from_dt} AND #{p.to_dt}
-	  ) B
-	  ON (A.ten_id = #{g.tenant}
-	      AND A.oorg_cd = 'IOY1AO'
-	      AND A.item_cd = B.item_cd)
-	  WHEN MATCHED THEN
-	  	UPDATE SET
-	    	 modr_id            = 'MDZ'
-	        ,mod_dttm           = #{g.now}
-	  WHEN NOT MATCHED THEN
-	    INSERT (ten_id, oorg_cd, item_cd, item_ldtm, regr_id)
-	    VALUES (#{g.tenant}, 'IOY1AO', B.item_cd, 0, 'MDZ')
-	</insert>
+private static final int PAGE_SIZE = 1000; 
 
-<insert id="mergeEquipOorgBatch" parameterType="map">
-	  MERGE INTO item_oorg A
-	  USING (
-	    SELECT i.item_cd
-	      FROM item i
-	     WHERE i.ten_id = #{g.tenant}
-	       AND i.md_pt_cls = 'E'
-	       AND TO_CHAR(REG_DTTM, 'YYYYMMDD') BETWEEN #{p.from_dt} AND #{p.to_dt}
-	  ) B
-	  ON (A.ten_id = #{g.tenant}
-	      AND A.oorg_cd = 'IOY1AO'
-	      AND A.item_cd = B.item_cd)
-	  WHEN MATCHED THEN
-	  	UPDATE SET
-	    	 modr_id            = 'MDZ'
-	        ,mod_dttm           = #{g.now}
-	  WHEN NOT MATCHED THEN
-	    INSERT (ten_id, oorg_cd, item_cd, item_ldtm, regr_id)
-	    VALUES (#{g.tenant}, 'IOY1AO', B.item_cd, 0, 'MDZ')
-	</insert>
+	public void callMatl(Map<String, Object> param) { 
+	    String lastKey = null;
+	    while (true) {
+	        Map<String, Object> q = new HashMap<>(param);
+	        q.put("pageSize", PAGE_SIZE);
+	        q.put("lastKey", lastKey);
+
+	        String nextKey = apiSapmdModelRepository.selectMatlPageLastKey(q);
+	        if (nextKey == null) break;
+
+	        txTemplate.executeWithoutResult(s -> {      // TransactionTemplate 주입
+	            apiSapmdModelRepository.mergeModelVdNameBatch(q);
+	            apiSapmdModelRepository.mergeModelBatch(q);
+	            
+	        });
+	        lastKey = nextKey;
+	    }
+	    txTemplate.executeWithoutResult(s -> {
+	    	apiSapmdModelRepository.mergeModelOorgBatch(param);
+	    });
+	}
+
+
+ private static final int PAGE_SIZE = 1000;
+
+    public void callEquip(Map<String, Object> param) {
+        String lastKey = null;
+        while (true) {
+            Map<String, Object> q = new HashMap<>(param);
+            q.put("pageSize", PAGE_SIZE);
+            q.put("lastKey", lastKey);
+
+            String nextKey = apiSapmdEquipRepository.selectEquipPageLastKey(q);
+            if (nextKey == null) break;
+
+            mergeEquipPage(q);
+            lastKey = nextKey;
+        }
+        
+        txTemplate.executeWithoutResult(s -> {
+        	apiSapmdEquipRepository.mergeEquipOorgBatch(param);
+	    });
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void mergeEquipPage(Map<String, Object> q) {
+    	apiSapmdEquipRepository.mergeEquipBatch(q);
+    }
