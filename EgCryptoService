@@ -1,76 +1,59 @@
-package smartsuite.app.crypto;
+package smartsuite.mybatis;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import smartsuite.app.crypto.EgCryptoService;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+/**
+ * 기존 EgCryptoService를 CryptoClient로 감싸는 어댑터.
+ *
+ * - enc(String)/dec(String)은 내부에서 콤마(,)로 split 하므로 값에 콤마가 있으면 깨진다.
+ *   그래서 반드시 List 버전(enc(List)/dec(List))만 사용한다.
+ * - EgCryptoService가 던지는 checked Exception은 런타임 예외로 감싼다
+ *   (암복호화 실패 시 평문이 저장/반환되지 않도록 반드시 예외 전파).
+ */
+public class EgCryptoClient implements CryptoClient {
 
-import smartsuite.app.api.outbound.service.ApiSenderService;
+    private static final int CHUNK = 500;   // TODO: EG 1회 호출 허용 건수에 맞게 조정
 
-@Service
-public class EgCryptoService {
+    private final EgCryptoService eg;
 
-	static final Logger LOG = LoggerFactory.getLogger(EgCryptoService.class);
-	
-	@Value("#{apiProperties['eg.item']}")
-	private String egItem;
-	
-	
-	@Autowired
-	private ApiSenderService apiSenderService;
-	
-	@Autowired
-	ObjectMapper objectMapper;
+    public EgCryptoClient(EgCryptoService eg) {
+        this.eg = eg;
+    }
 
-	public List<String> enc(String plain) throws Exception {
-		return this.call(Arrays.asList(plain.split(",")), "enc");
-	}
-	
-	public List<String> enc(List<String> plainArr) throws Exception {
-		return this.call(plainArr, "enc");
-	}
-	
-	public List<String> dec(String enc) throws Exception {
-		return this.call(Arrays.asList(enc.split(",")), "dec");
-	}
-	
-	public List<String> dec(List<String> encArr) throws Exception {
-		return this.call(encArr, "dec");
-	}
-	
-	public List<String> call(List<String> paramList, String type) throws Exception {
-		Map<String, Object> result = new HashMap<String, Object>();
-		Map<String, Object> param = new HashMap<String, Object>();
-		
-		param.put("item", egItem);
-		param.put("type", type.toLowerCase());
-		
-		param.put("input", paramList);
-		
-		result = apiSenderService.call("EG_ENC", param, "EG");
-		
-		if(!(boolean) result.get("result")) {
-			String errCode = (String) result.get("value");
-			throw new Exception("EG 암복호화 오류 발생 : " + errCode);
-		}
-		
-		List<String> resultList = null;
-		
-		Object v = result.get("value");
-		if(v instanceof List<?> list) {
-			resultList = (List<String>) list;
-		}
-		
-		return resultList;
-	}
-	
+    @Override
+    public String[] encrypt(String[] plains) {
+        return run(plains, true);
+    }
 
+    @Override
+    public String[] decrypt(String[] ciphers) {
+        return run(ciphers, false);
+    }
+
+    private String[] run(String[] in, boolean encrypt) {
+        String[] out = new String[in.length];
+        try {
+            for (int from = 0; from < in.length; from += CHUNK) {
+                int to = Math.min(from + CHUNK, in.length);
+                List<String> part = Arrays.asList(Arrays.copyOfRange(in, from, to));
+
+                List<String> res = encrypt ? eg.enc(part) : eg.dec(part);
+                if (res == null || res.size() != part.size()) {
+                    throw new IllegalStateException("EG 응답 건수 불일치: 요청=" + part.size()
+                            + ", 응답=" + (res == null ? "null" : res.size()));
+                }
+                for (int i = 0; i < res.size(); i++) {
+                    out[from + i] = res.get(i);
+                }
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalStateException("EG 암복호화 실패(" + (encrypt ? "enc" : "dec") + ")", e);
+        }
+        return out;
+    }
 }
