@@ -1,4 +1,4 @@
-package com.foo.crypto;
+package smartsuite.mybatis;
 
 import org.apache.ibatis.session.Configuration;
 import org.slf4j.Logger;
