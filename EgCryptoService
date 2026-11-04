@@ -1,77 +1,69 @@
 package smartsuite.app.crypto;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import smartsuite.app.api.outbound.service.ApiSenderService;
 
+/**
+ * EG 암복호화 호출. List 단위(배치)로만 호출한다.
+ * - 건당 호출 비용(인터페이스 설정 조회 + 이력 저장)이 크므로 호출 횟수를 줄이는 것이 핵심.
+ * - 값에 콤마가 들어 있어도 안전하도록 콤마 split 방식(String 오버로드)은 제거.
+ */
 @Service
 public class EgCryptoService {
 
-	static final Logger LOG = LoggerFactory.getLogger(EgCryptoService.class);
-	
+	private static final String IF_ID = "EG_ENC";
+	private static final String SYSTEM = "EG";
+
 	@Value("#{apiProperties['eg.item']}")
 	private String egItem;
-	
-	
+
 	@Autowired
 	private ApiSenderService apiSenderService;
-	
-	@Autowired
-	ObjectMapper objectMapper;
 
-	public List<String> enc(String plain) throws Exception {
-		return this.call(Arrays.asList(plain.split(",")), "enc");
+	public List<String> enc(List<String> plains) throws Exception {
+		return call(plains, "enc");
 	}
-	
-	public List<String> enc(List<String> plainArr) throws Exception {
-		return this.call(plainArr, "enc");
+
+	public List<String> dec(List<String> ciphers) throws Exception {
+		return call(ciphers, "dec");
 	}
-	
-	public List<String> dec(String enc) throws Exception {
-		return this.call(Arrays.asList(enc.split(",")), "dec");
-	}
-	
-	public List<String> dec(List<String> encArr) throws Exception {
-		return this.call(encArr, "dec");
-	}
-	
-	public List<String> call(List<String> paramList, String type) throws Exception {
-		LOG.info("[crypto] EG call type={}, size={}",type, paramList.size());
-		Map<String, Object> result = new HashMap<String, Object>();
-		Map<String, Object> param = new HashMap<String, Object>();
-		
+
+	private List<String> call(List<String> input, String type) throws Exception {
+		if (input == null || input.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		Map<String, Object> param = new HashMap<>(4);
 		param.put("item", egItem);
-		param.put("type", type.toLowerCase());
-		
-		param.put("input", paramList);
-		
-		result = apiSenderService.call("EG_ENC", param, "EG");
-		
-		if(!(boolean) result.get("result")) {
-			String errCode = (String) result.get("value");
-			throw new Exception("EG 암복호화 오류 발생 : " + errCode);
-		}
-		
-		List<String> resultList = null;
-		
-		Object v = result.get("value");
-		if(v instanceof List<?> list) {
-			resultList = (List<String>) list;
-		}
-		
-		return resultList;
-	}
-	
+		param.put("type", type);
+		param.put("input", input);
 
+		Map<String, Object> result = apiSenderService.call(IF_ID, param, SYSTEM);
+
+		if (result == null || !Boolean.TRUE.equals(result.get("result"))) {
+			Object code = (result == null) ? null : result.get("value");
+			throw new IllegalStateException("EG 암복호화 오류(" + type + "): " + code);
+		}
+
+		Object v = result.get("value");
+		if (!(v instanceof List<?> list) || list.size() != input.size()) {
+			throw new IllegalStateException("EG 응답 형식/건수 불일치(" + type + "): 요청="
+					+ input.size() + ", 응답=" + (v instanceof List<?> l ? l.size() : String.valueOf(v)));
+		}
+
+		List<String> out = new ArrayList<>(list.size());
+		for (Object o : list) {
+			out.add(o == null ? null : o.toString());
+		}
+		return out;
+	}
 }
