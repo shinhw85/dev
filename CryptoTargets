@@ -1,0 +1,124 @@
+package com.foo.crypto;
+
+import org.apache.ibatis.session.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * statement id → 암복호화 대상 키 매핑.
+ *
+ * properties 형식
+ *   ns.id          = a,b     파라미터/결과 둘 다
+ *   ns.id#param    = a,b     파라미터(암호화)만
+ *   ns.id#result   = a,b     결과(복호화)만
+ *   ns.*           = a,b     네임스페이스 전체 (정확한 id가 있으면 그쪽이 우선)
+ */
+public class CryptoTargets {
+
+    private static final Logger log = LoggerFactory.getLogger(CryptoTargets.class);
+
+    public static final class Target {
+        private final Set<String> paramKeys;   // 작성한 그대로 (Map 키는 대소문자 구분)
+        private final Set<String> resultKeys;  // 소문자 (결과 매칭은 대소문자 무시)
+
+        Target(Set<String> paramKeys, Set<String> resultKeys) {
+            this.paramKeys = paramKeys;
+            this.resultKeys = resultKeys;
+        }
+
+        public Set<String> paramKeys() {
+            return paramKeys;
+        }
+
+        public Set<String> resultKeys() {
+            return resultKeys;
+        }
+    }
+
+    private final Map<String, Target> exact = new HashMap<>();
+    private final Map<String, Target> prefix = new HashMap<>();
+    private final Map<String, Optional<Target>> cache = new ConcurrentHashMap<>();
+
+    public CryptoTargets(Properties props) {
+        Map<String, Set<String>> params = new HashMap<>();
+        Map<String, Set<String>> results = new HashMap<>();
+
+        for (String name : props.stringPropertyNames()) {
+            String id = name.trim();
+            boolean toParam = true;
+            boolean toResult = true;
+            if (id.endsWith("#param")) {
+                id = id.substring(0, id.length() - "#param".length());
+                toResult = false;
+            } else if (id.endsWith("#result")) {
+                id = id.substring(0, id.length() - "#result".length());
+                toParam = false;
+            }
+            for (String raw : props.getProperty(name).split(",")) {
+                String key = raw.trim();
+                if (key.isEmpty()) continue;
+                if (toParam) {
+                    params.computeIfAbsent(id, k -> new LinkedHashSet<>()).add(key);
+                }
+                if (toResult) {
+                    results.computeIfAbsent(id, k -> new LinkedHashSet<>()).add(key.toLowerCase(Locale.ROOT));
+                }
+            }
+        }
+
+        Set<String> ids = new HashSet<>(params.keySet());
+        ids.addAll(results.keySet());
+        for (String id : ids) {
+            Target t = new Target(params.getOrDefault(id, Set.of()), results.getOrDefault(id, Set.of()));
+            if (id.endsWith(".*")) {
+                prefix.put(id.substring(0, id.length() - 1), t);   // "ns.*" -> "ns."
+            } else {
+                exact.put(id, t);
+            }
+        }
+    }
+
+    /** 대상이 아니면 null */
+    public Target find(String statementId) {
+        return cache.computeIfAbsent(statementId, this::lookup).orElse(null);
+    }
+
+    private Optional<Target> lookup(String id) {
+        Target t = exact.get(id);
+        if (t != null) return Optional.of(t);
+
+        String best = null;
+        for (String p : prefix.keySet()) {
+            if (id.startsWith(p) && (best == null || p.length() > best.length())) {
+                best = p;
+            }
+        }
+        return best == null ? Optional.empty() : Optional.of(prefix.get(best));
+    }
+
+    /** 기동 후 호출: 존재하지 않는 statement id(오타)를 경고. 오타는 조용히 평문 저장으로 이어진다. */
+    public void validate(Configuration cfg) {
+        Collection<String> names = cfg.getMappedStatementNames();
+        for (String id : exact.keySet()) {
+            if (!names.contains(id)) {
+                log.warn("[crypto] 존재하지 않는 statement id: {}", id);
+            }
+        }
+        for (String p : prefix.keySet()) {
+            if (names.stream().noneMatch(n -> n.startsWith(p))) {
+                log.warn("[crypto] 일치하는 statement가 없는 namespace 패턴: {}*", p);
+            }
+        }
+    }
+}
