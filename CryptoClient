@@ -1,0 +1,20 @@
+package com.foo.crypto;
+
+/**
+ * EG솔루션 암복호화 호출 추상화.
+ * 배열 API를 기본으로 하고, 단건은 배열 호출로 위임한다.
+ */
+public interface CryptoClient {
+
+    String[] encrypt(String[] plains);
+
+    String[] decrypt(String[] ciphers);
+
+    default String encrypt(String plain) {
+        return encrypt(new String[]{plain})[0];
+    }
+
+    default String decrypt(String cipher) {
+        return decrypt(new String[]{cipher})[0];
+    }
+}
