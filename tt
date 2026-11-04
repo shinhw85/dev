@@ -1,50 +1,43 @@
-private static final int PAGE_SIZE = 1000; 
+public class CryptoTargets {
 
-	public void callMatl(Map<String, Object> param) { 
-	    String lastKey = null;
-	    while (true) {
-	        Map<String, Object> q = new HashMap<>(param);
-	        q.put("pageSize", PAGE_SIZE);
-	        q.put("lastKey", lastKey);
+    private final Map<String, Set<String>> exact = new HashMap<>();
+    private final Map<String, Set<String>> prefix = new HashMap<>();
 
-	        String nextKey = apiSapmdModelRepository.selectMatlPageLastKey(q);
-	        if (nextKey == null) break;
+    public CryptoTargets(Properties props) {
+        props.forEach((k, v) -> {
+            String id = k.toString().trim();
+            Set<String> keys = Arrays.stream(v.toString().split(","))
+                    .map(s -> s.trim().toLowerCase())      // 대소문자 무시 비교용
+                    .filter(s -> !s.isEmpty())
+                    .collect(Collectors.toSet());
+            if (id.endsWith(".*")) prefix.put(id.substring(0, id.length() - 1), keys); // "ns."
+            else exact.put(id, keys);
+        });
+    }
 
-	        txTemplate.executeWithoutResult(s -> {      // TransactionTemplate 주입
-	            apiSapmdModelRepository.mergeModelVdNameBatch(q);
-	            apiSapmdModelRepository.mergeModelBatch(q);
-	            
-	        });
-	        lastKey = nextKey;
-	    }
-	    txTemplate.executeWithoutResult(s -> {
-	    	apiSapmdModelRepository.mergeModelOorgBatch(param);
-	    });
-	}
-
-
- private static final int PAGE_SIZE = 1000;
-
-    public void callEquip(Map<String, Object> param) {
-        String lastKey = null;
-        while (true) {
-            Map<String, Object> q = new HashMap<>(param);
-            q.put("pageSize", PAGE_SIZE);
-            q.put("lastKey", lastKey);
-
-            String nextKey = apiSapmdEquipRepository.selectEquipPageLastKey(q);
-            if (nextKey == null) break;
-
-            mergeEquipPage(q);
-            lastKey = nextKey;
+    /** 대상이 아니면 null */
+    public Set<String> find(String statementId) {
+        Set<String> keys = exact.get(statementId);
+        if (keys != null) return keys;
+        for (Map.Entry<String, Set<String>> e : prefix.entrySet()) {
+            if (statementId.startsWith(e.getKey())) return e.getValue();
         }
-        
-        txTemplate.executeWithoutResult(s -> {
-        	apiSapmdEquipRepository.mergeEquipOorgBatch(param);
-	    });
+        return null;
     }
+}
 
-    @Transactional(rollbackFor = Exception.class)
-    public void mergeEquipPage(Map<String, Object> q) {
-    	apiSapmdEquipRepository.mergeEquipBatch(q);
+
+@Bean
+public CryptoTargets cryptoTargets() throws IOException {
+    Properties p = new Properties();
+    try (InputStream in = getClass().getResourceAsStream("/crypto-targets.properties");
+         Reader r = new InputStreamReader(in, StandardCharsets.UTF_8)) {
+        p.load(r);
     }
+    return new CryptoTargets(p);
+}
+
+@Bean
+public CryptoInterceptor cryptoInterceptor(CryptoClient client, CryptoTargets targets) {
+    return new CryptoInterceptor(client, targets);
+}
