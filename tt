@@ -1,0 +1,21 @@
+// CryptoInterceptor.java 의 convert() 메서드를 아래로 교체 (나머지는 그대로).
+// 단일 String 파라미터 경로의 client.encrypt(s) 는 CryptoClient 의 String 오버로드라 수정 불필요.
+// 필요한 import: java.util.List, java.util.ArrayList (이미 있음)
+
+    /** 모은 값을 List로 1회 호출해 같은 순서로 되돌려 넣는다. */
+    private void convert(List<Slot> slots, boolean encrypt) {
+        List<String> in = new ArrayList<>(slots.size());
+        for (Slot s : slots) {
+            in.add(s.value);
+        }
+        // log.info("[crypto] {} {}건", encrypt ? "ENC" : "DEC", in.size());   // 진단 로그를 쓰고 있다면 유지
+
+        List<String> out = encrypt ? client.encrypt(in) : client.decrypt(in);
+        if (out == null || out.size() != in.size()) {
+            throw new IllegalStateException("암복호화 응답 건수 불일치: 요청=" + in.size()
+                    + ", 응답=" + (out == null ? "null" : out.size()));
+        }
+        for (int i = 0; i < out.size(); i++) {
+            slots.get(i).setter.accept(out.get(i));
+        }
+    }
