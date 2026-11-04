@@ -1,17 +1,14 @@
 package smartsuite.mybatis;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import smartsuite.app.crypto.EgCryptoService;
 
 /**
- * 기존 EgCryptoService를 CryptoClient로 감싸는 어댑터.
- *
- * - enc(String)/dec(String)은 내부에서 콤마(,)로 split 하므로 값에 콤마가 있으면 깨진다.
- *   그래서 반드시 List 버전(enc(List)/dec(List))만 사용한다.
- * - EgCryptoService가 던지는 checked Exception은 런타임 예외로 감싼다
- *   (암복호화 실패 시 평문이 저장/반환되지 않도록 반드시 예외 전파).
+ * EgCryptoService를 CryptoClient로 감싸는 얇은 어댑터. (List 그대로 전달, 변환/복사 없음)
+ * - 한 번에 보낼 수 있는 건수 제한이 있으면 CHUNK 단위로 나눠 호출 (subList 뷰라 복사 없음)
+ * - checked Exception은 런타임 예외로 감싸 전파 (실패 시 평문 저장/반환 방지)
  */
 public class EgCryptoClient implements CryptoClient {
 
@@ -24,36 +21,33 @@ public class EgCryptoClient implements CryptoClient {
     }
 
     @Override
-    public String[] encrypt(String[] plains) {
+    public List<String> encrypt(List<String> plains) {
         return run(plains, true);
     }
 
     @Override
-    public String[] decrypt(String[] ciphers) {
+    public List<String> decrypt(List<String> ciphers) {
         return run(ciphers, false);
     }
 
-    private String[] run(String[] in, boolean encrypt) {
-        String[] out = new String[in.length];
+    private List<String> run(List<String> in, boolean encrypt) {
+        if (in.isEmpty()) {
+            return in;
+        }
         try {
-            for (int from = 0; from < in.length; from += CHUNK) {
-                int to = Math.min(from + CHUNK, in.length);
-                List<String> part = Arrays.asList(Arrays.copyOfRange(in, from, to));
-
-                List<String> res = encrypt ? eg.enc(part) : eg.dec(part);
-                if (res == null || res.size() != part.size()) {
-                    throw new IllegalStateException("EG 응답 건수 불일치: 요청=" + part.size()
-                            + ", 응답=" + (res == null ? "null" : res.size()));
-                }
-                for (int i = 0; i < res.size(); i++) {
-                    out[from + i] = res.get(i);
-                }
+            if (in.size() <= CHUNK) {
+                return encrypt ? eg.enc(in) : eg.dec(in);
             }
+            List<String> out = new ArrayList<>(in.size());
+            for (int from = 0; from < in.size(); from += CHUNK) {
+                List<String> part = in.subList(from, Math.min(from + CHUNK, in.size()));
+                out.addAll(encrypt ? eg.enc(part) : eg.dec(part));
+            }
+            return out;
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new IllegalStateException("EG 암복호화 실패(" + (encrypt ? "enc" : "dec") + ")", e);
         }
-        return out;
     }
 }
