@@ -1,19 +1,58 @@
-<insert id="mergeEquipOorgBatch" parameterType="map">
-  MERGE INTO item_oorg A
-  USING (
-    SELECT m.matnr AS item_cd
-      FROM (<include refid="equipPage"/>) m
-     WHERE EXISTS (
-            SELECT 1 FROM IF_D4MDZ0300_MATLPLNT p
-             WHERE p.TEN_ID = m.ten_id AND p.matnr = m.matnr
-               AND p.werks IN ('LYA0', 'VYA0'))
-  ) B
-  ON (A.ten_id = #{g.tenant}
-      AND A.oorg_cd = 'IOY1AO'
-      AND A.item_cd = B.item_cd)
-  WHEN MATCHED THEN
-    UPDATE SET item_ldtm = 0
-  WHEN NOT MATCHED THEN
-    INSERT (ten_id, oorg_cd, item_cd, item_ldtm)
-    VALUES (#{g.tenant}, 'IOY1AO', B.item_cd, 0)
-</insert>
+private static final int PAGE_SIZE = 1000; 
+
+	public void callMatl(Map<String, Object> param) { 
+	    String lastKey = null;
+	    while (true) {
+	        Map<String, Object> q = new HashMap<>(param);
+	        q.put("pageSize", PAGE_SIZE);
+	        q.put("lastKey", lastKey);
+
+	        String nextKey = apiSapmdModelRepository.selectMatlPageLastKey(q);
+	        if (nextKey == null) break;
+
+	        txTemplate.executeWithoutResult(s -> {      // TransactionTemplate 주입
+	            apiSapmdModelRepository.mergeModelVdNameBatch(q);
+	            apiSapmdModelRepository.mergeModelBatch(q);
+	            
+	        });
+	        lastKey = nextKey;
+	    }
+	    
+	    mergeModelOorgBatch(param);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	private void mergeModelOorgBatch(Map<String, Object> param) {
+		apiSapmdModelRepository.mergeModelOorgBatch(param);		
+	}
+
+
+
+private static final int PAGE_SIZE = 1000;
+
+    public void callEquip(Map<String, Object> param) {
+        String lastKey = null;
+        while (true) {
+            Map<String, Object> q = new HashMap<>(param);
+            q.put("pageSize", PAGE_SIZE);
+            q.put("lastKey", lastKey);
+
+            String nextKey = apiSapmdEquipRepository.selectEquipPageLastKey(q);
+            if (nextKey == null) break;
+
+            mergeEquipPage(q);
+            lastKey = nextKey;
+        }
+        
+        mergeEquipOorgBatch(param);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void mergeEquipPage(Map<String, Object> q) {
+        apiSapmdEquipRepository.mergeEquipBatch(q);
+    }
+    
+    @Transactional(rollbackFor = Exception.class)
+	private void mergeEquipOorgBatch(Map<String, Object> param) {
+    	apiSapmdEquipRepository.mergeEquipOorgBatch(param);		
+	}
