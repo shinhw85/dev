@@ -1,31 +1,123 @@
-// ===== ApplicationConfiguration.java 에서 기존 cryptoTargets / cryptoInterceptor 빈을 아래로 교체 =====
-// 추가 import:
-//   import org.springframework.core.io.ClassPathResource;
-//   import org.springframework.core.io.support.EncodedResource;
-//   import org.springframework.core.io.support.PropertiesLoaderUtils;
-//   (org.springframework.context.annotation.* 는 이미 import 되어 있어 @Lazy 포함)
-//   import smartsuite.mybatis.CryptoClient;
-//   import smartsuite.mybatis.EgCryptoClient;
+package smartsuite.config;
 
-    // EgCryptoService → ApiSenderService 가 MyBatis를 쓰면 순환 참조가 생기므로 @Lazy
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
+
+import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.EncodedResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import smartsuite.app.crypto.EgCryptoService;
+import smartsuite.config.application.AttachmentConfiguration;
+import smartsuite.config.application.CacheConfiguration;
+import smartsuite.config.application.MailConfiguration;
+import smartsuite.config.application.ModuleConfiguration;
+import smartsuite.config.application.MybatisConfiguration;
+import smartsuite.mybatis.CryptoClient;
+import smartsuite.mybatis.CryptoInterceptor;
+import smartsuite.mybatis.CryptoTargets;
+import smartsuite.mybatis.EgCryptoClient;
+import smartsuite.security.captcha.CaptchaGenerator;
+
+@Configuration
+@Import({
+	MybatisConfiguration.class,
+	AttachmentConfiguration.class,
+	ModuleConfiguration.class,
+	CacheConfiguration.class,
+    MailConfiguration.class,
+    WebServiceConfiguration.class,
+	MailAsyncConfiguration.class
+})
+@ComponentScan(
+	basePackages = { "smartsuite.config.module" },
+        useDefaultFilters = false,
+	includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Configuration.class)
+)
+//@ImportResource(value = { "classpath*:smartsuite/module/*-context.xml" })
+@ComponentScan(
+    basePackages = {
+        "smartsuite.*.web",
+        "smartsuite.security",
+        "smartsuite.tenancy",
+        "smartsuite.app",
+        "smartsuite.mybatis",
+        "smartsuite.config.workplace",
+        "smartsuite5.*.web",
+        "smartsuite.upload.auth"
+    },
+    useDefaultFilters = false,
+    lazyInit = true,
+    includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Service.class)
+)
+public class ApplicationConfiguration {
+
+	// moduleManager
+	@Bean
+	public MethodInvokingFactoryBean methodInvokingFactoryBean() {
+		MethodInvokingFactoryBean factoryBean = new MethodInvokingFactoryBean();
+		factoryBean.setStaticMethod("smartsuite.module.ModuleManager.setLocalProperties");
+		factoryBean.setArguments("classpath*:smartsuite/module/*.properties");
+		return factoryBean;
+	}
+
+	// objectMapper
+    @Bean("objectMapper")
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    // captcha 인증
+    @Bean("captchaGenerator")
+    public CaptchaGenerator captchaGenerator() {
+        return new CaptchaGenerator();
+    }
+
+    // restTemplate
+    @Bean("restTemplate")
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    // Gson
+    @Bean("gsonBuilder")
+    public GsonBuilder gsonBuilder() {
+        return new GsonBuilder().disableHtmlEscaping();
+    }
+
+    @Bean("gson")
+    public Gson gson() {
+        return gsonBuilder().create();
+    }
+
     @Bean
     public CryptoClient cryptoClient(@Lazy EgCryptoService eg) {
         return new EgCryptoClient(eg);
     }
-
+    
     @Bean
     public CryptoTargets cryptoTargets() throws IOException {
         Properties p = PropertiesLoaderUtils.loadProperties(
-                new EncodedResource(new ClassPathResource("crypto-targets.properties"), "UTF-8"));
+                new EncodedResource(new ClassPathResource("smartsuite"+ File.separator+"properties"+ File.separator + "encrypt"+ File.separator +"crypto-targets.properties"), "UTF-8"));
         return new CryptoTargets(p);
     }
 
     @Bean
     public CryptoInterceptor cryptoInterceptor(CryptoClient client, CryptoTargets targets) {
-        return new CryptoInterceptor(client, targets);
+        return new CryptoInterceptor(client, targets, "p.");
     }
-
-// ===== MybatisConfiguration.java 의 SqlSessionFactoryBean 설정 =====
-//   fb.setPlugins(cryptoInterceptor);   // 메서드 파라미터로 CryptoInterceptor 주입받아 사용
-//   (선택) SqlSessionFactory factory = fb.getObject();
-//          cryptoTargets.validate(factory.getConfiguration());   // 오타 id 경고
+}
