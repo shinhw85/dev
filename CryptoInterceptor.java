@@ -1,4 +1,4 @@
-package com.foo.crypto;
+package smartsuite.mybatis;
 
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
