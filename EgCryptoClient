@@ -1,126 +1,35 @@
 package smartsuite.mybatis;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import smartsuite.app.crypto.EgCryptoException;
 import smartsuite.app.crypto.EgCryptoService;
 
 /**
- * EgCryptoService를 CryptoClient로 감싸는 어댑터.
- *
- * 암호화(encrypt): 항상 엄격 — 실패하면 예외 (평문이 그대로 저장되는 것 방지)
- * 복호화(decrypt): 마이그레이션 기간 동안 관대하게 동작 (설정으로 켬)
- *   1) cipherPattern 이 있으면, 암호문 형식이 아닌 값은 EG로 보내지 않고 원본(평문) 그대로 반환
- *   2) passthrough=true 이면, EG가 업무 오류(result=false)를 돌려준 값은 원본 그대로 반환
- *      - 배치가 실패하면 반으로 쪼개 재시도하여 복호화 가능한 값은 최대한 복호화
- *      - passCodes 가 지정되면 해당 오류 코드일 때만 통과 (그 외 코드는 예외)
- *      - 네트워크/응답 없음 같은 인프라 오류는 통과시키지 않고 예외
+ * EgCryptoService를 CryptoClient로 감싸는 엄격한 어댑터 (마이그레이션 로직 없음).
+ * - 건수가 많으면 CHUNK 단위로 나눠 호출 (subList 뷰라 복사 없음)
+ * - checked Exception은 런타임 예외로 감싸 전파 (실패 시 평문 저장/반환 방지)
+ * - EG 업무 오류(EgCryptoException)는 그대로 전파
  */
 public class EgCryptoClient implements CryptoClient {
-
-    private static final Logger log = LoggerFactory.getLogger(EgCryptoClient.class);
 
     private static final int CHUNK = 500;   // TODO: EG 1회 호출 허용 건수에 맞게 조정
 
     private final EgCryptoService eg;
-    private final boolean passthrough;
-    private final Set<String> passCodes;
-    private final Pattern cipherPattern;    // null 이면 전부 암호문 후보로 취급
 
     public EgCryptoClient(EgCryptoService eg) {
-        this(eg, false, "", "");
-    }
-
-    public EgCryptoClient(EgCryptoService eg, boolean passthrough, String passCodes, String cipherPattern) {
         this.eg = eg;
-        this.passthrough = passthrough;
-        this.passCodes = new HashSet<>();
-        if (passCodes != null) {
-            Arrays.stream(passCodes.split(",")).map(String::trim)
-                    .filter(s -> !s.isEmpty()).forEach(this.passCodes::add);
-        }
-        this.cipherPattern = (cipherPattern == null || cipherPattern.isBlank())
-                ? null : Pattern.compile(cipherPattern.trim());
     }
-
-    // ---------------------------------------------------------------- 암호화 (엄격)
 
     @Override
     public List<String> encrypt(List<String> plains) {
         return run(plains, true);
     }
 
-    // ---------------------------------------------------------------- 복호화 (관대)
-
     @Override
     public List<String> decrypt(List<String> ciphers) {
-        if (ciphers.isEmpty()) {
-            return ciphers;
-        }
-
-        // 1) 암호문처럼 보이는 값만 EG로 전달
-        List<Integer> idx = new ArrayList<>(ciphers.size());
-        List<String> targets = new ArrayList<>(ciphers.size());
-        for (int i = 0; i < ciphers.size(); i++) {
-            String v = ciphers.get(i);
-            if (looksEncrypted(v)) {
-                idx.add(i);
-                targets.add(v);
-            }
-        }
-        if (targets.isEmpty()) {
-            return ciphers;                                // 전부 평문 → EG 호출 없음
-        }
-
-        List<String> dec = decryptLenient(targets);
-        if (targets.size() == ciphers.size()) {
-            return dec;
-        }
-
-        List<String> out = new ArrayList<>(ciphers);       // 나머지(평문)는 원본 그대로
-        for (int k = 0; k < idx.size(); k++) {
-            out.set(idx.get(k), dec.get(k));
-        }
-        return out;
+        return run(ciphers, false);
     }
-
-    private boolean looksEncrypted(String v) {
-        return v != null && !v.isEmpty() && (cipherPattern == null || cipherPattern.matcher(v).matches());
-    }
-
-    private List<String> decryptLenient(List<String> part) {
-        try {
-            return run(part, false);
-        } catch (EgCryptoException e) {
-            if (!passthrough || !isPassable(e.getCode())) {
-                throw e;
-            }
-            if (part.size() == 1) {
-                log.warn("[crypto] 복호화 불가 값을 원본 그대로 반환 (code={})", e.getCode());
-                return part;
-            }
-            // 배치 안에 복호화 불가 값이 섞여 있음 → 반으로 쪼개 재시도
-            int mid = part.size() / 2;
-            List<String> out = new ArrayList<>(part.size());
-            out.addAll(decryptLenient(part.subList(0, mid)));
-            out.addAll(decryptLenient(part.subList(mid, part.size())));
-            return out;
-        }
-    }
-
-    private boolean isPassable(String code) {
-        return passCodes.isEmpty() || passCodes.contains(code);
-    }
-
-    // ---------------------------------------------------------------- EG 호출
 
     private List<String> run(List<String> in, boolean encrypt) {
         if (in.isEmpty()) {
@@ -137,7 +46,7 @@ public class EgCryptoClient implements CryptoClient {
             }
             return out;
         } catch (RuntimeException e) {
-            throw e;                                       // EgCryptoException 포함 그대로 전파
+            throw e;
         } catch (Exception e) {
             throw new IllegalStateException("EG 암복호화 실패(" + (encrypt ? "enc" : "dec") + ")", e);
         }
