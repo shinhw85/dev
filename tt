@@ -1,168 +1,218 @@
 private static final int PARAM_LIMIT = 30000;   // PG 바인딩 한도 32767
-	private static final int MAX_CHUNK = 1000;      // 한 번에 insert할 최대 행 수
+private static final int MAX_CHUNK = 1000;      // 한 번에 insert할 최대 행 수
+private static final String HEADER_TABLE = "if_d4mdz0500_bphd";
 
-	private static final Set<String> tableNames = Set.of(
-	    "if_d4mdz0100_matl",
-	    "if_d4mdz0100_matlcharasgn",
-	    "if_d4mdz0100_matlclassasgn",
-	    "if_d4mdz0100_matldesc",
-	    "if_d4mdz0100_matlplnt",
-	    "if_d4mdz0100_matlunit",
-	    "if_d4mdz0100_matlzappmfr",
-	    "if_d4mdz0100_matlzappmfrzuse",
-	    "if_d4mdz0300_matl",
-	    "if_d4mdz0300_matlcharasgn",
-	    "if_d4mdz0300_matlclassasgn",
-	    "if_d4mdz0300_matldesc",
-	    "if_d4mdz0300_matlplnt",
-	    "if_d4mdz0300_matlunit",
-	    "if_d4mdz0500_bphd",
-	    "if_d4mdz0500_bphdaddr",
-	    "if_d4mdz0500_bphdaddrademail",
-	    "if_d4mdz0500_bphdaddradfax",
-	    "if_d4mdz0500_bphdaddradpostal",
-	    "if_d4mdz0500_bphdaddradtel",
-	    "if_d4mdz0500_bphdaddradurl",
-	    "if_d4mdz0500_bphdbptaxnum",
-	    "if_d4mdz0500_bphdvengen",
-	    "if_d4mdz0500_bphdvengenbpcom",
-	    "if_d4mdz0500_bphdvengenbpporg",
-	    "if_d4mdz0500_bphdvengencomtax",
-	    "if_d4mdz0500_bphdvengenporg",
-	    "if_d4mdz0500_bphdvengenzvlicen"
-	    );
+private static final Set<String> tableNames = Set.of(
+    "if_d4mdz0100_matl",
+    "if_d4mdz0100_matlcharasgn",
+    "if_d4mdz0100_matlclassasgn",
+    "if_d4mdz0100_matldesc",
+    "if_d4mdz0100_matlplnt",
+    "if_d4mdz0100_matlunit",
+    "if_d4mdz0100_matlzappmfr",
+    "if_d4mdz0100_matlzappmfrzuse",
+    "if_d4mdz0300_matl",
+    "if_d4mdz0300_matlcharasgn",
+    "if_d4mdz0300_matlclassasgn",
+    "if_d4mdz0300_matldesc",
+    "if_d4mdz0300_matlplnt",
+    "if_d4mdz0300_matlunit",
+    "if_d4mdz0500_bphd",
+    "if_d4mdz0500_bphdaddr",
+    "if_d4mdz0500_bphdaddrademail",
+    "if_d4mdz0500_bphdaddradfax",
+    "if_d4mdz0500_bphdaddradpostal",
+    "if_d4mdz0500_bphdaddradtel",
+    "if_d4mdz0500_bphdaddradurl",
+    "if_d4mdz0500_bphdbptaxnum",
+    "if_d4mdz0500_bphdvengen",
+    "if_d4mdz0500_bphdvengenbpcom",
+    "if_d4mdz0500_bphdvengenbpporg",
+    "if_d4mdz0500_bphdvengencomtax",
+    "if_d4mdz0500_bphdvengenporg",
+    "if_d4mdz0500_bphdvengenzvlicen"
+);
 
-	// 모든 테이블 공통 고정값 (if_doc_id는 행별이라 별도 처리)
-	private static final Map<String, String> COMMON_FIXED = new LinkedHashMap<>();
-	static {
-	    COMMON_FIXED.put("ten_id", "SONE");
-	    COMMON_FIXED.put("regr_id", "EXCEL");
-	}
+// 모든 테이블 공통 고정값 (if_doc_id, bphd_if_doc_id는 별도 처리)
+private static final Map<String, String> COMMON_FIXED = new LinkedHashMap<>();
+static {
+    COMMON_FIXED.put("ten_id", "SONE");
+    COMMON_FIXED.put("regr_id", "EXCEL");
+}
 
-	@Transactional(rollbackFor = Exception.class)
-	public Map<String, Integer> testExcelInsert(Map param) {
-	    Map<String, Integer> result = new LinkedHashMap<>();
+// 헤더의 if_doc_id = 하위 테이블의 bphd_if_doc_id  (IF + 배치일자 8 + bp_header 왼쪽 0채움 10 = 20자리)
+private String bphdId(String batchDate, String bp, int rowNo) {
+    if (bp == null || bp.isEmpty())
+        throw new IllegalArgumentException(rowNo + "행: bp_header 값이 없습니다");
+    if (bp.length() > 10)
+        throw new IllegalArgumentException(rowNo + "행: bp_header가 10자리를 넘습니다: " + bp);
+    return "IF" + batchDate + "0".repeat(10 - bp.length()) + bp;
+}
 
-	    try {
-	        String table = (String) param.get("table");
+@Transactional(rollbackFor = Exception.class)
+public Map<String, Integer> testExcelInsert(Map param) {
+    Map<String, Integer> result = new LinkedHashMap<>();
 
-	        if (table == null || !tableNames.contains(table)) {
-	            throw new IllegalArgumentException("허용 테이블 아님: " + table);
-	        }
+    try {
+        String table = (String) param.get("table");
+        if (table != null) table = table.trim().toLowerCase();
 
-	        Set<String> tableCols = new HashSet<>(sampleRepository.selectColumnName(table));
-	        if (tableCols.isEmpty())
-	            throw new IllegalStateException("테이블 없음: " + table);
+        if (table == null || !tableNames.contains(table)) {
+            throw new IllegalArgumentException("허용 테이블 아님: " + table);
+        }
 
-	        // if_doc_id: 업로드 1회당 난수 1개 + 전체 공통 일련번호
-	        String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
-	        String rnd = String.format("%06d", ThreadLocalRandom.current().nextInt(1_000_000));
-	        int docSeq = 0;
+        // 같은 배치의 모든 테이블 업로드는 같은 batch_date를 써야 헤더와 하위가 연결됨
+        String batchDate = (String) param.get("batch_date");
+        if (batchDate == null || !batchDate.matches("\\d{8}"))
+            throw new IllegalArgumentException("batch_date(yyyyMMdd)가 필요합니다: " + batchDate);
 
-	        FileList fileList = stdFileService.findFileListWithContents((String) param.get("athg_uuid"));
-	        for (FileItem fileItem : fileList.getItems()) {
-        	    Path tmp = Files.createTempFile("excel", ".xlsx");
-        	    try {
-        	        try (InputStream in = fileItem.getInputStreamContents()) {
-        	            Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING);
-        	        }
-        	        SheetImporter imp = new SheetImporter(table, tableCols, today, rnd, docSeq, result);
-        	        ExcelStreamReader.read(tmp.toFile(), imp);
-        	        docSeq = imp.docSeq;                     // 다음 파일로 번호 이어가기
-        	    } finally {
-        	        Files.deleteIfExists(tmp);
-        	    }
-	        }
-	    } catch (Exception e) {
-	        LOG.error("엑셀 insert 실패", e);
-	        throw new RuntimeException(e);   // 예외를 삼키면 롤백이 안 되므로 다시 던짐
-	    }
-	    return result;
-	}
+        Set<String> tableCols = new HashSet<>(sampleRepository.selectColumnName(table));
+        if (tableCols.isEmpty())
+            throw new IllegalStateException("테이블 없음: " + table);
 
-	private int insertChunk(String table, List<String> cols, List<List<String>> part) {
-	    Map<String, Object> paramMap = new HashMap<>();
-	    paramMap.put("table", table);
-	    paramMap.put("cols", cols);
-	    paramMap.put("rows", new ArrayList<>(part));   // buf.clear() 전에 복사
-	    return sampleRepository.insertBatch(paramMap);
-	}
+        // 행별 if_doc_id: 오늘일자(8) + 업로드 1회당 난수(6) + 일련번호(6) = 20자리
+        String today = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+        String rnd = String.format("%06d", ThreadLocalRandom.current().nextInt(1_000_000));
+        int docSeq = 0;
+        Set<String> seenBp = new HashSet<>();   // 헤더 테이블 bp_header 중복 체크 (파일 전체 공통)
 
-	private class SheetImporter implements ExcelStreamReader.SheetRowHandler {
-	    final String table, today, rnd;
-	    final Set<String> tableCols;
-	    final Map<String, Integer> result;
-	    int docSeq;
+        FileList fileList = stdFileService.findFileListWithContents((String) param.get("athg_uuid"));
+        for (FileItem fileItem : fileList.getItems()) {
+            Path tmp = Files.createTempFile("excel", ".xlsx");
+            try {
+                try (InputStream in = fileItem.getInputStreamContents()) {
+                    Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING);
+                }
+                SheetImporter imp = new SheetImporter(table, tableCols, today, rnd,
+                                                      batchDate, docSeq, seenBp, result);
+                ExcelStreamReader.read(tmp.toFile(), imp);
+                docSeq = imp.docSeq;                     // 다음 파일로 번호 이어가기
+            } finally {
+                Files.deleteIfExists(tmp);
+            }
+        }
+    } catch (Exception e) {
+        LOG.error("엑셀 insert 실패", e);
+        throw new RuntimeException(e);   // 예외를 삼키면 롤백이 안 되므로 다시 던짐
+    }
+    return result;
+}
 
-	    String sheetName;
-	    List<String> cols, insertCols, fixedVals;
-	    List<Integer> colIdx;
-	    boolean genDocId;
-	    int chunk, total;
-	    List<List<String>> buf;
+private int insertChunk(String table, List<String> cols, List<List<String>> part) {
+    Map<String, Object> paramMap = new HashMap<>();
+    paramMap.put("table", table);
+    paramMap.put("cols", cols);
+    paramMap.put("rows", new ArrayList<>(part));   // buf.clear() 전에 복사
+    return sampleRepository.insertBatch(paramMap);
+}
 
-	    SheetImporter(String table, Set<String> tableCols, String today, String rnd,
-	                  int docSeq, Map<String, Integer> result) {
-	        this.table = table; this.tableCols = tableCols; this.today = today;
-	        this.rnd = rnd; this.docSeq = docSeq; this.result = result;
-	    }
+private class SheetImporter implements ExcelStreamReader.SheetRowHandler {
+    final String table, today, rnd, batchDate;
+    final Set<String> tableCols, seenBp;
+    final Map<String, Integer> result;
+    int docSeq;
 
-	    @Override public void startSheet(String name) {
-	        sheetName = name; cols = null; total = 0; buf = new ArrayList<>();
-	    }
+    String sheetName;
+    List<String> cols, insertCols, fixedVals;
+    List<Integer> colIdx;
+    boolean genDocId, isHeader, setBphd;
+    int bpIdx, chunk, total;
+    List<List<String>> buf;
 
-	    @Override public void row(int rowNum, Map<Integer, String> cells) {
-	        if (rowNum == 0) { readHeader(cells); return; }
-	        if (cols == null) return;                 // 유효 컬럼 없는 시트
+    SheetImporter(String table, Set<String> tableCols, String today, String rnd,
+                  String batchDate, int docSeq, Set<String> seenBp,
+                  Map<String, Integer> result) {
+        this.table = table; this.tableCols = tableCols; this.today = today;
+        this.rnd = rnd; this.batchDate = batchDate; this.docSeq = docSeq;
+        this.seenBp = seenBp; this.result = result;
+    }
 
-	        List<String> vals = new ArrayList<>(insertCols.size());
-	        boolean empty = true;
-	        for (int idx : colIdx) {
-	            String v = cells.get(idx);
-	            if (v != null) { v = v.trim(); if (v.isEmpty()) v = null; }
-	            if (v != null) empty = false;
-	            vals.add(v);
-	        }
-	        if (empty) return;
+    @Override public void startSheet(String name) {
+        sheetName = name; cols = null; total = 0; buf = new ArrayList<>();
+    }
 
-	        vals.addAll(fixedVals);
-	        if (genDocId)
-	            vals.add(today + rnd + String.format("%06d", ++docSeq));
-	        buf.add(vals);
-	        if (buf.size() >= chunk) { total += insertChunk(table, insertCols, buf); buf.clear(); }
-	    }
+    @Override public void row(int rowNum, Map<Integer, String> cells) {
+        if (rowNum == 0) { readHeader(cells); return; }
+        if (cols == null) return;                 // 유효 컬럼 없는 시트
 
-	    @Override public void endSheet() {
-	        if (cols == null) return;
-	        if (!buf.isEmpty()) { total += insertChunk(table, insertCols, buf); buf.clear(); }
-	        result.merge(sheetName, total, Integer::sum);
-	    }
+        List<String> vals = new ArrayList<>(insertCols.size());
+        boolean empty = true;
+        for (int idx : colIdx) {
+            String v = cells.get(idx);
+            if (v != null) { v = v.trim(); if (v.isEmpty()) v = null; }
+            if (v != null) empty = false;
+            vals.add(v);
+        }
+        if (empty) return;                        // 고정값 붙이기 전에 빈 행 판단
 
-	    private void readHeader(Map<Integer, String> cells) {
-	        List<String> hc = new ArrayList<>();
-	        List<Integer> hi = new ArrayList<>();
-	        List<String> skipped = new ArrayList<>();
-	        for (Map.Entry<Integer, String> e : cells.entrySet()) {
-	            String col = e.getValue().trim().toLowerCase();
-	            if (col.isEmpty()) continue;
-	            if (!tableCols.contains(col)) { skipped.add(col); continue; }
-	            if (hc.contains(col))
-	                throw new IllegalArgumentException(sheetName + " 중복 헤더: " + col);
-	            hc.add(col); hi.add(e.getKey());
-	        }
-	        if (!skipped.isEmpty()) LOG.info("{} 시트: 테이블에 없는 컬럼 건너뜀 {}", sheetName, skipped);
-	        if (hc.isEmpty()) { cols = null; return; }
+        int rowNo = rowNum + 1;
+        String bp = bpIdx >= 0 ? vals.get(bpIdx) : null;   // 이 시점의 vals는 엑셀 컬럼만
 
-	        cols = hc; colIdx = hi;
-	        insertCols = new ArrayList<>(cols);
-	        fixedVals = new ArrayList<>();
-	        for (Map.Entry<String, String> e : COMMON_FIXED.entrySet()) {
-	            String c = e.getKey();
-	            if (!tableCols.contains(c) || cols.contains(c)) continue;
-	            insertCols.add(c); fixedVals.add(e.getValue());
-	        }
-	        genDocId = tableCols.contains("if_doc_id") && !cols.contains("if_doc_id");
-	        if (genDocId) insertCols.add("if_doc_id");
-	        chunk = Math.max(1, Math.min(MAX_CHUNK, PARAM_LIMIT / insertCols.size()));
-	    }
-	}
+        // 필수값 검증은 여기서 직접 (rowNo 포함해 예외)
+
+        vals.addAll(fixedVals);
+
+        if (isHeader) {
+            if (genDocId) {                       // 헤더: if_doc_id = 규칙 키
+                String id = bphdId(batchDate, bp, rowNo);
+                if (!seenBp.add(bp))
+                    throw new IllegalArgumentException(
+                        sheetName + " " + rowNo + "행: bp_header 중복: " + bp);
+                vals.add(id);
+            }
+        } else {
+            if (genDocId)                         // 하위: 행별 if_doc_id
+                vals.add(today + rnd + String.format("%06d", ++docSeq));
+            if (setBphd)                          // 하위: 헤더와 연결되는 키
+                vals.add(bphdId(batchDate, bp, rowNo));
+        }
+
+        buf.add(vals);
+        if (buf.size() >= chunk) { total += insertChunk(table, insertCols, buf); buf.clear(); }
+    }
+
+    @Override public void endSheet() {
+        if (cols == null) return;
+        if (!buf.isEmpty()) { total += insertChunk(table, insertCols, buf); buf.clear(); }
+        result.merge(sheetName, total, Integer::sum);
+    }
+
+    private void readHeader(Map<Integer, String> cells) {
+        List<String> hc = new ArrayList<>();
+        List<Integer> hi = new ArrayList<>();
+        List<String> skipped = new ArrayList<>();
+        for (Map.Entry<Integer, String> e : cells.entrySet()) {
+            String col = e.getValue().trim().toLowerCase();
+            if (col.isEmpty()) continue;
+            if (!tableCols.contains(col)) { skipped.add(col); continue; }
+            if (hc.contains(col))
+                throw new IllegalArgumentException(sheetName + " 중복 헤더: " + col);
+            hc.add(col); hi.add(e.getKey());
+        }
+        if (!skipped.isEmpty()) LOG.info("{} 시트: 테이블에 없는 컬럼 건너뜀 {}", sheetName, skipped);
+        if (hc.isEmpty()) { cols = null; return; }
+
+        cols = hc; colIdx = hi;
+        insertCols = new ArrayList<>(cols);
+        fixedVals = new ArrayList<>();
+        for (Map.Entry<String, String> e : COMMON_FIXED.entrySet()) {
+            String c = e.getKey();
+            if (!tableCols.contains(c) || cols.contains(c)) continue;
+            insertCols.add(c); fixedVals.add(e.getValue());
+        }
+
+        bpIdx = cols.indexOf("bp_header");
+        isHeader = HEADER_TABLE.equals(table);
+        genDocId = tableCols.contains("if_doc_id") && !cols.contains("if_doc_id");
+        setBphd = !isHeader && tableCols.contains("bphd_if_doc_id")
+                  && !cols.contains("bphd_if_doc_id");
+
+        if (((isHeader && genDocId) || setBphd) && bpIdx < 0)
+            throw new IllegalArgumentException(sheetName + ": bp_header 컬럼이 필요합니다");
+
+        if (genDocId) insertCols.add("if_doc_id");
+        if (setBphd) insertCols.add("bphd_if_doc_id");   // 순서: 엑셀, 고정, if_doc_id, bphd_if_doc_id
+
+        chunk = Math.max(1, Math.min(MAX_CHUNK, PARAM_LIMIT / insertCols.size()));
+    }
+}
