@@ -1,0 +1,141 @@
+package smartsuite.mybatis.migration;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.LongAdder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * 마이그레이션 대상 확인용 수집기. (쿼리 id | 키 | 종류) 별 발생 건수를 메모리에 집계한다.
+ *
+ *   PLAIN  : 암호문 형식이 아니라서 복호화하지 않고 평문 그대로 반환한 값  → 아직 암호화 전인 데이터
+ *   PASSED : EG가 복호화 오류를 냈지만 원본 그대로 통과시킨 값           → 암호문 형식인데 복호화 실패
+ *   ERROR  : 통과시키지 않고 예외로 전파된 오류
+ *
+ * 출력은 전용 로거 "crypto.migration" 으로 나간다 (파일 분리는 logback 설정 참고).
+ *   NEW     : 처음 발견된 (쿼리|키|종류)
+ *   SUMMARY : 주기적으로 변경분 출력 (누적 건수, JVM 기동 이후)
+ *   FINAL   : 종료 시 전체 목록
+ * 값 자체는 절대 기록하지 않는다. (쿼리 id, 키 이름, 건수, EG 오류 코드만)
+ */
+public class MigrationTracker {
+
+    public enum Kind { PLAIN, PASSED, ERROR }
+
+    private static final Logger log = LoggerFactory.getLogger("crypto.migration");
+
+    private static final class Stat {
+        final String stmtId;
+        final String key;
+        final Kind kind;
+        final LongAdder count = new LongAdder();
+        volatile String lastCode = "-";
+        volatile long lastSeen;
+        volatile long reported;
+
+        Stat(String stmtId, String key, Kind kind) {
+            this.stmtId = stmtId;
+            this.key = key;
+            this.kind = kind;
+        }
+    }
+
+    private final Map<String, Stat> stats = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService scheduler;
+
+    public MigrationTracker(long reportMinutes) {
+        if (reportMinutes > 0) {
+            scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
+                Thread t = new Thread(r, "crypto-migration-report");
+                t.setDaemon(true);
+                return t;
+            });
+            scheduler.scheduleAtFixedRate(this::reportSafely, reportMinutes, reportMinutes, TimeUnit.MINUTES);
+        } else {
+            scheduler = null;
+        }
+    }
+
+    /** 추적 실패가 본 로직에 영향을 주지 않도록 절대 예외를 던지지 않는다. */
+    public void record(String stmtId, String key, Kind kind, String code, int n) {
+        try {
+            String id = stmtId + "|" + key + "|" + kind;
+            Stat s = stats.get(id);
+            boolean isNew = false;
+            if (s == null) {
+                Stat created = new Stat(stmtId, key, kind);
+                s = stats.putIfAbsent(id, created);
+                if (s == null) {
+                    s = created;
+                    isNew = true;
+                }
+            }
+            s.count.add(n);
+            s.lastSeen = System.currentTimeMillis();
+            if (code != null) {
+                s.lastCode = code;
+            }
+            if (isNew) {
+                log.info("[migration] NEW stmt={} key={} kind={} code={}", stmtId, key, kind, s.lastCode);
+            }
+        } catch (Throwable ignore) {
+            // 무시
+        }
+    }
+
+    /** stmt|key|kind|count|lastCode|lastSeen 형식의 정렬된 전체 목록 */
+    public List<String> snapshot() {
+        List<String> lines = new ArrayList<>();
+        for (Stat s : stats.values()) {
+            lines.add(format(s));
+        }
+        Collections.sort(lines);
+        return lines;
+    }
+
+    private static String format(Stat s) {
+        return s.stmtId + "|" + s.key + "|" + s.kind + "|" + s.count.sum() + "|" + s.lastCode
+                + "|" + Instant.ofEpochMilli(s.lastSeen);
+    }
+
+    private void reportSafely() {
+        try {
+            List<String> changed = new ArrayList<>();
+            for (Stat s : stats.values()) {
+                long c = s.count.sum();
+                if (c != s.reported) {
+                    s.reported = c;
+                    changed.add(format(s));
+                }
+            }
+            Collections.sort(changed);
+            for (String line : changed) {
+                log.info("[migration] SUMMARY {}", line);
+            }
+        } catch (Throwable ignore) {
+            // 무시
+        }
+    }
+
+    /** 애플리케이션 종료 시 호출 (Spring이 destroy 메서드로 자동 호출) */
+    public void shutdown() {
+        try {
+            for (String line : snapshot()) {
+                log.info("[migration] FINAL {}", line);
+            }
+        } finally {
+            if (scheduler != null) {
+                scheduler.shutdown();
+            }
+        }
+    }
+}
