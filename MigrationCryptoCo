@@ -1,0 +1,161 @@
+package smartsuite.mybatis.migration;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import smartsuite.app.crypto.EgCryptoException;
+import smartsuite.mybatis.CryptoClient;
+import smartsuite.mybatis.CryptoContext;
+import smartsuite.mybatis.migration.MigrationTracker.Kind;
+
+/**
+ * [마이그레이션 전용] 엄격한 CryptoClient를 감싸 복호화를 관대하게 만들고, 발생 내역을 수집한다.
+ * 마이그레이션이 끝나면 이 패키지(smartsuite.mybatis.migration) 전체를 삭제하면 된다.
+ *
+ * 암호화(encrypt): 동작은 그대로(실패 시 예외). 실패만 ERROR로 기록한다.
+ * 복호화(decrypt):
+ *   1) cipherPattern 이 있으면 암호문 형식이 아닌 값은 EG로 보내지 않고 원본 반환   → PLAIN 기록
+ *   2) EG 업무 오류(result=false)는 passCodes 에 해당하면 원본 반환                  → PASSED 기록
+ *      (배치가 실패하면 반으로 쪼개 재시도해서 복호화 가능한 값은 복호화)
+ *   3) 그 외 오류(인프라 오류, 통과 대상이 아닌 코드)는 예외 전파                     → ERROR 기록
+ */
+public class MigrationCryptoClient implements CryptoClient {
+
+    private final CryptoClient delegate;
+    private final Set<String> passCodes = new HashSet<>();   // 비어 있으면 모든 업무 오류 통과
+    private final Pattern cipherPattern;                     // null 이면 전부 암호문 후보
+    private final MigrationTracker tracker;
+
+    public MigrationCryptoClient(CryptoClient delegate, String passCodes, String cipherPattern,
+                                 MigrationTracker tracker) {
+        this.delegate = delegate;
+        this.tracker = tracker;
+        if (passCodes != null) {
+            Arrays.stream(passCodes.split(",")).map(String::trim)
+                    .filter(s -> !s.isEmpty()).forEach(this.passCodes::add);
+        }
+        this.cipherPattern = (cipherPattern == null || cipherPattern.isBlank())
+                ? null : Pattern.compile(cipherPattern.trim());
+    }
+
+    // ---------------------------------------------------------------- 암호화 (엄격, 실패만 기록)
+
+    @Override
+    public List<String> encrypt(List<String> plains) {
+        CryptoContext ctx = CryptoContext.current();
+        try {
+            return delegate.encrypt(plains);
+        } catch (RuntimeException e) {
+            trackError(ctx, plains.size(), e);
+            throw e;
+        }
+    }
+
+    // ---------------------------------------------------------------- 복호화 (관대)
+
+    @Override
+    public List<String> decrypt(List<String> ciphers) {
+        if (ciphers.isEmpty()) {
+            return ciphers;
+        }
+        CryptoContext ctx = CryptoContext.current();
+        try {
+            List<Integer> idx = new ArrayList<>(ciphers.size());
+            List<String> targets = new ArrayList<>(ciphers.size());
+            Map<String, Integer> plainCount = new HashMap<>();
+
+            for (int i = 0; i < ciphers.size(); i++) {
+                String v = ciphers.get(i);
+                if (looksEncrypted(v)) {
+                    idx.add(i);
+                    targets.add(v);
+                } else {
+                    plainCount.merge(label(ctx, i), 1, Integer::sum);
+                }
+            }
+            for (Map.Entry<String, Integer> e : plainCount.entrySet()) {
+                tracker.record(stmt(ctx), e.getKey(), Kind.PLAIN, null, e.getValue());
+            }
+            if (targets.isEmpty()) {
+                return ciphers;                                // 전부 평문 → EG 호출 없음
+            }
+
+            String[] res = new String[targets.size()];
+            decryptRange(ctx, targets, idx, 0, targets.size(), res);
+
+            if (targets.size() == ciphers.size()) {
+                return Arrays.asList(res);
+            }
+            List<String> out = new ArrayList<>(ciphers);       // 평문은 원본 그대로
+            for (int k = 0; k < idx.size(); k++) {
+                out.set(idx.get(k), res[k]);
+            }
+            return out;
+        } catch (RuntimeException e) {
+            trackError(ctx, ciphers.size(), e);
+            throw e;
+        }
+    }
+
+    private void decryptRange(CryptoContext ctx, List<String> targets, List<Integer> idx,
+                              int from, int to, String[] res) {
+        List<String> part = targets.subList(from, to);
+        try {
+            List<String> dec = delegate.decrypt(part);
+            for (int i = 0; i < dec.size(); i++) {
+                res[from + i] = dec.get(i);
+            }
+        } catch (EgCryptoException e) {
+            if (!isPassable(e.getCode())) {
+                throw e;
+            }
+            if (part.size() == 1) {
+                res[from] = part.get(0);                       // 복호화 불가 → 원본 유지
+                tracker.record(stmt(ctx), label(ctx, idx.get(from)), Kind.PASSED, e.getCode(), 1);
+                return;
+            }
+            int mid = from + (to - from) / 2;                  // 반으로 쪼개 재시도
+            decryptRange(ctx, targets, idx, from, mid, res);
+            decryptRange(ctx, targets, idx, mid, to, res);
+        }
+    }
+
+    // ---------------------------------------------------------------- 보조
+
+    private boolean looksEncrypted(String v) {
+        return v != null && !v.isEmpty() && (cipherPattern == null || cipherPattern.matcher(v).matches());
+    }
+
+    private boolean isPassable(String code) {
+        return passCodes.isEmpty() || passCodes.contains(code);
+    }
+
+    private void trackError(CryptoContext ctx, int count, RuntimeException e) {
+        String code = (e instanceof EgCryptoException x) ? x.getCode() : e.getClass().getSimpleName();
+        Set<String> labels = new LinkedHashSet<>();
+        if (ctx != null) {
+            labels.addAll(ctx.labels());
+        }
+        if (labels.isEmpty()) {
+            labels.add("?");
+        }
+        for (String label : labels) {
+            tracker.record(stmt(ctx), label, Kind.ERROR, code, 1);
+        }
+    }
+
+    private static String stmt(CryptoContext ctx) {
+        return ctx == null ? "?" : ctx.statementId();
+    }
+
+    private static String label(CryptoContext ctx, int i) {
+        return ctx == null ? "?" : ctx.label(i);
+    }
+}
