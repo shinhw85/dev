@@ -1,0 +1,47 @@
+package smartsuite.mybatis;
+
+import java.util.List;
+
+/**
+ * 현재 암복호화 호출이 어느 쿼리(statement)의 어느 키들에 대한 것인지를 담는 스레드 로컬.
+ * 인터셉터가 호출 직전에 설정하고 직후에 지운다. (오류/마이그레이션 추적, 로깅용)
+ * 값 하나당 라벨(키 이름) 하나가 같은 순서로 들어 있다.
+ */
+public final class CryptoContext {
+
+    private static final ThreadLocal<CryptoContext> CURRENT = new ThreadLocal<>();
+
+    private final String statementId;
+    private final List<String> labels;
+
+    private CryptoContext(String statementId, List<String> labels) {
+        this.statementId = statementId;
+        this.labels = labels;
+    }
+
+    public static void set(String statementId, List<String> labels) {
+        CURRENT.set(new CryptoContext(statementId, labels));
+    }
+
+    public static void clear() {
+        CURRENT.remove();
+    }
+
+    /** 없으면 null */
+    public static CryptoContext current() {
+        return CURRENT.get();
+    }
+
+    public String statementId() {
+        return statementId;
+    }
+
+    /** i번째 값의 키 이름 */
+    public String label(int i) {
+        return (labels != null && i >= 0 && i < labels.size()) ? labels.get(i) : "?";
+    }
+
+    public List<String> labels() {
+        return labels == null ? List.of() : labels;
+    }
+}
