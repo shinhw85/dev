@@ -1,10 +1,27 @@
-[aX4vWM4VmhQqicnTQxwV9w==]
-[zWCe+zB7U0BGyq1LHKcTug==]
-[AiRH6z2maJT4EcFrX199Kw==]
-[EX1PBABiQ94paxnroMfxog==]
-[h/U0lZ9ax0uJZI7yE8PJrA==]
-[HOGJDotUrVMcWvxAWfKwhA==, P3LDH4Xg6THo8upUk22e0A==]
-[c44u/NWSimTgVkqLaIloq2lecCkZQ/VLyrhjWEmLcImc7aPj4rPo7wcZxHCGAhUp6AbRzPo88+htjQUrPqeEt09+YDn7TyMSwXVyDXy17QU=]
-crypto.decrypt.passthrough=true
-crypto.decrypt.passthrough.codes=20014
-crypto.cipher.pattern=^(?:[A-Za-z0-9+/]{4}){5,}(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$
+// ApplicationConfiguration.java
+
+// ===== MIGRATION-BEGIN (마이그레이션 종료 후 이 블록 삭제) =====
+@Bean   // destroy 메서드는 MigrationSupport.shutdown() 이 자동으로 호출됨
+public MigrationSupport migrationSupport(
+        @Value("#{apiProperties['crypto.migration.enabled'] ?: 'false'}") boolean enabled,
+        @Value("#{apiProperties['crypto.migration.passthrough.codes'] ?: ''}") String passCodes,
+        @Value("#{apiProperties['crypto.migration.cipher.pattern'] ?: ''}") String cipherPattern,
+        @Value("#{apiProperties['crypto.migration.report.minutes'] ?: '10'}") long reportMinutes) {
+    return new MigrationSupport(enabled, passCodes, cipherPattern, reportMinutes);
+}
+// ===== MIGRATION-END =====
+
+@Bean
+public CryptoClient cryptoClient(@Lazy EgCryptoService eg,
+                                 MigrationSupport migration) {          // MIGRATION: 종료 후 이 파라미터 삭제
+    CryptoClient strict = new EgCryptoClient(eg);
+    return migration.wrap(strict);                                      // MIGRATION: 종료 후 'return strict;' 로 교체
+}
+
+// import (종료 후 삭제): smartsuite.mybatis.migration.MigrationSupport
+//
+// cryptoInterceptor 빈은 그대로:
+// @Bean
+// public CryptoInterceptor cryptoInterceptor(CryptoClient client, CryptoTargets targets) {
+//     return new CryptoInterceptor(client, targets, "p.");
+// }
