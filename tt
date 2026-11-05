@@ -1,19 +1,4 @@
-// ApplicationConfiguration.java 의 cryptoClient 빈을 아래로 교체
-// (@Value 는 @Bean 메서드 파라미터에도 사용 가능)
-
-    @Bean
-    public CryptoClient cryptoClient(@Lazy EgCryptoService eg,
-            @Value("#{apiProperties['crypto.decrypt.passthrough'] ?: 'false'}") boolean passthrough,
-            @Value("#{apiProperties['crypto.decrypt.passthrough.codes'] ?: ''}") String passCodes,
-            @Value("#{apiProperties['crypto.cipher.pattern'] ?: ''}") String cipherPattern) {
-        return new EgCryptoClient(eg, passthrough, passCodes, cipherPattern);
-    }
-
-// apiProperties 에 추가
-//
-// 마이그레이션 기간: 복호화 불가 값(평문 등)은 오류 대신 원본 그대로 반환
-//   crypto.decrypt.passthrough=true
-// 통과시킬 EG 오류 코드 (비우면 모든 업무 오류 통과). 로그에서 평문 복호화 시 나온 20014 권장
-//   crypto.decrypt.passthrough.codes=20014
-// 암호문 형식 정규식 (비우면 전부 EG로 보냄). 형식은 암호문 샘플 확인 후 지정
-//   crypto.cipher.pattern=
+[aX4vWM4VmhQqicnTQxwV9w==]
+[zWCe+zB7U0BGyq1LHKcTug==]
+[AiRH6z2maJT4EcFrX199Kw==]
+[EX1PBABiQ94paxnroMfxog==]
