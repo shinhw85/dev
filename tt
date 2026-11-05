@@ -25,3 +25,37 @@ public CryptoClient cryptoClient(@Lazy EgCryptoService eg,
 // public CryptoInterceptor cryptoInterceptor(CryptoClient client, CryptoTargets targets) {
 //     return new CryptoInterceptor(client, targets, "p.");
 // }
+
+
+
+# ======== apiProperties : crypto.migration.* 는 종료 후 전부 삭제 ========
+crypto.migration.enabled=true
+# 통과시킬 EG 오류 코드 (비우면 모든 EG 업무 오류 통과)
+crypto.migration.passthrough.codes=20014
+# 암호문 형식(Base64, 24자 이상). 이 형식이 아닌 값은 평문으로 보고 EG 호출 없이 통과
+crypto.migration.cipher.pattern=^(?:[A-Za-z0-9+/]{4}){5,}(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$
+# 주기 요약 로그 간격(분), 0이면 주기 출력 없음 (NEW / 종료 시 FINAL 은 항상 출력)
+crypto.migration.report.minutes=10
+
+
+<!-- ======== logback.xml : 수집 결과를 별도 파일로 분리 (종료 후 삭제) ========
+     ${LOG_PATH} 는 기존 설정의 로그 경로 변수에 맞게 수정 -->
+<appender name="CRYPTO_MIGRATION" class="ch.qos.logback.core.rolling.RollingFileAppender">
+  <file>${LOG_PATH}/crypto-migration.log</file>
+  <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    <fileNamePattern>${LOG_PATH}/crypto-migration.%d{yyyy-MM-dd}.log</fileNamePattern>
+    <maxHistory>30</maxHistory>
+  </rollingPolicy>
+  <encoder>
+    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %msg%n</pattern>
+  </encoder>
+</appender>
+
+<logger name="crypto.migration" level="INFO" additivity="false">
+  <appender-ref ref="CRYPTO_MIGRATION"/>
+</logger>
+
+# 출력 예 (값은 기록하지 않음, 건수는 JVM 기동 이후 누적)
+# [migration] NEW     stmt=user-session.findUserSessionInfo key=mob kind=PLAIN code=-
+# [migration] SUMMARY user-session.findUserSessionInfo|mob|PLAIN|128|-|2026-11-05T01:10:00Z
+# [migration] FINAL   user-session.findUserSessionInfo|mob|PLAIN|412|-|2026-11-05T09:30:12Z
