@@ -1,0 +1,42 @@
+package smartsuite.mybatis.migration;
+
+import java.util.List;
+
+import smartsuite.mybatis.CryptoClient;
+
+/**
+ * [마이그레이션 전용] 설정 값을 모아 CryptoClient를 감싸는 진입점.
+ * 설정 한 곳(ApplicationConfiguration)에서 wrap() 한 줄로만 연결되므로,
+ * 종료 후에는 이 패키지를 지우고 해당 설정 두 곳만 되돌리면 된다.
+ */
+public class MigrationSupport {
+
+    private final boolean enabled;
+    private final String passCodes;
+    private final String cipherPattern;
+    private final MigrationTracker tracker;     // enabled=false 이면 null
+
+    public MigrationSupport(boolean enabled, String passCodes, String cipherPattern, long reportMinutes) {
+        this.enabled = enabled;
+        this.passCodes = passCodes;
+        this.cipherPattern = cipherPattern;
+        this.tracker = enabled ? new MigrationTracker(reportMinutes) : null;
+    }
+
+    /** enabled=false 이면 엄격한 원본을 그대로 반환 (마이그레이션 로직/수집 완전 비활성) */
+    public CryptoClient wrap(CryptoClient strict) {
+        return enabled ? new MigrationCryptoClient(strict, passCodes, cipherPattern, tracker) : strict;
+    }
+
+    /** 현재까지 집계된 목록 (stmt|key|kind|count|lastCode|lastSeen). 필요하면 임시 화면/컨트롤러에서 호출 */
+    public List<String> report() {
+        return tracker == null ? List.of() : tracker.snapshot();
+    }
+
+    /** Spring 이 @Bean 의 destroy 메서드로 자동 추론해 종료 시 호출 */
+    public void shutdown() {
+        if (tracker != null) {
+            tracker.shutdown();
+        }
+    }
+}
