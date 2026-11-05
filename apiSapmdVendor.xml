@@ -4,6 +4,20 @@
 
 <mapper namespace="apiSapmdVendor">
 
+
+<select id="selectIF_D4MDZ0500_BPHD_IDS" parameterType="map" resultType="string">
+/* apiSapmdVendor.selectIF_D4MDZ0500_BPHD_IDS : 반영 대상 BPHD if_doc_id 목록 */
+  SELECT if_doc_id
+  FROM IF_D4MDZ0500_BPHD
+  WHERE ten_id = #{g.tenant}
+  <if test="p.regr_id != null and p.regr_id != ''">AND regr_id = #{p.regr_id}</if>
+  <if test="p.if_doc_id_from != null and p.if_doc_id_from != ''">AND if_doc_id &gt;= #{p.if_doc_id_from}</if>
+  <if test="p.lastKey != null">AND if_doc_id &gt; #{p.lastKey}</if>
+  ORDER BY if_doc_id
+  LIMIT #{p.pageSize}
+</select>
+
+
 	<!-- 	D4_MDZ_0500 BPHD 테이블 저장-->
 	<insert id="insertIF_D4MDZ0500_BPHD" parameterType="map">
 	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHD :  D4_MDZ_0500 BPHD 테이블 저장	*/
