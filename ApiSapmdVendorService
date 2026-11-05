@@ -1,0 +1,1394 @@
+package smartsuite.app.api.inbound.sapmd.vendor.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.compress.utils.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import smartsuite.app.api.inbound.sapmd.vendor.model.ADDRESS;
+import smartsuite.app.api.inbound.sapmd.vendor.model.AD_EMAIL;
+import smartsuite.app.api.inbound.sapmd.vendor.model.AD_FAX;
+import smartsuite.app.api.inbound.sapmd.vendor.model.AD_POSTAL;
+import smartsuite.app.api.inbound.sapmd.vendor.model.AD_TEL;
+import smartsuite.app.api.inbound.sapmd.vendor.model.AD_URL;
+import smartsuite.app.api.inbound.sapmd.vendor.model.BP_COMPNY;
+import smartsuite.app.api.inbound.sapmd.vendor.model.BP_HEADER;
+import smartsuite.app.api.inbound.sapmd.vendor.model.BP_HEADER_ROOT;
+import smartsuite.app.api.inbound.sapmd.vendor.model.BP_PORG;
+import smartsuite.app.api.inbound.sapmd.vendor.model.BP_TAXNUM;
+import smartsuite.app.api.inbound.sapmd.vendor.model.BP_VENGEN;
+import smartsuite.app.api.inbound.sapmd.vendor.model.BP_WHTAX;
+import smartsuite.app.api.inbound.sapmd.vendor.model.ZVLICEN;
+import smartsuite.app.api.inbound.sapmd.vendor.model.ZVPFN;
+import smartsuite.app.api.inbound.sapmd.vendor.repository.ApiSapmdVendorRepository;
+import smartsuite.app.bp.vendorMaster.vendorInfo.service.VendorMasterService;
+import smartsuite.app.common.shared.service.SharedService;
+
+@Service
+public class ApiSapmdVendorService {
+    private static final Logger LOG = LoggerFactory.getLogger(ApiSapmdVendorService.class);
+
+    @Autowired
+    private ApiSapmdVendorRepository apiSapmdVendorRepository;
+
+    @Autowired
+    private SharedService sharedService;
+    
+    @Autowired
+    private VendorMasterService vendorMasterService;
+
+    public void sendVendor(BP_HEADER_ROOT bp_header) {
+        LOG.debug("D4MDZ0500 vendor master InterFace Start");
+
+        if(bp_header.getBpHeader() == null){
+            LOG.debug("D4MDZ0500 vendor master is Null");
+        }else{
+            LOG.debug("D4MDZ0500 vendor master Size : " + bp_header.getBpHeader().length);
+        }
+        
+        
+		List<String> idDocIds = Lists.newArrayList();
+		
+        BP_HEADER[] bp_headerList = bp_header.getBpHeader();
+
+        Map<String,Object> map = new HashMap<String, Object>();
+//        Map<String, Object> itemMap = new HashMap<String, Object>();
+        Map<String, Object> bphdMap = new HashMap<String, Object>();
+        Map<String, Object> bphdaddrMap = new HashMap<String, Object>();
+        Map<String, Object> bphdaddrademailMap = new HashMap<String, Object>();
+        Map<String, Object> bphdaddradfaxMap = new HashMap<String, Object>();
+        Map<String, Object> bphdaddradpostalMap = new HashMap<String, Object>();
+        Map<String, Object> bphdaddradtelMap = new HashMap<String, Object>();
+        Map<String, Object> bphdaddradurlMap = new HashMap<String, Object>();
+        Map<String, Object> bphdbptaxnumMap = new HashMap<String, Object>();
+        Map<String, Object> bphdvengenMap = new HashMap<String, Object>();
+        Map<String, Object> bphdvengenbpcomMap = new HashMap<String, Object>();
+        Map<String, Object> bphdvengenbpporgMap = new HashMap<String, Object>();
+        Map<String, Object> bphdvengencomtaxMap = new HashMap<String, Object>();
+        Map<String, Object> bphdvengenporgMap = new HashMap<String, Object>();
+        List<Map<String,Object>> vdLicenseList = new ArrayList<Map<String, Object>>();
+        
+        String bpHeader = "";
+        String addrno = "";
+        String lifnr = "";
+        
+        for(int i = 0; i < bp_headerList.length; i++){
+//            itemMap = new HashMap<String, Object>();
+            map = new HashMap<String, Object>();
+            
+            bpHeader = bp_headerList[i].getBpHeader();
+            
+            bphdMap.clear();;
+            String bphdIfDocId = sharedService.generateDocumentNumber("IF");
+            bphdMap.put("if_doc_id", bphdIfDocId);
+            bphdMap.put("bp_header", bpHeader); //Business Partner Number
+//            itemMap.put("bp_header", bpHeader); //Business Partner Number
+
+            apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHD(bphdMap);
+
+            vdLicenseList = new ArrayList<Map<String, Object>>();
+
+            try{
+                if(bp_headerList[i].getAddress() == null){
+                    LOG.debug("empty if statements");
+                }else{
+                    ADDRESS[] addressList = bp_headerList[i].getAddress();
+                    for(int j = 0; j < addressList.length; j++){
+                    	addrno = addressList[j].getAddrno();
+                    	
+                        bphdaddrMap.clear();;
+                        bphdaddrMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                        bphdaddrMap.put("bp_header", bpHeader);
+                        bphdaddrMap.put("addrno", addrno);
+                        bphdaddrMap.put("bphd_if_doc_id", bphdIfDocId);
+//                        itemMap.put("addrno", addrno);
+
+                        apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDADDR(bphdaddrMap);
+
+                        if(addressList[j].getAdPostal() == null){
+                            LOG.debug("empty if statements");
+                        }else{
+                            AD_POSTAL[] ad_postal = addressList[j].getAdPostal();
+                            for(int k = 0; k < ad_postal.length; k++){
+                                bphdaddradpostalMap.clear();
+                                bphdaddradpostalMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                                bphdaddradpostalMap.put("bp_header", bpHeader);
+                                bphdaddradpostalMap.put("addrno", addrno);
+                                bphdaddradpostalMap.put("nation", ad_postal[k].getNation());
+                                bphdaddradpostalMap.put("post_code1", ad_postal[k].getPostCode1());
+                                bphdaddradpostalMap.put("post_code2", ad_postal[k].getPostCode2());
+                                bphdaddradpostalMap.put("city1", ad_postal[k].getCity1());
+                                bphdaddradpostalMap.put("city2", ad_postal[k].getCity2());
+                                bphdaddradpostalMap.put("region", ad_postal[k].getRegion());
+                                bphdaddradpostalMap.put("title", ad_postal[k].getTitle());
+                                bphdaddradpostalMap.put("sort1", ad_postal[k].getSort1());
+                                bphdaddradpostalMap.put("sort2", ad_postal[k].getSort2());
+                                bphdaddradpostalMap.put("name1", ad_postal[k].getName1());
+                                bphdaddradpostalMap.put("name2", ad_postal[k].getName2());
+                                bphdaddradpostalMap.put("name3", ad_postal[k].getName3());
+                                bphdaddradpostalMap.put("name4", ad_postal[k].getName4());
+                                bphdaddradpostalMap.put("langu", ad_postal[k].getLangu());
+                                bphdaddradpostalMap.put("street", ad_postal[k].getStreet());
+                                bphdaddradpostalMap.put("house_num1", ad_postal[k].getHouseNum1());
+                                bphdaddradpostalMap.put("country", ad_postal[k].getCountry());
+                                bphdaddradpostalMap.put("po_box", ad_postal[k].getPoBox());
+                                bphdaddradpostalMap.put("transpzone", ad_postal[k].getTranspzone());
+                                bphdaddradpostalMap.put("taxjurcode", ad_postal[k].getTaxjurcode());
+                                bphdaddradpostalMap.put("time_zone", ad_postal[k].getTimeZone());
+                                bphdaddradpostalMap.put("bphd_if_doc_id", bphdIfDocId);
+                                
+//                                itemMap.put("nation", ad_postal[k].getNation());
+//                                itemMap.put("post_code1", ad_postal[k].getPostCode1());
+//                                itemMap.put("post_code2", ad_postal[k].getPostCode2());
+//                                itemMap.put("city1", ad_postal[k].getCity1());
+//                                itemMap.put("city2", ad_postal[k].getCity2());
+//                                itemMap.put("region", ad_postal[k].getRegion());
+//                                itemMap.put("title", ad_postal[k].getTitle());
+//                                itemMap.put("sort1", ad_postal[k].getSort1());
+//                                itemMap.put("sort2", ad_postal[k].getSort2());
+//                                itemMap.put("name1", ad_postal[k].getName1());
+//                                itemMap.put("name2", ad_postal[k].getName2());
+//                                itemMap.put("name3", ad_postal[k].getName3());
+//                                itemMap.put("name4", ad_postal[k].getName4());
+//                                itemMap.put("langu", ad_postal[k].getLangu());
+//                                itemMap.put("street", ad_postal[k].getStreet());
+//                                itemMap.put("house_num1", ad_postal[k].getHouseNum1());
+//                                itemMap.put("country", ad_postal[k].getCountry());
+//                                itemMap.put("po_box", ad_postal[k].getPoBox());
+//                                itemMap.put("transpzone", ad_postal[k].getTranspzone());
+//                                itemMap.put("taxjurcode", ad_postal[k].getTaxjurcode());
+//                                itemMap.put("time_zone", ad_postal[k].getTimeZone());
+
+                                apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDADDRADPOSTAL(bphdaddradpostalMap);
+                            }
+                        }
+
+                        if(addressList[j].getAdTel() == null){
+                            LOG.debug("empty if statements");
+                        }else{
+                            AD_TEL[] ad_tel = addressList[j].getAdTel();
+                            for(int k = 0; k < ad_tel.length; k++){
+                                bphdaddradtelMap.clear();
+                                bphdaddradtelMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                                bphdaddradtelMap.put("bp_header", bpHeader);
+                                bphdaddradtelMap.put("addrno", addrno);
+                                bphdaddradtelMap.put("consnumber", ad_tel[k].getConsnumber());
+                                bphdaddradtelMap.put("date_from", ad_tel[k].getDateFrom());
+                                bphdaddradtelMap.put("country", ad_tel[k].getCountry());
+                                bphdaddradtelMap.put("tel_number", ad_tel[k].getTelNumber());
+                                bphdaddradtelMap.put("tel_extens", ad_tel[k].getTelExtens());
+                                bphdaddradtelMap.put("r3_user", ad_tel[k].getR3User());
+                                bphdaddradtelMap.put("bphd_if_doc_id", bphdIfDocId);
+                                
+//                                itemMap.put("consnumber", ad_tel[k].getConsnumber());
+//                                itemMap.put("date_from", ad_tel[k].getDateFrom());
+//                                itemMap.put("country", ad_tel[k].getCountry());
+//                                itemMap.put("tel_number", ad_tel[k].getTelNumber());
+//                                itemMap.put("tel_extens", ad_tel[k].getTelExtens());
+//                                itemMap.put("r3_user", ad_tel[k].getR3User());
+
+                                apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDADDRADTEL(bphdaddradtelMap);
+                            }
+                        }
+
+                        if(addressList[j].getAdFax() == null){
+                            LOG.debug("empty if statements");
+                        }else{
+                            AD_FAX[] ad_fax = addressList[j].getAdFax();
+                            for(int k = 0; k < ad_fax.length; k++){
+                                bphdaddradfaxMap.clear();
+                                bphdaddradfaxMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                                bphdaddradfaxMap.put("bp_header", bpHeader);
+                                bphdaddradfaxMap.put("addrno", addrno);
+                                bphdaddradfaxMap.put("consnumber", ad_fax[k].getConsnumber());
+                                bphdaddradfaxMap.put("date_from",ad_fax[k].getDateFrom());
+                                bphdaddradfaxMap.put("country", ad_fax[k].getCountry());
+                                bphdaddradfaxMap.put("fax_number", ad_fax[k].getFaxNumber());
+                                bphdaddradfaxMap.put("fax_extens", ad_fax[k].getFaxExtens());
+                                bphdaddradfaxMap.put("bphd_if_doc_id", bphdIfDocId);
+                                
+//                                itemMap.put("consnumber", ad_fax[k].getConsnumber());
+//                                itemMap.put("date_from",ad_fax[k].getDateFrom());
+//                                itemMap.put("country", ad_fax[k].getCountry());
+//                                itemMap.put("fax_number", ad_fax[k].getFaxNumber());
+//                                itemMap.put("fax_extens", ad_fax[k].getFaxExtens());
+
+                                apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDADDRADFAX(bphdaddradfaxMap);
+
+                            }
+                        }
+
+                        if(addressList[j].getAdUrl() == null){
+                            LOG.debug("empty if statements");
+                        }else{
+                            AD_URL[] ad_url = addressList[j].getAdUrl();
+                            for(int k = 0; k < ad_url.length; k++){
+                                bphdaddradurlMap.clear();
+                                bphdaddradurlMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                                bphdaddradurlMap.put("bp_header", bpHeader);
+                                bphdaddradurlMap.put("addrno", addrno);
+                                bphdaddradurlMap.put("consnumber", ad_url[k].getConsnumber());
+                                bphdaddradurlMap.put("date_from", ad_url[k].getDateFrom());
+                                bphdaddradurlMap.put("uri_addr", ad_url[k].getUriAddr());
+                                bphdaddradurlMap.put("bphd_if_doc_id", bphdIfDocId);
+                                
+//                                itemMap.put("consnumber", ad_url[k].getConsnumber());
+//                                itemMap.put("date_from", ad_url[k].getDateFrom());
+//                                itemMap.put("uri_addr", ad_url[k].getUriAddr());
+
+                                apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDADDRADURL(bphdaddradurlMap);
+                            }
+                        }
+
+                        if(addressList[j].getAdEmail() == null){
+                            LOG.debug("empty if statements");
+                        }else{
+                            AD_EMAIL[] ad_email = addressList[j].getAdEmail();
+                            for(int k = 0; k < ad_email.length; k++){
+                                bphdaddrademailMap.clear();
+                                bphdaddrademailMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                                bphdaddrademailMap.put("bp_header", bpHeader);
+                                bphdaddrademailMap.put("addrno", addrno);
+                                bphdaddrademailMap.put("consnumber", ad_email[k].getConsnumber());
+                                bphdaddrademailMap.put("date_from", ad_email[k].getDateFrom());
+                                bphdaddrademailMap.put("smtp_addr", ad_email[k].getSmtpAddr());
+                                bphdaddrademailMap.put("bphd_if_doc_id", bphdIfDocId);
+                                
+//                                itemMap.put("consnumber", ad_email[k].getConsnumber());
+//                                itemMap.put("date_from", ad_email[k].getDateFrom());
+//                                itemMap.put("smtp_addr", ad_email[k].getSmtpAddr());
+
+                                apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDADDRADEMAIL(bphdaddrademailMap);
+                            }
+                        }
+                    }
+                }
+
+                if(bp_headerList[i].getBpTaxnum() == null){
+                    LOG.debug("empty if statements");
+                }else{
+                    BP_TAXNUM[] bp_taxnumList = bp_headerList[i].getBpTaxnum();
+
+                    for(int j = 0; j < bp_taxnumList.length; j++){
+                        bphdbptaxnumMap.clear();
+                        bphdbptaxnumMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                        bphdbptaxnumMap.put("bp_header", bpHeader);
+                        bphdbptaxnumMap.put("taxtype", bp_taxnumList[j].getTaxtype());
+                        bphdbptaxnumMap.put("taxnum", bp_taxnumList[j].getTaxnum());
+                        bphdbptaxnumMap.put("bphd_if_doc_id", bphdIfDocId);
+                        
+//                        itemMap.put("taxtype", bp_taxnumList[j].getTaxtype());
+//                        itemMap.put("taxnum", bp_taxnumList[j].getTaxnum());
+
+                        apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDBPTAXNUM(bphdbptaxnumMap);
+                    }
+                }
+
+                if(bp_headerList[i].getBpVengen() == null){
+                    LOG.debug("empty if statements");
+                }else{
+                    BP_VENGEN[] bp_vengenList = bp_headerList[i].getBpVengen();
+
+                    for(int j = 0; j < bp_vengenList.length; j++){
+                    	lifnr = bp_vengenList[j].getLifnr();
+                        bphdvengenMap.clear();
+                        bphdvengenMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                        bphdvengenMap.put("bp_header", bpHeader);
+                        bphdvengenMap.put("lifnr", lifnr);
+                        bphdvengenMap.put("ktokk", bp_vengenList[j].getKtokk());
+                        bphdvengenMap.put("kunnr", bp_vengenList[j].getKunnr());
+                        bphdvengenMap.put("sperr", bp_vengenList[j].getSperr());
+                        bphdvengenMap.put("sperm", bp_vengenList[j].getSperm());
+                        bphdvengenMap.put("sperq", bp_vengenList[j].getSperq());
+                        bphdvengenMap.put("loevm", bp_vengenList[j].getLoevm());
+                        bphdvengenMap.put("vbund", bp_vengenList[j].getVbund());
+                        bphdvengenMap.put("anred", bp_vengenList[j].getAnred());
+                        bphdvengenMap.put("j_1kfrepre", bp_vengenList[j].getJ1Kfrepre());
+                        bphdvengenMap.put("j_1kftbus", bp_vengenList[j].getJ1Kftbus());
+                        bphdvengenMap.put("j_1kftind", bp_vengenList[j].getJ1Kftind());
+                        bphdvengenMap.put("stcd1", bp_vengenList[j].getStcd1());
+                        bphdvengenMap.put("stcd2", bp_vengenList[j].getStcd2());
+                        bphdvengenMap.put("stcd3", bp_vengenList[j].getStcd3());
+                        bphdvengenMap.put("stcd4", bp_vengenList[j].getStcd4());
+                        bphdvengenMap.put("stceg", bp_vengenList[j].getStceg());
+                        bphdvengenMap.put("nodel", bp_vengenList[j].getNodel());
+                        bphdvengenMap.put("zzftgt", bp_vengenList[j].getZzftgt());
+                        bphdvengenMap.put("zzftgtnm", bp_vengenList[j].getZzftgtnm());
+                        bphdvengenMap.put("zzftdt", bp_vengenList[j].getZzftdt());
+                        bphdvengenMap.put("zzftdtnm", bp_vengenList[j].getZzftdtnm());
+                        bphdvengenMap.put("zzftbu", bp_vengenList[j].getZzftbu());
+                        bphdvengenMap.put("zzftbunm", bp_vengenList[j].getZzftbunm());
+                        bphdvengenMap.put("zzduns_v", bp_vengenList[j].getZzdunsV());
+                        bphdvengenMap.put("zzgiroflg", bp_vengenList[j].getZzgiroflg());
+                        bphdvengenMap.put("zzcname1", bp_vengenList[j].getZzcname1());
+                        bphdvengenMap.put("zzcname2", bp_vengenList[j].getZzcname2());
+                        bphdvengenMap.put("zztelf1_c", bp_vengenList[j].getZztelf1C());
+                        bphdvengenMap.put("zzregdt", bp_vengenList[j].getZzregdt());
+                        bphdvengenMap.put("zzregtm", bp_vengenList[j].getZzregtm());
+                        bphdvengenMap.put("zzregus", bp_vengenList[j].getZzregus());
+                        bphdvengenMap.put("zzappdt", bp_vengenList[j].getZzappdt());
+                        bphdvengenMap.put("zzapptm", bp_vengenList[j].getZzapptm());
+                        bphdvengenMap.put("zzappus", bp_vengenList[j].getZzappus());
+                        bphdvengenMap.put("zzlamdt", bp_vengenList[j].getZzlamdt());
+                        bphdvengenMap.put("zzlamtm", bp_vengenList[j].getZzlamtm());
+                        bphdvengenMap.put("zzlamus", bp_vengenList[j].getZzlamus());
+                        bphdvengenMap.put("zzsrmcd", bp_vengenList[j].getZzsrmcd());
+                        bphdvengenMap.put("zzsrmsg", bp_vengenList[j].getZzsrmsg());
+                        bphdvengenMap.put("zzort01_v", bp_vengenList[j].getZzort01V());
+                        bphdvengenMap.put("zzstras_v", bp_vengenList[j].getZzstrasV());
+                        bphdvengenMap.put("zztype", bp_vengenList[j].getZztype());
+                        bphdvengenMap.put("zzqmgrp", bp_vengenList[j].getZzqmgrp());
+                        bphdvengenMap.put("zztelno", bp_vengenList[j].getZztelno());
+                        bphdvengenMap.put("zzemail", bp_vengenList[j].getZzemail());
+                        bphdvengenMap.put("zzsubseq_v", bp_vengenList[j].getZzsubseqV());
+                        bphdvengenMap.put("zzreason_v", bp_vengenList[j].getZzreasonV());
+                        bphdvengenMap.put("zzdokar_v", bp_vengenList[j].getZzdokarV());
+                        bphdvengenMap.put("zzdoknr_v", bp_vengenList[j].getZzdoknrV());
+                        bphdvengenMap.put("zzdoktl_v", bp_vengenList[j].getZzdoktlV());
+                        bphdvengenMap.put("zzdokvr_v", bp_vengenList[j].getZzdokvrV());
+                        bphdvengenMap.put("zzinbflgv", bp_vengenList[j].getZzinbflgv());
+                        bphdvengenMap.put("zzind01_v", bp_vengenList[j].getZzind01V());
+                        bphdvengenMap.put("zzvndtyp", bp_vengenList[j].getZzvndtyp());
+                        
+                        bphdvengenMap.put("bubkz", bp_vengenList[j].getBubkz());
+                        bphdvengenMap.put("sexkz", bp_vengenList[j].getSexkz());
+                        bphdvengenMap.put("stenr", bp_vengenList[j].getStenr());
+
+                        bphdvengenMap.put("bphd_if_doc_id", bphdIfDocId);
+                        
+//                        itemMap.put("lifnr", lifnr);
+//                        itemMap.put("ktokk", bp_vengenList[j].getKtokk());
+//                        itemMap.put("kunnr", bp_vengenList[j].getKunnr());
+//                        itemMap.put("sperr", bp_vengenList[j].getSperr());
+//                        itemMap.put("sperm", bp_vengenList[j].getSperm());
+//                        itemMap.put("sperq", bp_vengenList[j].getSperq());
+//                        itemMap.put("loevm", bp_vengenList[j].getLoevm());
+//                        itemMap.put("vbund", bp_vengenList[j].getVbund());
+//                        itemMap.put("anred", bp_vengenList[j].getAnred());
+//                        itemMap.put("j_1kfrepre", bp_vengenList[j].getJ1Kfrepre());
+//                        itemMap.put("j_1kftbus", bp_vengenList[j].getJ1Kftbus());
+//                        itemMap.put("j_1kftind", bp_vengenList[j].getJ1Kftind());
+//                        itemMap.put("stcd1", bp_vengenList[j].getStcd1());
+//                        itemMap.put("stcd2", bp_vengenList[j].getStcd2());
+//                        itemMap.put("stcd3", bp_vengenList[j].getStcd3());
+//                        itemMap.put("stcd4", bp_vengenList[j].getStcd4());
+//                        itemMap.put("stceg", bp_vengenList[j].getStceg());
+//                        itemMap.put("nodel", bp_vengenList[j].getNodel());
+//                        itemMap.put("zzftgt", bp_vengenList[j].getZzftgt());
+//                        itemMap.put("zzftgtnm", bp_vengenList[j].getZzftgtnm());
+//                        itemMap.put("zzftdt", bp_vengenList[j].getZzftdt());
+//                        itemMap.put("zzftdtnm", bp_vengenList[j].getZzftdtnm());
+//                        itemMap.put("zzftbu", bp_vengenList[j].getZzftbu());
+//                        itemMap.put("zzftbunm", bp_vengenList[j].getZzftbunm());
+//                        itemMap.put("zzduns_v", bp_vengenList[j].getZzdunsV());
+//                        itemMap.put("zzgiroflg", bp_vengenList[j].getZzgiroflg());
+//                        itemMap.put("zzcname1", bp_vengenList[j].getZzcname1());
+//                        itemMap.put("zzcname2", bp_vengenList[j].getZzcname2());
+//                        itemMap.put("zztelf1_c", bp_vengenList[j].getZztelf1C());
+//                        itemMap.put("zzregdt", bp_vengenList[j].getZzregdt());
+//                        itemMap.put("zzregtm", bp_vengenList[j].getZzregtm());
+//                        itemMap.put("zzregus", bp_vengenList[j].getZzregus());
+//                        itemMap.put("zzappdt", bp_vengenList[j].getZzappdt());
+//                        itemMap.put("zzapptm", bp_vengenList[j].getZzapptm());
+//                        itemMap.put("zzappus", bp_vengenList[j].getZzappus());
+//                        itemMap.put("zzlamdt", bp_vengenList[j].getZzlamdt());
+//                        itemMap.put("zzlamtm", bp_vengenList[j].getZzlamtm());
+//                        itemMap.put("zzlamus", bp_vengenList[j].getZzlamus());
+//                        itemMap.put("zzsrmcd", bp_vengenList[j].getZzsrmcd());
+//                        itemMap.put("zzsrmsg", bp_vengenList[j].getZzsrmsg());
+//                        itemMap.put("zzort01_v", bp_vengenList[j].getZzort01V());
+//                        itemMap.put("zzstras_v", bp_vengenList[j].getZzstrasV());
+//                        itemMap.put("zztype", bp_vengenList[j].getZztype());
+//                        itemMap.put("zzqmgrp", bp_vengenList[j].getZzqmgrp());
+//                        itemMap.put("zztelno", bp_vengenList[j].getZztelno());
+//                        itemMap.put("zzemail", bp_vengenList[j].getZzemail());
+//                        itemMap.put("zzsubseq_v", bp_vengenList[j].getZzsubseqV());
+//                        itemMap.put("zzreason_v", bp_vengenList[j].getZzreasonV());
+//                        itemMap.put("zzdokar_v", bp_vengenList[j].getZzdokarV());
+//                        itemMap.put("zzdoknr_v", bp_vengenList[j].getZzdoknrV());
+//                        itemMap.put("zzdoktl_v", bp_vengenList[j].getZzdoktlV());
+//                        itemMap.put("zzdokvr_v", bp_vengenList[j].getZzdokvrV());
+//                        itemMap.put("zzinbflgv", bp_vengenList[j].getZzinbflgv());
+//                        itemMap.put("zzind01_v", bp_vengenList[j].getZzind01V());
+//                        itemMap.put("zzvndtyp", bp_vengenList[j].getZzvndtyp());
+//                       
+//                        itemMap.put("bubkz", bp_vengenList[j].getBubkz());
+//                        itemMap.put("sexkz", bp_vengenList[j].getSexkz());
+//                        itemMap.put("stenr", bp_vengenList[j].getStenr());
+
+                        apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDVENGEN(bphdvengenMap);
+
+                        if(bp_vengenList[j].getBpCompny() == null){
+                            LOG.debug("empty if statements");
+                        }else{
+                            BP_COMPNY[] bp_compny = bp_vengenList[j].getBpCompny();
+                            for(int k = 0; k < bp_vengenList[j].getBpCompny().length; k++){
+                            	String bukrs = bp_compny[k].getBukrs();
+                                bphdvengenbpcomMap.clear();
+                                bphdvengenbpcomMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                                bphdvengenbpcomMap.put("bp_header", bpHeader);
+                                bphdvengenbpcomMap.put("lifnr", lifnr);
+                                bphdvengenbpcomMap.put("bukrs", bukrs);
+                                bphdvengenbpcomMap.put("akont", bp_compny[k].getAkont());
+                                bphdvengenbpcomMap.put("zuawa", bp_compny[k].getZuawa());
+                                bphdvengenbpcomMap.put("fdgrv", bp_compny[k].getFdgrv());
+                                bphdvengenbpcomMap.put("altkn", bp_compny[k].getAltkn());
+                                bphdvengenbpcomMap.put("zterm", bp_compny[k].getZterm());
+                                bphdvengenbpcomMap.put("reprf", bp_compny[k].getReprf());
+                                bphdvengenbpcomMap.put("zwels", bp_compny[k].getZwels());
+                                bphdvengenbpcomMap.put("zahls", bp_compny[k].getZahls());
+                                bphdvengenbpcomMap.put("sperr", bp_compny[k].getSperr());
+                                bphdvengenbpcomMap.put("loevm", bp_compny[k].getLoevm());
+                                bphdvengenbpcomMap.put("qland", bp_compny[k].getQland());
+                                bphdvengenbpcomMap.put("mindk", bp_compny[k].getMindk());
+                                bphdvengenbpcomMap.put("xpore", bp_compny[k].getXpore());
+                                bphdvengenbpcomMap.put("hbkid", bp_compny[k].getHbkid());
+                                bphdvengenbpcomMap.put("ziata_bic", bp_compny[k].getZiataBic());
+                                bphdvengenbpcomMap.put("repretype", bp_compny[k].getRepretype());
+                                bphdvengenbpcomMap.put("zzlogvtyp", bp_compny[k].getZzlogvtyp());
+                                bphdvengenbpcomMap.put("xverr", bp_compny[k].getXverr());
+                                bphdvengenbpcomMap.put("qsskz", bp_compny[k].getQsskz());
+                                
+                                bphdvengenbpcomMap.put("eikto", bp_compny[k].getEikto());
+                                bphdvengenbpcomMap.put("zsabe", bp_compny[k].getZsabe());
+                                bphdvengenbpcomMap.put("tlfns", bp_compny[k].getTlfns());
+                                bphdvengenbpcomMap.put("begru", bp_compny[k].getBegru());
+                                bphdvengenbpcomMap.put("zindt", bp_compny[k].getZindt());
+                                bphdvengenbpcomMap.put("datlz", bp_compny[k].getDatlz());
+                                bphdvengenbpcomMap.put("tlfxs", bp_compny[k].getTlfxs());
+                                bphdvengenbpcomMap.put("intad", bp_compny[k].getIntad());
+                                bphdvengenbpcomMap.put("kverm", bp_compny[k].getKverm());
+                                bphdvengenbpcomMap.put("lnrze", bp_compny[k].getLnrze());
+
+                                bphdvengenbpcomMap.put("bphd_if_doc_id", bphdIfDocId);
+                                
+
+//                                itemMap.put("bukrs", bukrs);
+//                                itemMap.put("akont", bp_compny[k].getAkont());
+//                                itemMap.put("zuawa", bp_compny[k].getZuawa());
+//                                itemMap.put("fdgrv", bp_compny[k].getFdgrv());
+//                                itemMap.put("altkn", bp_compny[k].getAltkn());
+//                                itemMap.put("zterm", bp_compny[k].getZterm());
+//                                itemMap.put("reprf", bp_compny[k].getReprf());
+//                                itemMap.put("zwels", bp_compny[k].getZwels());
+//                                itemMap.put("zahls", bp_compny[k].getZahls());
+//                                itemMap.put("sperr", bp_compny[k].getSperr());
+////                                itemMap.put("loevm", bp_compny[k].getLoevm());
+//                                itemMap.put("qland", bp_compny[k].getQland());
+//                                itemMap.put("mindk", bp_compny[k].getMindk());
+//                                itemMap.put("xpore", bp_compny[k].getXpore());
+//                                itemMap.put("hbkid", bp_compny[k].getHbkid());
+//                                itemMap.put("ziata_bic", bp_compny[k].getZiataBic());
+//                                itemMap.put("repretype", bp_compny[k].getRepretype());
+//                                itemMap.put("zzlogvtyp", bp_compny[k].getZzlogvtyp());
+//                                itemMap.put("xverr", bp_compny[k].getXverr());
+//                                itemMap.put("qsskz", bp_compny[k].getQsskz());
+//                                
+//                                itemMap.put("eikto", bp_compny[k].getEikto());
+//                                itemMap.put("zsabe", bp_compny[k].getZsabe());
+//                                itemMap.put("tlfns", bp_compny[k].getTlfns());
+//                                itemMap.put("begru", bp_compny[k].getBegru());
+//                                itemMap.put("zindt", bp_compny[k].getZindt());
+//                                itemMap.put("datlz", bp_compny[k].getDatlz());
+//                                itemMap.put("tlfxs", bp_compny[k].getTlfxs());
+//                                itemMap.put("intad", bp_compny[k].getIntad());
+//                                itemMap.put("kverm", bp_compny[k].getKverm());
+//                                itemMap.put("lnrze", bp_compny[k].getLnrze());
+
+                                apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDVENGENBPCOM(bphdvengenbpcomMap);
+
+                                if(bp_compny[k].getBpWhtax() == null){
+                                    LOG.debug("empty if statements");
+                                }else{
+                                    BP_WHTAX[] bp_whtax = bp_compny[k].getBpWhtax();
+                                    for(int z = 0; z < bp_whtax.length; z++){
+                                        bphdvengencomtaxMap.clear();
+                                        bphdvengencomtaxMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                                        bphdvengencomtaxMap.put("bp_header", bpHeader);
+                                        bphdvengencomtaxMap.put("lifnr", lifnr);
+                                        bphdvengencomtaxMap.put("bukrs", bukrs);
+                                        bphdvengencomtaxMap.put("witht", bp_whtax[z].getWitht());
+                                        bphdvengencomtaxMap.put("wt_subjct", bp_whtax[z].getWtSubjct());
+                                        bphdvengencomtaxMap.put("wt_wtstcd", bp_whtax[z].getWtWtstcd());
+                                        bphdvengencomtaxMap.put("wt_withcd", bp_whtax[z].getWtWithcd());
+                                        bphdvengencomtaxMap.put("wt_exnr", bp_whtax[z].getWtExnr());
+                                        bphdvengencomtaxMap.put("wt_exrt", bp_whtax[z].getWtExrt());
+                                        bphdvengencomtaxMap.put("wt_exdf", bp_whtax[z].getWtExdf());
+                                        bphdvengencomtaxMap.put("wt_exdt", bp_whtax[z].getWtExdt());
+                                        bphdvengencomtaxMap.put("wt_wtexrs", bp_whtax[z].getWtWtexrs());
+                                        bphdvengencomtaxMap.put("qsrec", bp_whtax[z].getQsrec());
+
+                                        bphdvengencomtaxMap.put("bphd_if_doc_id", bphdIfDocId);
+                                        
+//                                        itemMap.put("witht", bp_whtax[z].getWitht());
+//                                        itemMap.put("wt_subjct", bp_whtax[z].getWtSubjct());
+//                                        itemMap.put("wt_wtstcd", bp_whtax[z].getWtWtstcd());
+//                                        itemMap.put("wt_withcd", bp_whtax[z].getWtWithcd());
+//                                        itemMap.put("wt_exnr", bp_whtax[z].getWtExnr());
+//                                        itemMap.put("wt_exrt", bp_whtax[z].getWtExrt());
+//                                        itemMap.put("wt_exdf", bp_whtax[z].getWtExdf());
+//                                        itemMap.put("wt_exdt", bp_whtax[z].getWtExdt());
+//                                        itemMap.put("wt_wtexrs", bp_whtax[z].getWtWtexrs());
+//                                        itemMap.put("qsrec", bp_whtax[z].getQsrec());
+
+                                        apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDVENGENCOMTAX(bphdvengencomtaxMap);
+                                    }
+                                }
+                            }
+                        }
+
+                        if(bp_vengenList[j].getBpPorg() == null){
+                            LOG.debug("empty if statements");
+                        }else{
+                            BP_PORG[] bp_porg = bp_vengenList[j].getBpPorg();
+                            for(int k = 0; k < bp_porg.length; k++){
+                            	String ekorg = bp_porg[k].getEkorg();
+                                bphdvengenbpporgMap.clear();
+                                bphdvengenbpporgMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                                bphdvengenbpporgMap.put("bp_header", bpHeader);
+                                bphdvengenbpporgMap.put("lifnr", lifnr);
+                                bphdvengenbpporgMap.put("ekorg", ekorg);
+                                bphdvengenbpporgMap.put("waers", bp_porg[k].getWaers());
+                                bphdvengenbpporgMap.put("zterm", bp_porg[k].getZterm());
+                                bphdvengenbpporgMap.put("inco1", bp_porg[k].getInco1());
+                                bphdvengenbpporgMap.put("inco2", bp_porg[k].getInco2());
+                                bphdvengenbpporgMap.put("kalsk", bp_porg[k].getKalsk());
+                                bphdvengenbpporgMap.put("webre", bp_porg[k].getWebre());
+                                bphdvengenbpporgMap.put("kzabs", bp_porg[k].getKzabs());
+                                bphdvengenbpporgMap.put("kzaut", bp_porg[k].getKzaut());
+                                bphdvengenbpporgMap.put("sperm", bp_porg[k].getSperm());
+                                bphdvengenbpporgMap.put("loevm", bp_porg[k].getLoevm());
+                                bphdvengenbpporgMap.put("verkf", bp_porg[k].getVerkf());
+                                bphdvengenbpporgMap.put("telf1", bp_porg[k].getTelf1());
+                                bphdvengenbpporgMap.put("bstae", bp_porg[k].getBstae());
+
+                                bphdvengenbpporgMap.put("bphd_if_doc_id", bphdIfDocId);
+                                
+//                                itemMap.put("ekorg", ekorg);
+//                                itemMap.put("waers", bp_porg[k].getWaers());
+//                                itemMap.put("zterm", bp_porg[k].getZterm());
+//                                itemMap.put("inco1", bp_porg[k].getInco1());
+//                                itemMap.put("inco2", bp_porg[k].getInco2());
+//                                itemMap.put("kalsk", bp_porg[k].getKalsk());
+//                                itemMap.put("webre", bp_porg[k].getWebre());
+//                                itemMap.put("kzabs", bp_porg[k].getKzabs());
+//                                itemMap.put("kzaut", bp_porg[k].getKzaut());
+//                                itemMap.put("sperm", bp_porg[k].getSperm());
+////                                itemMap.put("loevm", bp_porg[k].getLoevm());
+//                                itemMap.put("verkf", bp_porg[k].getVerkf());
+//                                itemMap.put("telf1", bp_porg[k].getTelf1());
+//                                itemMap.put("bstae", bp_porg[k].getBstae());
+
+                                apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDVENGENBPPORG(bphdvengenbpporgMap);
+
+                                if(bp_porg[k].getZvpfn() == null){
+                                    LOG.debug("empty if statements");
+                                }else{
+                                    ZVPFN[] zvpfn = bp_porg[k].getZvpfn();
+                                    for(int z = 0; z < zvpfn.length; z++){
+                                        bphdvengenporgMap.clear();
+                                        bphdvengenporgMap.put("if_doc_id", sharedService.generateDocumentNumber("IF"));
+                                        bphdvengenporgMap.put("bp_header", bpHeader);
+                                        bphdvengenporgMap.put("lifnr", lifnr);
+                                        bphdvengenporgMap.put("ekorg", ekorg);
+                                        bphdvengenporgMap.put("ltsnr", zvpfn[z].getLtsnr());
+                                        bphdvengenporgMap.put("werks", zvpfn[z].getWerks());
+                                        bphdvengenporgMap.put("parvw", zvpfn[z].getParvw());
+                                        bphdvengenporgMap.put("parza", zvpfn[z].getParza());
+                                        bphdvengenporgMap.put("lifn2", zvpfn[z].getLifn2());
+                                        bphdvengenporgMap.put("defpa", zvpfn[z].getDefpa());
+
+                                        bphdvengenporgMap.put("bphd_if_doc_id", bphdIfDocId);
+                                        
+//                                        itemMap.put("ltsnr", zvpfn[z].getLtsnr());
+//                                        itemMap.put("werks", zvpfn[z].getWerks());
+//                                        itemMap.put("parvw", zvpfn[z].getParvw());
+//                                        itemMap.put("parza", zvpfn[z].getParza());
+//                                        itemMap.put("lifn2", zvpfn[z].getLifn2());
+//                                        itemMap.put("defpa", zvpfn[z].getDefpa());
+
+                                        apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDVENGENPORG(bphdvengenporgMap);
+                                    }
+                                }
+                            }
+                        }
+
+                        //	공사유형 및 면허 I/F
+                        if ( bp_vengenList[j].getZvlicen() == null) {
+                            LOG.debug("### ZVLICEN is null ###");
+                        } else {
+
+                            ZVLICEN[] zvlicenList = bp_vengenList[j].getZvlicen();
+
+                            Map<String, Object> zvlicenMap = new HashMap<String, Object>();
+                            Map<String, Object> licenseMap;
+
+                            for ( ZVLICEN temp : zvlicenList ) {
+
+                                zvlicenMap.clear();
+
+                                zvlicenMap.put("if_doc_id",	sharedService.generateDocumentNumber("IF"));
+                                zvlicenMap.put("bp_header", bpHeader);
+                                zvlicenMap.put("lifnr",		lifnr);
+                                zvlicenMap.put("zzcontyp",	temp.getZzcontyp());
+                                zvlicenMap.put("zzlicnum",	temp.getZzlicnum());
+                                zvlicenMap.put("zzlicvalt",	temp.getZzlicvalt());
+                                zvlicenMap.put("del",		temp.getDel());
+                                zvlicenMap.put("bphd_if_doc_id", bphdIfDocId);
+                                
+                                licenseMap = new HashMap<String, Object>();
+
+                                licenseMap.put("vd_cd",	lifnr);
+                                licenseMap.put("zzcontyp",	temp.getZzcontyp());
+                                licenseMap.put("zzlicnum",	temp.getZzlicnum());
+                                licenseMap.put("zzlicvalt",	temp.getZzlicvalt());
+                                licenseMap.put("del",		temp.getDel());
+
+                                LOG.info("zvlicenMap == " + zvlicenMap);
+                                LOG.info("licenseMap == " + licenseMap);
+
+                                vdLicenseList.add(licenseMap);
+
+                                apiSapmdVendorRepository.insertIF_D4MDZ0500_BPHDVENGENZVLICEN(zvlicenMap);
+                            }
+                        }
+                    }
+                    
+                } // bp_headerList[i].getBpVengen() != null
+                
+                
+                /**
+                 * ============================================================
+                 * ============================================================
+                 * 20260803 hwshin: 인터페이스 테이블 저장 후 업무 처리 로직은 주석
+                 * ============================================================
+                 * ============================================================
+                 */
+                
+//
+//                if ( !vdLicenseList.isEmpty() && vdLicenseList.size() > 0 ) {
+//
+//                    //	면허 정보 저장
+//                    for ( Map<String, Object> vdLicense : vdLicenseList ) {
+//                        d4MDZ0500Repository.updateLicenseInfo(vdLicense);
+//                    }
+//                }
+//
+//                /* 기존에는 S1/PM 각각 별도로 WS 수신모듈이 호출되어 처리되던 것이 하나로 통합되어 호출됨
+//                 * (에버랜드 PM 협력업체 처리용 로직 D0MDZ0206ServiceImpl을 포함시킴)
+//                 * 구매조직을 확인하여 S1/PM 분기처리를 하는 로직 추가함
+//                 */
+//                BP_VENGEN[] bpVengen = bp_headerList[i].getBpVengen();
+//                if (bpVengen != null) {
+//
+//                    for (int j=0;j<bpVengen.length;j++) {
+//
+//                        // 구매조직을 확인하여 S1/PM 분기
+//                        boolean isS1VendorIncluded = false;
+//                        boolean isPmVendorIncluded = false;
+//
+//                        if(bpVengen[j].getBpPorg() != null){
+//                            for (BP_PORG bpPorg : bpVengen[j].getBpPorg()) {
+//                                isS1VendorIncluded = isS1VendorIncluded || bpPorg.getEkorg().equals("Y1AA") || bpPorg.getEkorg().equals("Y1AD") || bpPorg.getEkorg().equals("Y1AS");
+//                                isPmVendorIncluded = isPmVendorIncluded || bpPorg.getEkorg().equals("Y1AP");
+//                            }
+//                        }
+//
+//                        LOG.debug("isS1VendorIncluded :: " + isS1VendorIncluded);
+//                        LOG.debug("isPmVendorIncluded :: " + isPmVendorIncluded);
+//
+//                        LOG.debug("itemMap :: " + itemMap);
+//
+//                        if (isS1VendorIncluded && !"".equals(itemMap.get("stcd2"))) {
+//
+//                            if("LIEF".equals(itemMap.get("ktokk"))){
+//                                //벤더 테이블 조회하여 벤더가 들어있는지를 확인하여 중복방지한다.(불필요한 채번을 막기위해)
+//                                List<Map<String,Object>> checkList = new ArrayList<Map<String,Object>>(); //NOPMD 초기화 필요함.
+//                                List<Map<String,Object>> checkList2 = new ArrayList<Map<String,Object>>(); //NOPMD 초기화 필요함.
+//                                checkList = d4MDZ0500Repository.getVd_cdCheck(itemMap);
+//
+//                                if(checkList == null || checkList.isEmpty()){
+//                                    //System.out.println("=================  Empty of checkList (vd_cd)");
+//                                    //if("".equals(itemMap.get("zzsrmcd")) || itemMap.get("zzsrmcd") == null){
+//                                        checkList2 = d4MDZ0500Repository.checkBpHeader(itemMap);  //sangmoon
+//                                        if(checkList2 == null || checkList2.isEmpty()){
+//                                            //System.out.println("=================  Empty of checkList2(biz_reg_no)");
+//                                            if("".equals(itemMap.get("zzsrmcd")) || itemMap.get("zzsrmcd") == null){
+//                                            //	System.out.println("=================  Empty of itemMap.get(zzsrmcd)"  );
+//
+//                                            	// 20260730 hwshin : vd_sn대신 신규 vd_cd생성
+//												itemMap.put("zzsrmcd", sharedService.generateDocumentNumberByTenant("VA", Auth.getCurrentTenantId()));
+////												itemMap.put("zzsrmcd", esrcVendorDao.selectVendorinfoSeq(itemMap, map));
+//                                            }
+//                                        }else{
+//                                        //	System.out.println("=================  Not Empty of checkList2(biz_reg_no)");
+//                                            itemMap.put("zzsrmcd", checkList2.get(0).get("vd_sn"));
+//                                        }
+//                                    //}
+//                                }else{
+//                                    //System.out.println("=================  Not Empty of checkList (vd_cd)");
+//                                    if("".equals(itemMap.get("zzsrmcd")) || itemMap.get("zzsrmcd") == null){
+//                                        itemMap.put("zzsrmcd", checkList.get(0).get("vd_sn"));
+//                                    }
+//                                }
+//                                map.put("param", itemMap);
+//
+//                                d4MDZ0500Repository.mergeVendor(map);
+//
+//                                //MDG에서 받아오는 VENDOR 타입 업데이트
+//                                d4MDZ0500Repository.deleteVendorType(map);
+//                                if(itemMap.get("zzvndtyp") != null && !itemMap.get("zzvndtyp").toString().equals("")){
+//                                    //System.out.println("itemMap.get(zzvndtyp).length   :   " + itemMap.get("zzvndtyp").toString().length());
+//                                    for(int s=0; s<itemMap.get("zzvndtyp").toString().length(); s++){
+//                                        //System.out.println("itemMap.get(zzvndtyp).toString()   :   " + itemMap.get("zzvndtyp").toString());
+//                                        itemMap.put("vendor_type", itemMap.get("zzvndtyp").toString().charAt(s));
+//                                        Map<String,Object> sgMap = d4MDZ0500Repository.checkSourcingGroup(map);
+//                                        if( sgMap != null && !sgMap.get("dtl_cd").toString().equals("")){
+//                                            d4MDZ0500Repository.insertVendorType(map);
+//                                        }
+//                                    }//sangmoon
+//                                }
+//
+//                                if (!isPmVendorIncluded) {
+//                                    LOG.debug("The map input mergeVendorForPm :: " + map);
+//                                    d4MDZ0500Repository.mergeVendorForPm(map);
+//                                }
+//
+//                                d4MDZ0500Repository.mergeVendorOrgInfo(map);
+//
+//                                d4MDZ0500Repository.mergeVendorUser(map);
+//
+//                                d4MDZ0500Repository.mergeVendorRole(map);
+//                                if(!"".equals(itemMap.get("zztelf1_c")) && itemMap.get("zztelf1_c") != null){
+//                                    d4MDZ0500Repository.mergeVendorCp(map);
+//                                }
+//
+//                                d4MDZ0500Repository.commit();
+//                            }
+//                        }
+//
+//                        if (isPmVendorIncluded && !"".equals(itemMap.get("stcd2"))) {
+//
+//                            try {
+//
+//                                if (bpVengen[j] != null && bpVengen[j].getLifnr() != null) {
+//
+//                                    VD vendor = new VD();
+//                                    BP_COMPNY[] bpCompany = null;
+//                                    BP_PORG[] bpPorg = null;
+//                                    ADDRESS[] address = null;
+//                                    AD_POSTAL[] adPostal = null;
+//                                    AD_TEL[] adTel = null;
+//                                    AD_FAX[] adFax = null;
+//                                    AD_EMAIL[] adEmail = null;
+//
+//                                    String ZZSRMCD  = strNull(bpVengen[j].getZzsrmcd());
+//
+//                                    String LIFNR = strNull(bpVengen[j].getLifnr());
+////									String ZZETOPS = strNull(bpVengen[j].getZZETOPS());
+//                                    String KTOKK = strNull(bpVengen[j].getKtokk());
+//                                    String VQMGRP = strNull(bpVengen[j].getZzqmgrp());
+//                                    String J1KFREPRE = strNull(bpVengen[j].getJ1Kfrepre());
+//                                    String J1KFTBUS = strNull(bpVengen[j].getJ1Kftbus());
+//                                    String J1KFTIND = strNull(bpVengen[j].getJ1Kftind());
+//                                    String ZZAPPDT = strNull(bpVengen[j].getZzappdt());
+//
+//                                    String STCD1 = strNull(bpVengen[j].getStcd1());
+//                                    String STCD2 = strNull(bpVengen[j].getStcd2());
+//                                    String STCD3 = strNull(bpVengen[j].getStcd3());
+////									String SCACD = strNull(bpVengen[j].getSCACD());
+////									String ZZTAX_TYP = strNull(bpVengen[j].getZZTAX_TYP());
+//                                    String LOEVM = strNull(bpVengen[j].getLoevm());
+//
+//                                    String REGID = strNull(bpVengen[j].getZzregus());
+//                                    String REGDT = strNull(bpVengen[j].getZzregdt()) + strNull(bpVengen[j].getZzregtm());
+//                                    String MODID = strNull(bpVengen[j].getZzlamus());
+//                                    String MODDT = strNull(bpVengen[j].getZzlamdt()) + strNull(bpVengen[j].getZzlamtm());
+//                                    String PHNNO = ""; //strNull(bpVengen[j].getTELF1());
+//                                    String HPNO = "";  //strNull(bpVengen[j].getZZTELF1_C());
+////									String FAXNO = strNull(bpVengen[j].getTELFX());
+//                                    String ZZTYPE = strNull(bpVengen[j].getZztype());
+//
+//                                    LOG.debug("--------------bpVengen----------------------");
+//                                    LOG.debug("LIFNR = " + LIFNR);
+////									LOG.debug("ZZETOPS = " + ZZETOPS);
+//                                    LOG.debug("KTOKK = " + KTOKK);
+//                                    LOG.debug("VQMGRP = " + VQMGRP);
+//                                    LOG.debug("J1KFREPRE = " + J1KFREPRE);
+//                                    LOG.debug("J1KFTBUS = " + J1KFTBUS);
+//                                    LOG.debug("J1KFTIND = " + J1KFTIND);
+//                                    LOG.debug("ZZAPPDT = " + ZZAPPDT);
+//                                    LOG.debug("STCD1 = " + STCD1);
+//                                    LOG.debug("STCD2 = " + STCD2);
+//                                    LOG.debug("STCD3 = " + STCD3);
+////									LOG.debug("SCACD = " + SCACD);
+////									LOG.debug("ZZTAX_TYP = " + ZZTAX_TYP);
+//                                    LOG.debug("LOEVM = " + LOEVM);
+//                                    LOG.debug("REGID = " + REGID);
+//                                    LOG.debug("REGDT = " + REGDT);
+//                                    LOG.debug("MODID = " + MODID);
+//                                    LOG.debug("MODDT = " + MODDT);
+////									LOG.debug("PHNNO = " + PHNNO);
+//                                    LOG.debug("HPNO = " + HPNO);
+////									LOG.debug("FAXNO = " + FAXNO);
+//                                    LOG.debug("ZZTYPE = " + ZZTYPE);
+//
+//                                    String ALTKN = "";
+//                                    if (bpVengen[j].getBpCompny() != null && bpVengen[j].getBpCompny().length > 0) {
+//                                        bpCompany = new BP_COMPNY[bpVengen[j].getBpCompny().length];
+//                                        bpCompany = bpVengen[j].getBpCompny();
+//                                        ALTKN = strNull(bpCompany[j].getAltkn());
+//
+//                                        LOG.debug("--------------bpCompany-" + bpCompany.length + "---------------------");
+//                                        LOG.debug("ALTKN = " + ALTKN);
+//                                    }
+//
+//                                    // 미사용
+////									String ZZINV_TYP = "";
+////									String ZZGI_TYP = "";
+////									String ZZSUB_TYP = "";
+//
+//                                    if (bpVengen[j].getBpPorg() != null && bpVengen[j].getBpPorg().length > 0) {
+//                                        bpPorg = new BP_PORG[bpVengen[j].getBpPorg().length];
+//                                        bpPorg = bpVengen[j].getBpPorg();
+////										ZZINV_TYP = strNull(bpPorg[j].getZZINV_TYP());
+////										ZZGI_TYP = strNull(bpPorg[j].getZZGI_TYP());
+////										ZZSUB_TYP = strNull(bpPorg[j].getZZSUB_TYP());
+////
+//                                        LOG.debug("--------------bpPorg-" + bpPorg.length + "---------------------");
+////										LOG.debug("ZZINV_TYP = " + ZZINV_TYP);
+////										LOG.debug("ZZGI_TYP = " + ZZGI_TYP);
+////										LOG.debug("ZZSUB_TYP = " + ZZSUB_TYP);
+//                                    }
+//
+//                                    String POST_CODE1 = "";
+//                                    String STREET = "";
+//                                    String CITY1 = "";
+//                                    //String CITY2 = "";
+//                                    String REGION = "";
+//                                    String TITLE = "";
+//                                    String LANGU = "";
+//
+//                                    String NAME1 = "";
+//                                    String COUNTRY = "";
+//
+//                                    String TEL_NUMBER = "";
+//                                    String FAX_NUMBER = "";
+//                                    String SMTP_ADDR = "";
+//
+//                                    if (bp_headerList[i].getAddress() != null && bp_headerList[i].getAddress().length > 0) {
+//                                        address = new ADDRESS[bp_headerList[i].getAddress().length];
+//                                        address = bp_headerList[i].getAddress();
+//
+//                                        if (address[j].getAdPostal() !=null && address[j].getAdPostal().length > 0) {
+//                                            adPostal = new AD_POSTAL[address[j].getAdPostal().length];
+//                                            adPostal = address[j].getAdPostal();
+//
+//                                            POST_CODE1 = strNull(adPostal[j].getPostCode1());
+//                                            STREET = strNull(adPostal[j].getStreet());
+//                                            CITY1 = strNull(adPostal[j].getCity1());
+//                                            //CITY2 = strNull(adPostal[j].getCITY2());
+//                                            REGION = strNull(adPostal[j].getRegion());
+//                                            TITLE = strNull(adPostal[j].getTitle());
+//
+//                                            NAME1 = strNull(adPostal[j].getName1());
+//                                            COUNTRY = strNull(adPostal[j].getCountry());
+//                                            LANGU = strNull(adPostal[j].getLangu());
+//
+//                                            LOG.debug("--------------adPostal-" + adPostal.length + "---------------------");
+//                                            LOG.debug("POST_CODE1 = " + POST_CODE1);
+//                                            LOG.debug("CITY1 = " + CITY1);
+//                                            LOG.debug("STREET = " + STREET);
+//                                            LOG.debug("REGION = " + REGION);
+//                                            LOG.debug("TITLE = " + TITLE);
+//                                            LOG.debug("NAME1 = " + NAME1);
+//                                            LOG.debug("LANGU = " + LANGU);
+//                                            LOG.debug("COUNTRY = " + COUNTRY);
+//                                        }
+//
+//                                        if (address[j].getAdTel() != null && address[j].getAdTel().length > 0) {
+//                                            adTel = new AD_TEL[address[j].getAdTel().length];
+//                                            adTel = address[j].getAdTel();
+//
+//                                            for(AD_TEL telData : adTel) {
+//
+//                                                // R3_USER : 3 이면 핸드폰 번호에 설정
+//                                                if ( telData.getR3User() != null && !"".equals(telData.getR3User()) ) {
+//                                                    if ( "3".equals(telData.getR3User()) ){
+//                                                        LOG.debug("HP_NO = " + telData.getTelNumber());
+//                                                        TEL_NUMBER = strNull(telData.getTelNumber());
+//                                                        HPNO = strNull(telData.getTelNumber());
+//                                                    }
+//                                                    else if ( "1".equals(telData.getR3User()) ){
+//                                                        LOG.debug("HP_NO = " + telData.getTelNumber());
+//                                                        PHNNO = strNull(telData.getTelNumber());
+//                                                    }
+//                                                }
+//                                                //PHNNO = strNull(telData.getTEL_NUMBER());
+//                                            }
+//
+//                                            LOG.debug("--------------adTel-" + adTel.length + "---------------------");
+//                                            LOG.debug("TEL_NUMBER = " + TEL_NUMBER);
+//                                            LOG.debug("PHNNO = " + PHNNO);
+//                                            LOG.debug("HPNO = " + HPNO);
+//                                        }
+//
+//                                        if (address[j].getAdFax() != null && address[j].getAdFax().length > 0) {
+//                                            adFax = new AD_FAX[address[j].getAdFax().length];
+//                                            adFax = address[j].getAdFax();
+//                                            FAX_NUMBER = strNull(adFax[j].getFaxNumber());
+//
+//                                            LOG.debug("--------------adFax-" + adFax.length + "--------------------");
+//                                            LOG.debug("FAX_NUMBER = " + FAX_NUMBER);
+//                                        }
+//
+//                                        if (address[j].getAdEmail() != null && address[j].getAdEmail().length > 0) {
+//                                            adEmail = new AD_EMAIL[address[j].getAdEmail().length];
+//                                            adEmail = address[j].getAdEmail();
+//                                            SMTP_ADDR = strNull(adEmail[j].getSmtpAddr());
+//
+//                                            LOG.debug("--------------adEmail-" + adEmail.length + "--------------------");
+//                                            LOG.debug("SMTP_ADDR = " + SMTP_ADDR);
+//                                        }
+//                                    }
+//                                    
+//                                    vendor.setVD_CD(LIFNR);            //업체코드 VD_CD
+//                                    vendor.setACCNT_GRP_CD(KTOKK);     //계정그룹 ACCNT_GRP_CD
+//                                    vendor.setRLTN_COMP_CD(VQMGRP);    //관계사코드 RLTN_COMP_CD
+//                                    vendor.setREPRE_NM(J1KFREPRE);    //대표자명 REPRE_NM
+//                                    vendor.setBUSICDT(J1KFTBUS);      //업태 BUSICDT
+//                                    vendor.setIND(J1KFTIND);          //종목 IND
+//                                    vendor.setREG_DT(ZZAPPDT);         //생성일자(Approval Date) REG_DT
+//
+//                                    vendor.setJUMIN_NM(STCD1);         //주민번호 JUMIN_NM
+//                                    vendor.setBUSI_REG_NO(STCD2);      //사업자번호 BUSI_REG_NO
+//                                    vendor.setCORP_REG_NO(STCD3);      //법인번호 CORP_REG_NO
+//                                    vendor.setDEL_YN(LOEVM);
+//                                    LOG.debug("!!!!!!!!!!!!!!!!!!! LOEVM = " + LOEVM);
+////									vendor.setTAX_BILL_YN(SCACD);      //세금계산서구분 TAX_BILL_YN
+////									vendor.setTAX_TYPE(ZZTAX_TYP);     //과세유형 TAX_TYPE  “0 : 과세, 1 : 면세”
+//
+//                                    ///////////////////////////////////////////////////////////////////////////////////////
+//                                    // 법인 일반과세 일반 구분로직 0817 START
+//                                    // 법인번호가 존재하고 사업자등록번호가 존재하는 경우  1: 법인
+//                                    // 사업자등록번호가 존재하는 경우 3: 일반과세
+//                                    // 사업자등록번호가 없는경우 2: 개인
+//                                    //////////////////////////////////////////////////////////////////////////////////////
+//
+//                                    //법인 일반과세 분리로직 적용안함.(13.08.20 최형준)
+//                                    /*
+//                                    if (STCD2 == null || "".equals(STCD2)) {
+//                                        vendor.setPERSON_BUSI_YN("2"); //개인
+//                                    } else if (STCD3 == null || "".equals(STCD3)) {
+//                                        vendor.setPERSON_BUSI_YN("3"); //일반과세
+//                                    } else {
+//                                        vendor.setPERSON_BUSI_YN("1"); //법인
+//                                    }
+//                                    */
+//
+//                                    ///////////////////////////////////////////////////////////////////////////////////////
+//                                    // 법인 일반과세 일반 구분로직 0817 END
+//                                    //////////////////////////////////////////////////////////////////////////////////////
+//
+//                                    String existsVdsn = "";
+//                                    String seqVdsn = "";
+//
+//                                    //20120823 업체일련번호 설정값 변경
+//                                    LOG.debug("--------------ZZSRMCD=" + ZZSRMCD + "--------------------");
+//
+//                                    //MDG에서 신규로 SRM에 업체정보를 보내는 경우 ZZSRMCD 값이존재하지 않는 경우(vd_sn이 넘어오지 않는 경우)
+//                                    //1.협력회사코드로 협력회사일련번호가 존재하는지 체크하고
+//                                    //2.협력회사일련번호가 취득되지 않으면 채번하고 해당 데이터를 신규생성한다.
+//                                    //  취득한 경우 업데이트 로직으로 한다.
+//                                    if (ZZSRMCD == null || "".equals(ZZSRMCD)) {
+//
+//                                        //MDG 전송이 이미 되었고 우리쪽에서 송신하지않은 경우 업체일련번호 채번하는 오류가 발생
+//                                        //이미 등록된 데이터인지 확인
+////                                        Map<String,Object> itemOrgMap0 = new HashMap<String, Object>();
+////                                        itemOrgMap0.put("param", vendor);
+//
+//                                        existsVdsn = mdgToSrmVdDao.selectExistsVdsnSeq(itemOrgMap0);
+//                                        LOG.debug("ZZSRMCD null !!! search vd_sn = " + existsVdsn);
+//
+//                                        if (existsVdsn == null || "".equals(existsVdsn)) {
+//                                            seqVdsn = mdgToSrmVdDao.selectIfVdsnSeq();
+//
+//                                            LOG.debug("ZZSRMCD null !!! existsVdsn null !! create vd_sn = " + seqVdsn);
+//                                            vendor.setVD_SN(seqVdsn); //Legacy Key VD_SN
+//
+//                                        } else {
+//                                            vendor.setVD_SN(existsVdsn); //Legacy Key VD_SN
+//                                        }
+//                                    }
+//                                    //MDG에서 신규로 SRM에 업체정보를 보내는 경우 ZZSRMCD 값이 존재하는 경우
+//                                    //또는 SRM -> MDG -> SRM 으로 오는 경우
+//                                    //1.ZZSRMCD로 협력회사일련번호가 존재하는지 체크하고
+//                                    //2.협력회사일련번호가 취득되지 않으면 채번하고 해당 데이터를 신규생성한다.(더미 및 잘못된 ZZSRMCD 오는것을 방지하기위해)
+//                                    //  취득한 경우 업데이트 로직으로 한다.
+//                                    //  |
+//                                    //  | 아래 기준으로 변경 20140103 hjhwang
+//                                    //  V
+//                                    //3.마이그레이션 데이터의 경우, DB에서 선채번한 VD_SN이 MDG로부터 수신되므로,
+//                                    //  수신된 ZZSRMCD를 VD_SN으로 사용하여 프로세스를 진행한다.
+//                                    else {
+//
+//                                        //이미 등록된 데이터인지 확인
+//                                        Map<String,Object> itemOrgMap0 = new HashMap<String, Object>();
+//                                        itemOrgMap0.put("zzsrmcd",ZZSRMCD);
+//
+//                                        existsVdsn = mdgToSrmVdDao.selectExistsVdsnSeqForZzsrmcd(itemOrgMap0);
+//                                        LOG.debug("ZZSRMCD not null !!! search vd_sn = " + existsVdsn);
+//
+//                                        if (existsVdsn == null || "".equals(existsVdsn)) {
+//                                            //seqVdsn = mdgToSrmVdDao.selectIfVdsnSeq();
+//
+//                                            LOG.debug("ZZSRMCD not null !!! existsVdsn null !! create vd_sn = " + seqVdsn);
+//                                            //vendor.setVD_SN(seqVdsn); //Legacy Key VD_SN
+//                                            vendor.setVD_SN(ZZSRMCD); //Legacy Key VD_SN
+//
+//                                        } else {
+//                                            vendor.setVD_SN(existsVdsn); //Legacy Key VD_SN
+//                                        }
+//                                    }
+//
+//                                    vendor.setPREV_VD_CD(ALTKN);       //이전업체코드 PREV_VD_CD
+//
+////									vendor.setSTOCK_YN(ZZINV_TYP);        //재고처 여부   STOCK_YN
+////									vendor.setWHS_YN(ZZGI_TYP);           //출고처 여부  WHS_YN
+////									vendor.setPROC_YN(ZZSUB_TYP);         //임가공 여부   PROC_YN
+//
+//                                    vendor.setPOST_NO(POST_CODE1);      //우편번호 POST_NO
+//                                    vendor.setADDR1(STREET);            //ADDR1 기본주소(우편번호)
+//                                    vendor.setADDR2(CITY1);             //ADDR2 상세주소
+//                                    vendor.setLOC_CD(REGION);           //지역코드 LOC_CD
+//                                    vendor.setPERSON_CLS(TITLE);        //개인구분 PERSON_CLS
+//                                    vendor.setVD_NM(NAME1);             //업체명 VD_NM
+//                                    vendor.setCNTRY_CD(COUNTRY);        //국가코드 CNTRY_CD
+//                                    vendor.setLANG(LANGU);             //언어 LANG
+//
+//                                    vendor.setPHN_NO(PHNNO);          // 전화번호 PHN_NO
+//
+//                                    vendor.setHP_NO(HPNO);       //휴대전화번호 HP_NO
+//
+//                                    vendor.setFAX_NO(FAX_NUMBER);          //팩스번호 FAX_NO
+//                                    vendor.setPROC_YN(ZZTYPE); // FI업체 여부. PROC_YN에 전용하여 사용 20140110 hjhwang
+//
+//                                    vendor.setEMAIL(SMTP_ADDR);          // 이메일주소 EMAIL
+//
+//                                    vendor.setREG_DT(REGDT);
+//                                    vendor.setMOD_DT(MODDT);
+//                                    vendor.setREG_ID(REGID);
+//                                    vendor.setMOD_ID(MODID);
+//
+//                                    //MDG를 통해 등록하는 해외업체의 ID는 모두 업체코드이다.(13/08/20 최형준)
+//                                    String editUsr = "";
+//                                    Map<String,Object> srchMap = new HashMap<String, Object>();
+//
+//
+//                                    if (STCD2 != null && !"".equals(STCD2)) {
+//                                        srchMap.put("type", "BIZ");
+//                                    } else {
+//                                        srchMap.put("type", "PER");
+//                                    }
+//
+//
+//                                    srchMap.put("param", vendor);
+//
+//                                    //SRM 에 업체정보는 존재하나 유저정보의 존재유무를 체크
+//                                    LOG.debug("SRM 에 업체정보는 존재하나 유저정보의 존재유무를 체크");
+//                                    String existsUsrId = mdgToSrmVdDao.selectExistsUsrId(srchMap);
+//                                    //유저정보가 존재하는 경우
+//                                    if (existsUsrId != null && !"".equals(existsUsrId)) {
+//                                        LOG.debug("유저정보가 존재하는 경우");
+//                                        vendor.setUSR_ID(existsUsrId);
+//                                    } else {
+//
+//
+//                                        editUsr = mdgToSrmVdDao.selectEditUsrId(srchMap);
+//                                        // 채번룰에 적용되는 않는 데이터는 업체코드를 유저아이디로 한다(해외업체이거나 국내업체이면서 사업자등록번호,핸드폰번호 둘다 없는 경우)
+//                                        if (COUNTRY!=null &&  COUNTRY.equals("KR") && editUsr != null && !"".equals(editUsr)) {
+//                                            LOG.debug("채번룰 :"+editUsr);
+//                                            vendor.setUSR_ID(editUsr);
+//                                        } else {
+//                                            LOG.debug("채번룰에 적용되는 않는 데이터는 업체코드를 유저아이디로 한다(사업자등록번호,핸드폰번호 둘다 없는 경우) :"+LIFNR);
+//                                            vendor.setUSR_ID(LIFNR);
+//                                        }
+//
+//                                        vendor.setUSR_ID(LIFNR);
+//
+//                                        //신규유저정보인 경우 난수를 입력한다. 10자리
+//                                        String pw = StringUtils.getRandomPw(10, 5);
+//                                        LOG.debug("신규유저정보인 경우 난수를 입력한다. 10자리 :"+pw);
+//                                        vendor.setPASSWORD(pw);
+//                                    }
+//
+//                                    Map<String,Object> pmItemMap = new HashMap<String, Object>();
+//                                    pmItemMap.put("param", vendor);
+//                                    Map<String,Object> pmItemTempMap = new HashMap<String, Object>();
+//                                    pmItemTempMap.put("del_yn", LOEVM);
+//                                    pmItemTempMap.put("param", vendor);
+//
+//                                    LOG.debug("!!!!!!!!!!!!vendor.getVD_CD()="+vendor.getVD_CD()+"!!!!!!!!!!!!!!!!!");
+//                                    LOG.debug("!!!!!!!!!!!!LOEVM="+LOEVM+"!!!!!!!!!!!!!!!!!");
+//                                    LOG.debug("!!!!!!!!!!!!vendor.getDEL_YN()="+vendor.getDEL_YN()+"!!!!!!!!!!!!!!!!!");
+//                                    LOG.debug("!!!!!!!!!!!!pmItemTempMap.get(del_yn)="+pmItemTempMap.get("del_yn")+"!!!!!!!!!!!!!!!!!");
+//                                    //조직정보가 없는 경우 업체생성 및 수정  로직 불가 0910 START
+////									if ( bpPorg != null && bpPorg.length > 0 ) {
+//
+//                                    //업체정보데이터의 오류유무를 설정
+//                                    String retVdgl = "";
+//                                    //협력회사 SMS, Mail 전송 위해 값 취득
+//                                    //Map<String,Object> vdInfo = new HashMap<String, Object>();
+//                                        try {
+//                                            LOG.debug("!!!!!!!!!!!!"+ j + "/" + bpVengen.length +"!!!!!!!!!!!!!!!!!");
+//
+//                                            if ("LIEF".equals(KTOKK) || "ZRET".equals(KTOKK) || "ZMKR".equals(KTOKK) || "0005".equals(KTOKK) || "9999".equals(KTOKK) ) {
+//                                                //업체등록 및 수정 처리
+//                                                mdgToSrmVdDao.setMdgVendorInfo(pmItemTempMap);
+//                                                if (!isS1VendorIncluded) {
+//                                                    mdgToSrmVdDao.setMdgVendorInfoForSone(pmItemMap);
+//                                                }
+//
+//                                                /* 유저메일 sms 전송
+//                                                 * 메일, 휴대폰번호 없는 업체는 보내지 않음
+//                                                 * */
+////												if (vendor.getVD_SN() != null && !"".equals(vendor.getVD_SN())) {
+////													vdInfo.put("vd_sn", vendor.getVD_SN());
+////												}
+////												if (vendor.getEMAIL() != null && !"".equals(vendor.getEMAIL())) {
+////													vdInfo.put("email", vendor.getEMAIL());
+////													redMailService.sendNewvendorMail(vdInfo);
+////												}
+////												if (vendor.getHP_NO() != null && !"".equals(vendor.getHP_NO())) {
+////													vdInfo.put("hp_no", vendor.getHP_NO());
+////													esrcVendorService.sendVendorInfo(vdInfo);
+////												}
+//                                                /* 유저메일 sms 전송 끝
+//                                                 * */
+//
+//                                                if (!isS1VendorIncluded) {
+//                                                    //유정정보등록 처리
+//                                                    if (existsUsrId == null || "".equals(existsUsrId)) {
+//
+//                                                        LOG.debug("-CREATE USER-vendor.getUSR_ID() =" + vendor.getUSR_ID()  + "--------------------");
+//                                                        if (vendor.getUSR_ID() != null && !"".equals(vendor.getUSR_ID())) {
+//                                                            mdgToSrmVdDao.insertUsrInfo(pmItemTempMap);
+//
+//                                                        }
+//                                                    } //업체명 변경의 경우가 발생하므로 업체명을 존재유저 정보에 업데이트 하는 로직 20121004
+//                                                    else {
+//                                                        if (vendor.getUSR_ID() != null && !"".equals(vendor.getUSR_ID())) {
+//                                                            mdgToSrmVdDao.updateUsrInfo(pmItemTempMap);
+//                                                        }
+//                                                    }
+//                                                }
+//                                            }
+//
+//                                        }catch (Exception e){
+//
+//                                            LOG.debug("!!!!!!!!!!!!"+ j + "/" + bpVengen.length +"!!!!!!!!!!!!!!!!!");
+//                                            LOG.debug("setMdgVendorInfo error!");
+//
+//                                            LOG.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+//                                            //에러발생시 저장
+//                                            pmItemMap.put("zzsrmcd",ZZSRMCD);
+//                                            retVdgl = "ERROR";
+//                                            mdgToSrmVdDao.setTempMdgVendorInfo(pmItemMap);
+//                                        }
+//
+//                                        if (bpPorg != null && !"ERROR".equals(retVdgl) ) {
+//
+//                                            for (int k=0;k<bpPorg.length;k++) {
+//
+//                                                String EKORG = "";
+//                                                //String LOEVM = "";
+//                                                String SPERM = "";
+//
+//                                                String ZTERM = "";
+//                                                String WAERS = "";
+//                                                String INCO1 = "";
+//                                                String INCO2 = "";
+//                                                String KALSK = "";
+//
+//
+//                                                EKORG = strNull(bpPorg[k].getEkorg());
+//                                                SPERM = strNull(bpPorg[k].getSperm());
+//                                                //LOEVM = strNull(bpPorg[k].getLOEVM());
+//
+//                                                ZTERM = strNull(bpPorg[k].getZterm());
+//                                                WAERS = strNull(bpPorg[k].getWaers());
+//                                                INCO1 = strNull(bpPorg[k].getInco1());
+//                                                INCO2 = strNull(bpPorg[k].getInco2());
+//                                                KALSK = strNull(bpPorg[k].getKalsk());
+//
+//                                                LOG.debug("------vdPlant --------bpPorg-" + bpPorg.length + "---------------------");
+//                                                LOG.debug("EKORG = " + EKORG);
+//                                                LOG.debug("SPERM = " + SPERM);
+//                                                LOG.debug("LOEVM = " + LOEVM);
+//                                                LOG.debug("ZTERM  = " + ZTERM );
+//                                                LOG.debug("WAERS  = " + WAERS );
+//                                                LOG.debug("INCO1  = " + INCO1 );
+//                                                LOG.debug("INCO2  = " + INCO2 );
+//                                                LOG.debug("KALSK  = " + KALSK );
+//                                                LOG.debug("-----------------------------------------------------------------------");
+//
+//                                                if(!"".equals(EKORG) ) {
+//
+//                                                    VD_PLANT vdPlant = new VD_PLANT();
+//
+//                                                    vdPlant.setOPER_ORG_CD(EKORG);        //운영조직(구매조직) 코드 OPER_ORG_CD
+//
+//                                                    //불용여부에서 사용 DEL_YN 또는 DEAL_STATUS 둘중 하나가 값이 있으면 불용으로 간주
+//                                                    //협력사 상세화면에서 확인
+//
+//                                                    vdPlant.setDEL_YN(LOEVM);        	  //삭제여부  DEL_YN
+//                                                    vdPlant.setDEAL_STATUS(LOEVM);        //거래 상태  DEAL_STATUS
+//                                                    // 불용관련 컬럼끝
+//                                                    LOG.debug("!!!!!!!!!!!!vdPlant.getDEAL_STATUS()="+vdPlant.getDEAL_STATUS()+"!!!!!!!!!!!!!!!!!");
+//                                                    vdPlant.setPAY_CNDT(ZTERM);
+//                                                    vdPlant.setCUR_CD(WAERS);
+//                                                    vdPlant.setDLVY_CNDT(INCO1);
+//                                                    vdPlant.setDLVY_CNDT_NM(INCO2);
+//                                                    vdPlant.setSCHEMA_GRP(KALSK);
+//
+//                                                    Map<String,Object> itemOrgMap = new HashMap<String, Object>();
+//                                                    itemOrgMap.put("param", vendor);
+//                                                    itemOrgMap.put("orgParam", vdPlant);
+//
+//                                                    try {
+//                                                        LOG.debug("!!!!!!!!!!!!"+ j + "/" + k + "/" + bpVengen.length +"!!!!!!!!!!!!!!!!!");
+//
+//                                                        if ("LIEF".equals(KTOKK) || "ZRET".equals(KTOKK) || "ZMKR".equals(KTOKK) || "0005".equals(KTOKK) || "9999".equals(KTOKK) ) {
+//                                                            mdgToSrmVdDao.setMdgVendorOrgInfo(itemOrgMap);
+//                                                        }
+//
+//                                                    }catch (Exception e){
+//
+//                                                        LOG.debug("!!!!!!!!!!!!"+ j + "/" + k + "/" + bpVengen.length +"!!!!!!!!!!!!!!!!!");
+//                                                        LOG.debug("setMdgVendorOrgInfo error!");
+//                                                        LOG.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+//                                                        //e.printStackTrace();
+//                                                        //에러발생시 저장
+//                                                        mdgToSrmVdDao.setTempMdgVendorOrgInfo(itemOrgMap);
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//
+//                                    Map<String, Object> param = new HashMap<String, Object>();
+//                                    param.put("vd_sn", vendor.getVD_SN());
+//
+//                                    d4MDZ0500Repository.deleteVendorTypeForPm(param);
+//
+//                                    for ( int s = 0; s < String.valueOf(itemMap.get("zzvndtyp")).length(); s++ ) {
+//                                        param.put("vendor_type", String.valueOf(itemMap.get("zzvndtyp")).charAt(s));
+//                                        d4MDZ0500Repository.insertVendorTypeForPm(param);
+//                                    }
+//
+////									} // 조직정보가 없는 경우 업체생성 및 수정  로직 불가 0910 END
+//                                }
+//                                //d4MDZ0500Repository.commit();
+//                            }catch (Exception e){
+//
+//                                LOG.debug("setMdgVendorOrgInfo error!");
+//                                LOG.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+//                                //e.printStackTrace();
+//                            }
+//                        }
+//
+//                        if(!isS1VendorIncluded && !isPmVendorIncluded && !"".equals(itemMap.get("stcd2"))){
+////							if("ZMKR".equals(itemMap.get("ktokk"))){
+//                                //벤더 테이블 조회하여 벤더가 들어있는지를 확인하여 중복방지한다.(불필요한 채번을 막기위해)
+//                                List<Map<String,Object>> checkList = new ArrayList<Map<String,Object>>(); //NOPMD 초기화 필요함.
+//                                List<Map<String,Object>> checkList2 = new ArrayList<Map<String,Object>>(); //NOPMD 초기화 필요함.
+//                                checkList = d4MDZ0500Repository.getVd_cdCheck(itemMap);
+//
+//                                if(checkList == null || checkList.isEmpty()){
+//                                    checkList2 = d4MDZ0500Repository.checkBpHeader(itemMap);  //sangmoon
+//                                    if(checkList2 == null || checkList2.isEmpty()){
+//                                        if("".equals(itemMap.get("zzsrmcd")) || itemMap.get("zzsrmcd") == null){
+//                                            itemMap.put("zzsrmcd", esrcVendorDao.selectVendorinfoSeq(itemMap, map));
+//                                        }
+//                                    }else{
+//                                        itemMap.put("zzsrmcd", checkList2.get(0).get("vd_sn"));
+//                                    }
+//
+//                                }else{
+//                                    if("".equals(itemMap.get("zzsrmcd")) || itemMap.get("zzsrmcd") == null){
+//                                        itemMap.put("zzsrmcd", checkList.get(0).get("vd_sn"));
+//                                    }
+//                                }
+//                                map.put("param", itemMap);
+//
+//                                d4MDZ0500Repository.mergeVendor(map);
+//
+//                                //MDG에서 받아오는 VENDOR 타입 업데이트
+//                                d4MDZ0500Repository.deleteVendorType(map);
+//                                if(itemMap.get("zzvndtyp") != null && !"".equals(itemMap.get("zzvndtyp").toString())){
+//                                    //System.out.println("itemMap.get(zzvndtyp).length   :   " + itemMap.get("zzvndtyp").toString().length());
+//                                    for(int s=0; s<itemMap.get("zzvndtyp").toString().length(); s++){
+//                                        //System.out.println("itemMap.get(zzvndtyp).toString()   :   " + itemMap.get("zzvndtyp").toString());
+//                                        itemMap.put("vendor_type", itemMap.get("zzvndtyp").toString().charAt(s));
+//                                        Map<String,Object> sgMap = d4MDZ0500Repository.checkSourcingGroup(map);
+//                                        if( sgMap != null && !"".equals(sgMap.get("dtl_cd").toString())){
+//                                            d4MDZ0500Repository.insertVendorType(map);
+//                                        }
+//                                    }//sangmoon
+//                                }
+//
+//
+//                                LOG.debug("The map input 2nd mergeVendorForPm :: " + map);
+//                                d4MDZ0500Repository.mergeVendorForPm(map);
+//
+//                                d4MDZ0500Repository.mergeVendorOrgInfo(map);
+//                                d4MDZ0500Repository.mergeVendorOrgInfoForPM(map);
+//
+//                                d4MDZ0500Repository.mergeVendorUser(map);
+//
+//                                d4MDZ0500Repository.mergeVendorRole(map);
+//                                if(!"".equals(itemMap.get("zztelf1_c")) && itemMap.get("zztelf1_c") != null){
+//                                    d4MDZ0500Repository.mergeVendorCp(map);
+//                                }
+//
+//                                //d4MDZ0500Repository.commit();
+//                            }
+//                        }
+//                    }
+
+                
+               
+                idDocIds.add(bphdIfDocId);
+
+            }catch(Exception e){
+                LOG.debug("D4_MDZ_0500 인터페이스 도중 에러 발생");
+                //e.printStackTrace();
+                //resultList = new ArrayList<Map<String,Object>>();
+                //resultforforList = new ArrayList<Map<String,Object>>();
+                LOG.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+//                LOG.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + itemMap);
+
+            }
+        }
+        
+        // 협력사 정보 저장
+        Map<String,Object> param = new HashMap<String, Object>();
+        param.put("id_doc_ids", idDocIds);
+        vendorMasterService.updateMdgToSrmVendorInfo(param);
+    }
+
+    public String strNull(String str) {
+
+        if (str != null && !"".equals(str)) {
+            return str;
+        }
+
+        return "";
+    }
+
+}
