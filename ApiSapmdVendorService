@@ -1391,4 +1391,45 @@ public class ApiSapmdVendorService {
         return "";
     }
 
+
+private static final int ID_PAGE = 500;
+
+public int callVendor(Map<String, Object> param) {
+    String lastKey = null;
+    int total = 0;
+
+    while (true) {
+        Map<String, Object> q = new HashMap<>();
+        q.put("regr_id", param.get("regr_id"));                 // 예: "EXCEL"
+        q.put("if_doc_id_from", param.get("if_doc_id_from"));   // 예: "20261105"
+        q.put("pageSize", ID_PAGE);
+        q.put("lastKey", lastKey);
+
+        List<String> ids = apiSapmdVendorRepository.selectIF_D4MDZ0500_BPHD_IDS(q);
+        if (ids == null || ids.isEmpty()) break;
+
+        try {
+            Map<String, Object> p = new HashMap<>();
+            p.put("id_doc_ids", ids);
+            vendorMasterService.updateMdgToSrmVendorInfo(p);
+            total += ids.size();
+        } catch (Exception e) {
+            LOG.error("vendor 반영 실패, 건별 재시도: {} ~ {}", ids.get(0), ids.get(ids.size() - 1), e);
+            for (String id : ids) {                       // 실패한 묶음은 1건씩 다시
+                try {
+                    Map<String, Object> one = new HashMap<>();
+                    one.put("id_doc_ids", Collections.singletonList(id));
+                    vendorMasterService.updateMdgToSrmVendorInfo(one);
+                    total++;
+                } catch (Exception ex) {
+                    LOG.error("vendor 반영 실패: {}", id, ex);
+                }
+            }
+        }
+
+        lastKey = ids.get(ids.size() - 1);
+        if (ids.size() < ID_PAGE) break;
+    }
+    return total;
+}
 }
