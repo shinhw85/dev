@@ -1,12 +1,5 @@
 package smartsuite.mybatis;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.function.Consumer;
-
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -19,15 +12,21 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * 대상 statement의 지정 키만 EG 암복호화를 적용하는 MyBatis 플러그인.
  *
- * - insert/update/delete/select 실행 전: 파라미터의 대상 키 값을 암호화
- *   (호출한 쪽 객체를 오염시키지 않도록 실행 후 원래 값으로 복원)
- * - select 실행 후: 결과 목록의 대상 키 값을 복호화 (건수만큼 모아 배열로 1회 호출)
+ * - 실행 전: 파라미터의 대상 키 값을 암호화 (실행 후 원래 값으로 복원)
+ * - SELECT 실행 후: 결과 목록의 대상 키 값을 복호화 (모아서 List로 1회 호출)
+ * - 호출 직전에 CryptoContext(쿼리 id, 값별 키 이름)를 설정해 하위 계층(추적/로깅)이 참고할 수 있게 한다.
  *
  * 지원 범위: String 값. 파라미터는 Map / DTO / 단일 String(_parameter).
  * 미지원: ResultHandler 방식 조회, Cursor 조회, List/배열 파라미터(IN 조건) 내부 값.
@@ -39,22 +38,22 @@ import org.slf4j.LoggerFactory;
                 args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})
 })
 public class CryptoInterceptor implements Interceptor {
-	static final Logger LOG = LoggerFactory.getLogger(CryptoInterceptor.class);
-	
-    /** 파라미터가 String 하나뿐인 쿼리(예: selectByTel(String tel))의 대상 키 이름 */
+
+    /** 파라미터가 String 하나뿐인 쿼리의 대상 키 이름 */
     public static final String SINGLE_PARAM = "_parameter";
-    public final String paramPrefix;    
+
     private final CryptoClient client;
     private final CryptoTargets targets;
+    private final String paramPrefix;      // 예: "p."  (없으면 "")
 
     public CryptoInterceptor(CryptoClient client, CryptoTargets targets) {
         this(client, targets, "");
     }
-    
+
     public CryptoInterceptor(CryptoClient client, CryptoTargets targets, String paramPrefix) {
-    	this.client = client;
-    	this.targets = targets;
-    	this.paramPrefix = paramPrefix == null ? "" : paramPrefix;    	
+        this.client = client;
+        this.targets = targets;
+        this.paramPrefix = paramPrefix == null ? "" : paramPrefix;
     }
 
     @Override
@@ -67,12 +66,6 @@ public class CryptoInterceptor implements Interceptor {
             return invocation.proceed();               // 대상 아님 → 그대로
         }
 
-        Object p = args[1];
-        LOG.info("[crypto] paramClass={} keys={}", p == null ? null : p.getClass().getName(), p instanceof Map<?, ?> m ? m.keySet() : "(not Map)");
-        ms.getBoundSql(p).getParameterMappings() .forEach(pm -> LOG.info("[crypto] SQL param property={}", pm.getProperty()));
-        
-        LOG.info("[crypto] id={} cmd={} paramKey={} resultKey={}", ms.getId(), ms.getSqlCommandType(), target.paramKeys(), target.resultKeys());
-        
         Object originalParam = args[1];
         List<Slot> encrypted = new ArrayList<>();
         try {
@@ -101,7 +94,15 @@ public class CryptoInterceptor implements Interceptor {
 
         // 단일 String 파라미터
         if (param instanceof String s) {
-            return (keys.contains(SINGLE_PARAM) && !s.isEmpty()) ? client.encrypt(s) : param;
+            if (keys.contains(SINGLE_PARAM) && !s.isEmpty()) {
+                CryptoContext.set(ms.getId(), List.of(SINGLE_PARAM));
+                try {
+                    return client.encrypt(s);
+                } finally {
+                    CryptoContext.clear();
+                }
+            }
+            return param;
         }
         // Number, Date 등 단순 타입은 대상 아님
         if (ms.getConfiguration().getTypeHandlerRegistry().hasTypeHandler(param.getClass())) {
@@ -117,7 +118,7 @@ public class CryptoInterceptor implements Interceptor {
 
             Object v = mo.getValue(prop);
             if (v instanceof String s && !s.isEmpty()) {
-                found.add(new Slot(s, nv -> mo.setValue(prop, nv)));
+                found.add(new Slot(s, key, nv -> mo.setValue(prop, nv)));
             }
         }
         if (found.isEmpty()) {
@@ -125,32 +126,33 @@ public class CryptoInterceptor implements Interceptor {
         }
 
         restoreList.addAll(found);                      // 도중 실패해도 복원되도록 먼저 등록
-        convert(found, true);
+        convert(ms.getId(), found, true);
         return param;
     }
 
-    /** Map: 키 그대로(중첩 "dto.field" 허용), DTO: 프로퍼티명(대소문자/언더스코어 무시) */
+    /** prefix를 붙인 경로(p.mob)를 먼저 찾고, 없으면 키 그대로(mob) 시도 */
     private String resolveParamProperty(MetaObject mo, String key) {
-    	if(!paramPrefix.isEmpty()) {
-    		String prefixed = resolveRow(mo, paramPrefix+key);
-    		if(prefixed != null) return prefixed;
-    	}
-    	return resolveRow(mo, key);
+        if (!paramPrefix.isEmpty()) {
+            String prefixed = resolveRaw(mo, paramPrefix + key);
+            if (prefixed != null) return prefixed;
+        }
+        return resolveRaw(mo, key);
     }
-    
-    private String resolveRow(MetaObject mo, String key) {
-    	try {
-    		Object obj = mo.getOriginalObject();
-    		if (obj instanceof Map<?, ?> m) {
-    			if (m.containsKey(key)) return key;
-    			if (key.indexOf('.') > 0 && mo.hasGetter(key) && mo.hasSetter(key)) return key;
-    			return null;
-    		}
-    		String prop = mo.findProperty(key, true);
-    		return (prop != null && mo.hasGetter(prop) && mo.hasSetter(prop)) ? prop : null;
-    	} catch (RuntimeException e) {
-    		return null;                                // 없는 키 접근 시 예외 → 대상 아님
-    	}
+
+    /** Map: 키 그대로(중첩 "dto.field" 허용), DTO: 프로퍼티명(대소문자/언더스코어 무시) */
+    private String resolveRaw(MetaObject mo, String key) {
+        try {
+            Object obj = mo.getOriginalObject();
+            if (obj instanceof Map<?, ?> m) {
+                if (m.containsKey(key)) return key;
+                if (key.indexOf('.') > 0 && mo.hasGetter(key) && mo.hasSetter(key)) return key;
+                return null;
+            }
+            String prop = mo.findProperty(key, true);
+            return (prop != null && mo.hasGetter(prop) && mo.hasSetter(prop)) ? prop : null;
+        } catch (RuntimeException e) {
+            return null;                                // 없는 키 접근 시 예외 → 대상 아님
+        }
     }
 
     // ---------------------------------------------------------------- 결과 복호화
@@ -171,10 +173,12 @@ public class CryptoInterceptor implements Interceptor {
                 for (Map.Entry<Object, Object> e : m.entrySet()) {
                     if (e.getKey() instanceof String k
                             && e.getValue() instanceof String v
-                            && !v.isEmpty()
-                            && keys.contains(k.toLowerCase(java.util.Locale.ROOT))) {
-                        Object mapKey = e.getKey();
-                        found.add(new Slot(v, nv -> m.put(mapKey, nv)));
+                            && !v.isEmpty()) {
+                        String lower = k.toLowerCase(Locale.ROOT);
+                        if (keys.contains(lower)) {
+                            Object mapKey = e.getKey();
+                            found.add(new Slot(v, lower, nv -> m.put(mapKey, nv)));
+                        }
                     }
                 }
             } else if (!registry.hasTypeHandler(row.getClass())) {     // String/Long 등 단순 타입 제외
@@ -185,45 +189,54 @@ public class CryptoInterceptor implements Interceptor {
 
                     Object v = mo.getValue(prop);
                     if (v instanceof String s && !s.isEmpty()) {
-                        found.add(new Slot(s, nv -> mo.setValue(prop, nv)));
+                        found.add(new Slot(s, key, nv -> mo.setValue(prop, nv)));
                     }
                 }
             }
         }
 
         if (!found.isEmpty()) {
-            convert(found, false);
+            convert(ms.getId(), found, false);
         }
     }
 
     // ---------------------------------------------------------------- 공통
 
-    /** 모은 값을 배열로 1회 호출해 같은 순서로 되돌려 넣는다. */
-    private void convert(List<Slot> slots, boolean encrypt) {
-    	LOG.info("[crypto] {} {}건", encrypt ? "ENC" : "DEC", slots.size());
-    	
-        String[] in = new String[slots.size()];
-        for (int i = 0; i < in.length; i++) {
-            in[i] = slots.get(i).value;
+    /** 모은 값을 List로 1회 호출해 같은 순서로 되돌려 넣는다. */
+    private void convert(String statementId, List<Slot> slots, boolean encrypt) {
+        List<String> in = new ArrayList<>(slots.size());
+        List<String> labels = new ArrayList<>(slots.size());
+        for (Slot s : slots) {
+            in.add(s.value);
+            labels.add(s.key);
         }
 
-        String[] out = encrypt ? client.encrypt(in) : client.decrypt(in);
-        if (out == null || out.length != in.length) {
-            throw new IllegalStateException("암복호화 응답 건수 불일치: 요청=" + in.length
-                    + ", 응답=" + (out == null ? "null" : out.length));
+        List<String> out;
+        CryptoContext.set(statementId, labels);
+        try {
+            out = encrypt ? client.encrypt(in) : client.decrypt(in);
+        } finally {
+            CryptoContext.clear();
         }
-        for (int i = 0; i < out.length; i++) {
-            slots.get(i).setter.accept(out[i]);
+
+        if (out == null || out.size() != in.size()) {
+            throw new IllegalStateException("암복호화 응답 건수 불일치: 요청=" + in.size()
+                    + ", 응답=" + (out == null ? "null" : out.size()));
+        }
+        for (int i = 0; i < out.size(); i++) {
+            slots.get(i).setter.accept(out.get(i));
         }
     }
 
-    /** 값 하나와 그 값을 다시 써 넣는 방법 */
+    /** 값 하나, 그 키 이름, 그리고 값을 다시 써 넣는 방법 */
     private static final class Slot {
         final String value;
+        final String key;
         final Consumer<String> setter;
 
-        Slot(String value, Consumer<String> setter) {
+        Slot(String value, String key, Consumer<String> setter) {
             this.value = value;
+            this.key = key;
             this.setter = setter;
         }
     }
