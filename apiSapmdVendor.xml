@@ -1,0 +1,1266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="apiSapmdVendor">
+
+	<!-- 	D4_MDZ_0500 BPHD 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHD" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHD :  D4_MDZ_0500 BPHD 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHD(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+	
+	<!-- 	D4_MDZ_0500 BPHD의 ADDR 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDADDR" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDADDR :  D4_MDZ_0500 BPHD의 ADDR 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDADDR(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,ADDRNO
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.addrno},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+				
+	<!-- 	D4_MDZ_0500 BPHD의 ADDR의 ADPOSTAL 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDADDRADPOSTAL" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDADDRADPOSTAL :  D4_MDZ_0500 BPHD의 ADDR의 ADPOSTAL 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDADDRADPOSTAL(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,ADDRNO
+			,NATION
+			,POST_CODE1
+			,POST_CODE2
+			,CITY1
+			,CITY2
+			,REGION
+			,TITLE
+			,SORT1
+			,SORT2
+			,NAME1
+			,NAME2
+			,NAME3
+			,NAME4
+			,LANGU
+			,STREET
+			,HOUSE_NUM1
+			,COUNTRY
+			,PO_BOX
+			,TRANSPZONE
+			,TAXJURCODE
+			,TIME_ZONE
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.addrno},
+			#{p.nation},
+			#{p.post_code1},
+			#{p.post_code2},
+			#{p.city1},
+			#{p.city2},
+			#{p.region},
+			#{p.title},
+			#{p.sort1},
+			#{p.sort2},
+			#{p.name1},
+			#{p.name2},
+			#{p.name3},
+			#{p.name4},
+			#{p.langu},
+			#{p.street},
+			#{p.house_num1},
+			#{p.country},
+			#{p.po_box},
+			#{p.transpzone},
+			#{p.taxjurcode},
+			#{p.time_zone},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+	
+	<!-- 	D4_MDZ_0500 BPHD의 ADDR의 ADTEL 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDADDRADTEL" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDADDRADTEL :  D4_MDZ_0500 BPHD의 ADDR의 ADTEL 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDADDRADTEL(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,ADDRNO
+			,CONSNUMBER
+			,DATE_FROM
+			,COUNTRY
+			,TEL_NUMBER
+			,TEL_EXTENS
+			,R3_USER
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.addrno},
+			#{p.consnumber},
+			#{p.date_from},
+			#{p.country},
+			#{p.tel_number},
+			#{p.tel_extens},
+			#{p.r3_user},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+	
+	<!-- 	D4_MDZ_0500 BPHD의 ADDR의 ADFAX 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDADDRADFAX" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDADDRADFAX :  D4_MDZ_0500 BPHD의 ADDR의 ADFAX 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDADDRADFAX(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,ADDRNO
+			,CONSNUMBER
+			,DATE_FROM
+			,COUNTRY
+			,FAX_NUMBER
+			,FAX_EXTENS
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.addrno},
+			#{p.consnumber},
+			#{p.date_from},
+			#{p.country},
+			#{p.fax_number},
+			#{p.fax_extens},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+		
+	<!-- 	D4_MDZ_0500 BPHD의 ADDR의 ADURL 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDADDRADURL" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDADDRADURL :  D4_MDZ_0500 BPHD의 ADDR의 ADURL 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDADDRADURL(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,ADDRNO
+			,CONSNUMBER
+			,DATE_FROM
+			,URI_ADDR
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.addrno},
+			#{p.consnumber},
+			#{p.date_from},
+			#{p.uri_addr},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+							
+	<!-- 	D4_MDZ_0500 BPHD의 ADDR의 EMAIL 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDADDRADEMAIL" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDADDRADEMAIL :  D4_MDZ_0500 BPHD의 ADDR의 EMAIL 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDADDRADEMAIL(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,ADDRNO
+			,CONSNUMBER
+			,DATE_FROM
+			,SMTP_ADDR
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.addrno},
+			#{p.consnumber},
+			#{p.date_from},
+			#{p.smtp_addr},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+								
+	<!-- 	D4_MDZ_0500 BPHD의 BPTAXNUM 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDBPTAXNUM" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDBPTAXNUM :  D4_MDZ_0500 BPHD의 BPTAXNUM 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDBPTAXNUM(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,TAXTYPE
+			,TAXNUM
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.taxtype},
+			#{p.taxnum},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+							
+	<!-- 	D4_MDZ_0500 BPHD의 VENGEN 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDVENGEN" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDVENGEN :  D4_MDZ_0500 BPHD의 VENGEN 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDVENGEN(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,LIFNR
+			,KTOKK
+			,KUNNR
+			,SPERR
+			,SPERM
+			,SPERQ
+			,LOEVM
+			,VBUND
+			,ANRED
+			,J_1KFREPRE
+			,J_1KFTBUS
+			,J_1KFTIND
+			,STCD1
+			,STCD2
+			,STCD3
+			,STCD4
+			,STCEG
+			,NODEL
+			,ZZFTGT
+			,ZZFTGTNM
+			,ZZFTDT
+			,ZZFTDTNM
+			,ZZFTBU
+			,ZZFTBUNM
+			,ZZDUNS_V
+			,ZZGIROFLG
+			,ZZCNAME1
+			,ZZCNAME2
+			,ZZTELF1_C
+			,ZZREGDT
+			,ZZREGTM
+			,ZZREGUS
+			,ZZAPPDT
+			,ZZAPPTM
+			,ZZAPPUS
+			,ZZLAMDT
+			,ZZLAMTM
+			,ZZLAMUS
+			,ZZSRMCD
+			,ZZSRMSG
+			,ZZORT01_V
+			,ZZSTRAS_V
+			,ZZTYPE
+			,ZZQMGRP
+			,ZZTELNO
+			,ZZEMAIL
+			,ZZSUBSEQ_V
+			,ZZREASON_V
+			,ZZDOKAR_V
+			,ZZDOKNR_V
+			,ZZDOKTL_V
+			,ZZDOKVR_V
+			,ZZINBFLGV
+			,ZZIND01_V
+			,ZZVNDTYP
+			,BUBKZ
+			,SEXKZ
+			,STENR
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.lifnr},
+			#{p.ktokk},
+			#{p.kunnr},
+			#{p.sperr},
+			#{p.sperm},
+			#{p.sperq},
+			#{p.loevm},
+			#{p.vbund},
+			#{p.anred},
+			#{p.j_1kfrepre},
+			#{p.j_1kftbus},
+			#{p.j_1kftind},
+			#{p.stcd1},
+			#{p.stcd2},
+			#{p.stcd3},
+			#{p.stcd4},
+			#{p.stceg},
+			#{p.nodel},
+			#{p.zzftgt},
+			#{p.zzftgtnm},
+			#{p.zzftdt},
+			#{p.zzftdtnm},
+			#{p.zzftbu},
+			#{p.zzftbunm},
+			#{p.zzduns_v},
+			#{p.zzgiroflg},
+			#{p.zzcname1},
+			#{p.zzcname2},
+			#{p.zztelf1_c},
+			#{p.zzregdt},
+			#{p.zzregtm},
+			#{p.zzregus},
+			#{p.zzappdt},
+			#{p.zzapptm},
+			#{p.zzappus},
+			#{p.zzlamdt},
+			#{p.zzlamtm},
+			#{p.zzlamus},
+			#{p.zzsrmcd},
+			#{p.zzsrmsg},
+			#{p.zzort01_v},
+			#{p.zzstras_v},
+			#{p.zztype},
+			#{p.zzqmgrp},
+			#{p.zztelno},
+			#{p.zzemail},
+			#{p.zzsubseq_v},
+			#{p.zzreason_v},
+			#{p.zzdokar_v},
+			#{p.zzdoknr_v},
+			#{p.zzdoktl_v},
+			#{p.zzdokvr_v},
+			#{p.zzinbflgv},
+			#{p.zzind01_v},
+			#{p.zzvndtyp},
+			#{p.bubkz},
+			#{p.sexkz},
+			#{p.stenr},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+		
+	<!-- 	D4_MDZ_0500 BPHD의 VENGEN의 BPCOM 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDVENGENBPCOM" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDVENGENBPCOM :  D4_MDZ_0500 BPHD의 VENGEN의 BPCOM 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDVENGENBPCOM(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,LIFNR
+			,BUKRS
+			,AKONT
+			,ZUAWA
+			,FDGRV
+			,ALTKN
+			,ZTERM
+			,REPRF
+			,ZWELS
+			,ZAHLS
+			,SPERR
+			,LOEVM
+			,QLAND
+			,MINDK
+			,XPORE
+			,HBKID
+			,ZIATA_BIC
+			,REPRETYPE
+			,ZZLOGVTYP
+			,XVERR
+			,QSSKZ
+			,eikto
+			,zsabe
+			,tlfns
+			,begru
+			,zindt
+			,datlz
+			,tlfxs
+			,intad
+			,kverm
+			,lnrze
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.lifnr},
+			#{p.bukrs},
+			#{p.akont},
+			#{p.zuawa},
+			#{p.fdgrv},
+			#{p.altkn},
+			#{p.zterm},
+			#{p.reprf},
+			#{p.zwels},
+			#{p.zahls},
+			#{p.sperr},
+			#{p.loevm},
+			#{p.qland},
+			#{p.mindk},
+			#{p.xpore},
+			#{p.hbkid},
+			#{p.ziata_bic},
+			#{p.repretype},
+			#{p.zzlogvtyp},
+			#{p.xverr},
+			#{p.qsskz},
+			#{p.eikto},
+			#{p.zsabe},
+			#{p.tlfns},
+			#{p.begru},
+			#{p.zindt},
+			#{p.datlz},
+			#{p.tlfxs},
+			#{p.intad},
+			#{p.kverm},
+			#{p.lnrze},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+	
+	<!-- 	D4_MDZ_0500 BPHD의 VENGEN의 COMTAX 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDVENGENCOMTAX" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDVENGENCOMTAX :  D4_MDZ_0500 BPHD의 VENGEN의 COMTAX 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDVENGENCOMTAX(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,LIFNR
+			,BUKRS
+			,WITHT
+			,WT_SUBJCT
+			,WT_WTSTCD
+			,WT_WITHCD
+			,WT_EXNR
+			,WT_EXRT
+			,WT_EXDF
+			,WT_EXDT
+			,WT_WTEXRS
+			,QSREC
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.lifnr},
+			#{p.bukrs},
+			#{p.witht},
+			#{p.wt_subjct},
+			#{p.wt_wtstcd},
+			#{p.wt_withcd},
+			#{p.wt_exnr},
+			#{p.wt_exrt},
+			#{p.wt_exdf},
+			#{p.wt_exdt},
+			#{p.wt_wtexrs},
+			#{p.qsrec},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+				
+	<!-- 	D4_MDZ_0500 BPHD의 VENGEN의 BPPORG 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDVENGENBPPORG" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDVENGENBPPORG :  D4_MDZ_0500 BPHD의 VENGEN의 BPPORG 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDVENGENBPPORG(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,LIFNR
+			,EKORG
+			,WAERS
+			,ZTERM
+			,INCO1
+			,INCO2
+			,KALSK
+			,WEBRE
+			,KZABS
+			,KZAUT
+			,SPERM
+			,LOEVM
+			,VERKF
+			,TELF1
+			,BSTAE
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.lifnr},
+			#{p.ekorg},
+			#{p.waers},
+			#{p.zterm},
+			#{p.inco1},
+			#{p.inco2},
+			#{p.kalsk},
+			#{p.webre},
+			#{p.kzabs},
+			#{p.kzaut},
+			#{p.sperm},
+			#{p.loevm},
+			#{p.verkf},
+			#{p.telf1},
+			#{p.bstae},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+		
+	<!-- 	D4_MDZ_0500 BPHD의 VENGEN의 PORG의 ZVPFN 테이블 저장-->
+	<insert id="insertIF_D4MDZ0500_BPHDVENGENPORG" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDVENGENPORG :  D4_MDZ_0500 BPHD의 VENGEN의 PORG의 ZVPFN 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDVENGENPORG(
+			 ten_id
+			,IF_DOC_ID
+			,BP_HEADER
+			,LIFNR
+			,EKORG
+			,LTSNR
+			,WERKS
+			,PARVW
+			,PARZA
+			,LIFN2
+			,DEFPA
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.lifnr},
+			#{p.ekorg},
+			#{p.ltsnr},
+			#{p.werks},
+			#{p.parvw},
+			#{p.parza},
+			#{p.lifn2},
+			#{p.defpa},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+		
+	<!--	D4_MDZ_0500 BPHD의 VENGEN의 ZVLICEN 테이블 저장	-->
+	<insert id="insertIF_D4MDZ0500_BPHDVENGENZVLICEN" parameterType="map">
+	/*	apiSapmdVendor.insertIF_D4MDZ0500_BPHDVENGENZVLICEN :  D4_MDZ_0500 BPHD의 VENGEN의 ZVLICEN 테이블 저장	*/
+		INSERT INTO IF_D4MDZ0500_BPHDVENGENZVLICEN(
+			ten_id
+			,IF_DOC_ID
+			, BP_HEADER
+			, LIFNR
+			, ZZCONTYP
+			, ZZLICNUM
+			, ZZLICVALT
+			, DEL
+			,BPHD_IF_DOC_ID
+			,regr_id
+			,reg_dttm
+		)
+		VALUES(
+			#{g.tenant},
+			#{p.if_doc_id},
+			#{p.bp_header},
+			#{p.lifnr},
+			#{p.zzcontyp},
+			#{p.zzlicnum},
+			#{p.zzlicvalt},
+			#{p.del},
+			#{p.bphd_if_doc_id},
+			'MDZ',
+			#{g.now}
+		)
+	</insert>
+	
+	
+	<!-- 	벤더 인터페이스 받아서 ESMVDGL 테이블에 merge로 처리 -->
+	<!-- ENC_VARCHAR2_INS 관련 : 운영과 암호화 키가 다르므로 프로그램 변경/반영시 유의할 것	 -->
+<!-- 	<update id="mergeVendor" parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.mergeVendor :  벤더 인터페이스 받아서 ESMVDGL 테이블에 merge로 처리	*/ -->
+<!-- 		MERGE INTO ESMVDGL# A -->
+<!-- 		USING -->
+<!-- 		(SELECT  TO_NUMBER(#{p.zzsrmcd}) AS ZZSRMCD, -->
+<!-- case when #{p.anred} = 'Mr. and Mrs.' THEN '2' -->
+<!-- 									WHEN #{p.anred} = 'Company' AND #{p.taxtype} = 'KR3' THEN '1' -->
+<!-- 									ELSE '3' -->
+<!-- 									END ANRED -->
+<!-- 		FROM DUAL) B -->
+<!-- 		ON -->
+<!-- 		( -->
+<!-- 			A.VD_SN 	= B.ZZSRMCD -->
+<!-- 			AND A.SYS_ID = 'SONE' -->
+<!-- 		) -->
+<!-- 		WHEN MATCHED THEN -->
+<!-- 			UPDATE SET -->
+<!-- 				 A.ACCNT_GRP_CD	= #{p.ktokk} -->
+<!-- 				,A.VD_CD        = #{p.lifnr} -->
+<!-- 				,A.VD_NM_LOC    = #{p.name1} -->
+<!-- 				,A.BIZ_REG_NO	= #{p.stcd2} -->
+<!-- 				,A.CORP_REG_NO	= #{p.stcd3} -->
+<!---				,A.VD_TYPE      = '01' -->
+<!-- 				,A.TAX_TYPE     = #{p.taxtype} -->
+<!-- 				,A.IND          = #{p.j_1kftind} -->
+<!-- 				,A.BUSICDT      = #{p.j_1kftbus} -->
+<!-- 				,A.PERSON_BUSI_YN = B.ANRED -->
+<!-- 				,A.PERSON_CLS   = DECODE(#{p.anred}, 'Ms.', '0001', 'Mr.', '0002', 'Company', '0003', 'Mr. and Mrs.', '0004') -->
+<!-- 				,A.POST_NO      = #{p.post_code1} -->
+<!-- 				,A.ADDR         = SUBSTR(#{p.street}, 0, 58) -->
+<!-- 				,A.DT_ADDR      = #{p.city1} -->
+<!-- 				,A.NAT_CD       = #{p.country} -->
+<!-- 				,A.LANG         = #{p.langu} -->
+<!-- 				,A.PHN_NO       = XX1.ENC_VARCHAR2_INS(#{p.tel_number},11,'HAES_DEV','ESMVDGL','PHN_NO') -->
+<!-- 				,A.FAX_NO       = #{p.fax_number} -->
+<!-- 				,A.EMAIL        = XX1.ENC_VARCHAR2_INS(#{p.smtp_addr},11,'HAES_DEV','ESMVDGL','EMAIL') -->
+<!-- 				,A.DEL_YN       = DECODE(#{p.lvorm}, 'X', 'Y', 'N')  -->
+<!-- 				,A.MOD_ID       = 'MDZ' -->
+<!-- 				,A.MOD_DT       = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 				,A.REPRE_NM     = #{p.j_1kfrepre} -->
+<!-- 				,A.MDG_SEND_ID  = 'MDZ' -->
+<!-- 				,A.MDG_SEND_DT  = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 				,A.REG_INSP_YN  = 'Y' -->
+<!-- 				,A.COM_CD		= #{p.zzvndtyp} -->
+				
+<!-- 				,A.LOEVM = #{p.loevm} -->
+				
+<!-- 		WHEN NOT MATCHED THEN -->
+<!-- 			INSERT( -->
+<!-- 				 A.VD_SN -->
+<!-- 				,A.SYS_ID  -->
+<!-- 				,A.ACCNT_GRP_CD -->
+<!-- 				,A.VD_CD -->
+<!-- 				,A.VD_NM_LOC -->
+<!-- 				,A.BIZ_REG_NO -->
+<!-- 				,A.CORP_REG_NO -->
+<!-- 				,A.VD_TYPE -->
+<!-- 				,A.TAX_TYPE -->
+<!-- 				,A.IND -->
+<!-- 				,A.BUSICDT -->
+<!-- 				,A.PERSON_BUSI_YN -->
+<!-- 				,A.PERSON_CLS -->
+<!-- 				,A.POST_NO -->
+<!-- 				,A.ADDR -->
+<!-- 				,A.DT_ADDR -->
+<!-- 				,A.NAT_CD -->
+<!-- 				,A.LANG -->
+<!-- 				,A.PHN_NO -->
+<!-- 				,A.FAX_NO -->
+<!-- 				,A.EMAIL -->
+<!-- 				,A.DEL_YN -->
+<!-- 				,A.REG_ID -->
+<!-- 				,A.REG_DT -->
+<!-- 				,A.REPRE_NM -->
+<!-- 				,A.MDG_SEND_ID -->
+<!-- 				,A.MDG_SEND_DT -->
+<!-- 				,A.REG_INSP_YN -->
+<!-- 				,A.COM_CD -->
+<!-- 				,A.LOEVM  -->
+				
+<!-- 			)    -->
+<!-- 			VALUES( -->
+<!-- 				 B.ZZSRMCD -->
+<!-- 				,'SONE' -->
+<!-- 				,#{p.ktokk}                       -->
+<!-- 				,#{p.lifnr}                       -->
+<!-- 				,#{p.name1} -->
+<!-- 				,#{p.stcd2} -->
+<!-- 				,#{p.stcd3}                  -->
+<!-- 				,'01'                       -->
+<!-- 				,#{p.taxtype}                     -->
+<!-- 				,#{p.j_1kftind}                   -->
+<!-- 				,#{p.j_1kftbus} -->
+<!-- 				,B.ANRED                   -->
+<!-- 				,DECODE(#{p.anred}, 'Ms.', '0001', 'Mr.', '0002', 'Company', '0003', 'Mr. and Mrs.', '0004') -->
+<!-- 				,#{p.post_code1}                  -->
+<!-- 				,SUBSTR(#{p.street}, 0, 58)                      -->
+<!-- 				,#{p.city1}                       -->
+<!-- 				,#{p.country}                     -->
+<!-- 				,#{p.langu}                       -->
+<!-- 				,XX1.ENC_VARCHAR2_INS(#{p.tel_number},11,'HAES_DEV','ESMVDGL','PHN_NO')                  -->
+<!-- 				,#{p.fax_number}                  -->
+<!-- 				,XX1.ENC_VARCHAR2_INS(#{p.smtp_addr},11,'HAES_DEV','ESMVDGL','EMAIL')                   -->
+<!-- 				,DECODE(#{p.lvorm}, 'X', 'Y', 'N')                                    -->
+<!-- 				,'MDZ'                                -->
+<!-- 				,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 				,#{p.j_1kfrepre}                       -->
+<!-- 				,'MDZ'                                -->
+<!-- 				,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 				,'Y'                                  -->
+<!-- 				,#{p.zzvndtyp}	 -->
+<!-- 	           	,#{p.loevm} -->
+			
+<!-- 			) -->
+<!-- 	</update>	 -->
+<!-- 	<update id="mergeVendorForPm" parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.mergeVendorForPm : */ -->
+<!-- 		MERGE INTO EPRO_EVER.ESMVDGL A -->
+<!-- 		USING -->
+<!-- 		(SELECT  TO_NUMBER(#{p.zzsrmcd}) AS ZZSRMCD, -->
+<!-- 		case when #{p.anred} = 'Mr. and Mrs.' THEN '2' -->
+<!-- 									WHEN #{p.anred} = 'Company' AND #{p.taxtype} = 'KR3' THEN '1' -->
+<!-- 									ELSE '3' -->
+<!-- 									END ANRED -->
+<!-- 		FROM DUAL) B -->
+<!-- 		ON -->
+<!-- 		( -->
+<!-- 			A.VD_SN 	= B.ZZSRMCD -->
+<!-- 			AND A.SYS_ID = 'SONE' -->
+<!-- 		) -->
+<!-- 		WHEN MATCHED THEN -->
+<!-- 			UPDATE SET -->
+<!-- 				 A.ACCNT_GRP_CD	= #{p.ktokk} -->
+<!-- 				,A.VD_CD        = #{p.lifnr} -->
+<!-- 				,A.VD_NM_LOC    = #{p.name1} -->
+<!-- 				,A.BIZ_REG_NO	= #{p.stcd2} -->
+<!-- 				,A.CORP_REG_NO	= #{p.stcd3} -->
+<!-- 				,A.VD_TYPE      = '01' -->
+<!-- 				,A.TAX_TYPE     = #{p.taxtype} -->
+<!-- 				,A.IND          = #{p.j_1kftind} -->
+<!-- 				,A.BUSICDT      = #{p.j_1kftbus} -->
+<!-- 				,A.PERSON_BUSI_YN = B.ANRED -->
+<!-- 				,A.PERSON_CLS   = DECODE(#{p.anred}, 'Ms.', '0001', 'Mr.', '0002', 'Company', '0003', 'Mr. and Mrs.', '0004') -->
+<!-- 				,A.POST_NO      = #{p.post_code1} -->
+<!-- 				,A.ADDR         = SUBSTR(#{p.street}, 0, 58) -->
+<!-- 				,A.DT_ADDR      = #{p.city1} -->
+<!-- 				,A.NAT_CD       = #{p.country} -->
+<!-- 				,A.LANG         = #{p.langu} -->
+<!-- 				,A.PHN_NO       = #{p.tel_number} -->
+<!-- 				,A.FAX_NO       = #{p.fax_number} -->
+<!-- 				,A.EMAIL        = #{p.smtp_addr} -->
+<!-- 				,A.DEL_YN       = DECODE(#{p.lvorm}, 'X', 'Y', 'N')  -->
+<!-- 				,A.MOD_ID       = 'MDZ' -->
+<!-- 				,A.MOD_DT       = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 				,A.REPRE_NM     = #{p.j_1kfrepre} -->
+<!-- 				,A.MDG_SEND_ID  = 'MDZ' -->
+<!-- 				,A.MDG_SEND_DT  = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 				,A.REG_INSP_YN  = 'Y' -->
+<!-- 				,A.COM_CD		= #{p.zzvndtyp} -->
+<!-- 				,A.PROC_YN      = DECODE(SUBSTR(#{p.zztype},0,1),'2','N','Y') -->
+<!-- 		WHEN NOT MATCHED THEN -->
+<!-- 			INSERT( -->
+<!-- 				 A.VD_SN -->
+<!-- 				,A.SYS_ID  -->
+<!-- 				,A.ACCNT_GRP_CD -->
+<!-- 				,A.VD_CD -->
+<!-- 				,A.VD_NM_LOC -->
+<!-- 				,A.BIZ_REG_NO -->
+<!-- 				,A.CORP_REG_NO -->
+<!-- 				,A.VD_TYPE -->
+<!-- 				,A.TAX_TYPE -->
+<!-- 				,A.IND -->
+<!-- 				,A.BUSICDT -->
+<!-- 				,A.PERSON_BUSI_YN -->
+<!-- 				,A.PERSON_CLS -->
+<!-- 				,A.POST_NO -->
+<!-- 				,A.ADDR -->
+<!-- 				,A.DT_ADDR -->
+<!-- 				,A.NAT_CD -->
+<!-- 				,A.LANG -->
+<!-- 				,A.PHN_NO -->
+<!-- 				,A.FAX_NO -->
+<!-- 				,A.EMAIL -->
+<!-- 				,A.DEL_YN -->
+<!-- 				,A.REG_ID -->
+<!-- 				,A.REG_DT -->
+<!-- 				,A.REPRE_NM -->
+<!-- 				,A.MDG_SEND_ID -->
+<!-- 				,A.MDG_SEND_DT -->
+<!-- 				,A.REG_INSP_YN -->
+<!-- 				,A.COM_CD -->
+<!-- 				,A.PROC_YN -->
+<!-- 			)    -->
+<!-- 			VALUES( -->
+<!-- 				 B.ZZSRMCD -->
+<!-- 				,'SONE' -->
+<!-- 				,#{p.ktokk}                       -->
+<!-- 				,#{p.lifnr}                       -->
+<!-- 				,#{p.name1} -->
+<!-- 				,#{p.stcd2} -->
+<!-- 				,#{p.stcd3}                  -->
+<!-- 				,'01'                       -->
+<!-- 				,#{p.taxtype}                     -->
+<!-- 				,#{p.j_1kftind}                   -->
+<!-- 				,#{p.j_1kftbus} -->
+<!-- 				,B.ANRED                   -->
+<!-- 				,DECODE(#{p.anred}, 'Ms.', '0001', 'Mr.', '0002', 'Company', '0003', 'Mr. and Mrs.', '0004') -->
+<!-- 				,#{p.post_code1}                  -->
+<!-- 				,SUBSTR(#{p.street}, 0, 58)                      -->
+<!-- 				,#{p.city1}                       -->
+<!-- 				,#{p.country}                     -->
+<!-- 				,#{p.langu}                       -->
+<!-- 				,#{p.tel_number}                  -->
+<!-- 				,#{p.fax_number}                  -->
+<!-- 				,#{p.smtp_addr}                   -->
+<!-- 				,DECODE(#{p.lvorm}, 'X', 'Y', 'N')                                    -->
+<!-- 				,'MDZ'                                -->
+<!-- 				,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 				,#{p.j_1kfrepre}                       -->
+<!-- 				,'MDZ'                                -->
+<!-- 				,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 				,'Y'                                  -->
+<!-- 				,#{p.zzvndtyp}	 -->
+<!-- 				,DECODE(SUBSTR(#{p.zztype},0,1),'2','N','Y') -->
+<!-- 			) -->
+<!-- 	</update>	 -->
+	
+<!-- 	<update id="mergeVendorOrgInfo"  parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.mergeVendorOrgInfo : */ -->
+<!--         MERGE INTO ESMVDOG# A -->
+<!--         USING ( -->
+<!--         	SELECT -->
+<!--         		TO_NUMBER(#{p.zzsrmcd}) AS ZZSRMCD -->
+<!--         		, 'L120' AS OPER_ORG_CD -->
+<!--         	FROM DUAL -->
+<!--         ) B -->
+<!--         	ON (A.VD_SN 	= B.ZZSRMCD AND A.OPER_ORG_CD = B.OPER_ORG_CD) -->
+<!--        WHEN NOT MATCHED THEN -->
+<!--        		INSERT ( -->
+<!-- 				 VD_SN  -->
+<!-- 				,OPER_ORG_CD -->
+<!-- 				,OPER_ORG_SN -->
+<!-- 				,DEAL_STATUS -->
+<!-- 				,REG_TYPE -->
+<!-- 				,REG_STATUS -->
+<!-- 				,DEL_YN -->
+<!-- 				,REG_ID  -->
+<!-- 				,REG_DT -->
+<!-- 			) VALUES (  -->
+<!-- 				B.ZZSRMCD  -->
+<!-- 				,B.OPER_ORG_CD -->
+<!-- 				,4 -->
+<!-- 				,'Y' -->
+<!-- 				,'POO'  -->
+<!-- 				,'10' -->
+<!-- 				,'N' -->
+<!-- 				,'MDZ' -->
+<!-- 				,TO_CHAR(SYSDATE,'YYYYMMDDHH24MISS') -->
+<!-- 			) -->
+<!-- 	</update> -->
+	
+<!-- 	<update id="mergeVendorOrgInfoForPM"  parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.mergeVendorOrgInfoForPM : */ -->
+<!--         MERGE INTO EPRO_EVER.ESMVDOG A -->
+<!--         USING ( -->
+<!--         	SELECT -->
+<!--         		TO_NUMBER(#{p.zzsrmcd}) AS ZZSRMCD -->
+<!--         		, 'Y1AP' AS OPER_ORG_CD -->
+<!--         	FROM DUAL -->
+<!--         ) B -->
+<!--         	ON (A.VD_SN 	= B.ZZSRMCD AND A.OPER_ORG_CD = B.OPER_ORG_CD) -->
+<!--        WHEN NOT MATCHED THEN -->
+<!--        		INSERT ( -->
+<!-- 				 VD_SN  -->
+<!-- 				,OPER_ORG_CD -->
+<!-- 				,OPER_ORG_SN -->
+<!-- 				,DEAL_STATUS -->
+<!-- 				,REG_TYPE -->
+<!-- 				,REG_STATUS -->
+<!-- 				,DEL_YN -->
+<!-- 				,REG_ID  -->
+<!-- 				,REG_DT -->
+<!-- 			) VALUES (  -->
+<!-- 				B.ZZSRMCD  -->
+<!-- 				,B.OPER_ORG_CD -->
+<!-- 				,6 -->
+<!-- 				,'Y' -->
+<!-- 				,'POO'  -->
+<!-- 				,'10' -->
+<!-- 				,'N' -->
+<!-- 				,'MDZ' -->
+<!-- 				,TO_CHAR(SYSDATE,'YYYYMMDDHH24MISS') -->
+<!-- 			) -->
+<!-- 	</update> -->
+	
+	<!-- 	벤더 인터페이스 받아서 ESAUSER 테이블에 merge로 처리 -->
+	<!-- ENC_VARCHAR2_INS 관련 : 운영과 암호화 키가 다르므로 프로그램 변경/반영시 유의할 것	 -->
+<!-- 	<update id="mergeVendorUser" parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.mergeVendorUser : 벤더 인터페이스 받아서 ESAUSER 테이블에 merge로 처리 */ -->
+<!-- 		MERGE INTO ESAUSER# A -->
+<!-- 		USING -->
+<!-- 		(SELECT  TO_NUMBER(#{p.zzsrmcd}) AS ZZSRMCD, -->
+<!-- 		#{p.lifnr} AS USR_ID, -->
+<!-- 		case when #{p.anred} = 'Mr. and Mrs.' THEN '2' -->
+<!-- 									WHEN #{p.anred} = 'Company' AND #{p.taxtype} = 'KR3' THEN '1' -->
+<!-- 									ELSE '3' -->
+<!-- 									END ANRED -->
+<!-- 		FROM DUAL) B -->
+<!-- 		ON -->
+<!-- 		( -->
+<!-- 			A.VD_SN 	= B.ZZSRMCD -->
+<!---			AND A.USR_ID = B.USR_ID -->
+<!-- 			AND A.SYS_ID = 'SONE' -->
+<!-- 			AND A.USR_CLS = 'S' -->
+<!-- 		) -->
+<!-- 		WHEN MATCHED THEN -->
+<!-- 			UPDATE SET -->
+<!-- 				A.USR_ID		= #{p.lifnr} -->
+<!-- 				,A.USR_NM		= #{p.name1} -->
+<!-- 				,A.USE_YN		= DECODE(#{p.lvorm}, 'X', 'N', 'Y')  -->
+<!-- 				,A.MOBILE_NO		= XX1.ENC_VARCHAR2_INS(#{p.zztelf1_c},11,'HAES_DEV','ESAUSER','HP_NO') -->
+<!-- 				,A.PHONE_NO		= XX1.ENC_VARCHAR2_INS(#{p.tel_number},11,'HAES_DEV','ESAUSER','PHONE_NO') -->
+<!-- 				,A.FAX_NO     	= #{p.fax_number} -->
+<!-- 				,A.EMAIL      	= XX1.ENC_VARCHAR2_INS(#{p.smtp_addr},11,'HAES_DEV','ESAUSER','EMAIL') -->
+<!-- 				,A.STS      	= 'U' -->
+<!-- 				,A.MOD_ID       = 'MDZ' -->
+<!-- 				,A.MOD_DT       = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 				,A.TMP_YN     	= 'Y' -->
+<!-- 		WHEN NOT MATCHED THEN -->
+<!-- 			INSERT( -->
+<!-- 				 A.VD_SN -->
+<!-- 				,A.SYS_ID  -->
+<!-- 				,A.USR_ID -->
+<!-- 				,A.USR_NM -->
+<!-- 				,A.USR_CLS -->
+<!-- 				,A.USE_YN -->
+<!-- 				,A.MOBILE_NO -->
+<!-- 				,A.PHONE_NO -->
+<!-- 				,A.FAX_NO -->
+<!-- 				,A.EMAIL -->
+<!-- 				,A.PW -->
+<!-- 				,A.STS -->
+<!-- 				,A.REG_ID -->
+<!-- 				,A.REG_DT -->
+<!-- 				,A.TMP_YN -->
+<!-- 			)    -->
+<!-- 			VALUES( -->
+<!-- 				 B.ZZSRMCD -->
+<!-- 				,'SONE' -->
+<!-- 				,#{p.lifnr}                       -->
+<!-- 				,#{p.name1} -->
+<!-- 				,'S' -->
+<!-- 				,DECODE(#{p.lvorm}, 'X', 'N', 'Y')                        -->
+<!-- 				,XX1.ENC_VARCHAR2_INS(#{p.zztelf1_c},11,'HAES_DEV','ESAUSER','HP_NO')                  -->
+<!-- 				,XX1.ENC_VARCHAR2_INS(#{p.tel_number},11,'HAES_DEV','ESAUSER','PHONE_NO')                  -->
+<!-- 				,#{p.fax_number}                  -->
+<!-- 				,XX1.ENC_VARCHAR2_INS(#{p.smtp_addr},11,'HAES_DEV','ESAUSER','EMAIL')                   -->
+<!-- 				,XX1.ENC_VARCHAR2_INS('1111',11,'HSHA','ESAUSER','PW')                                  -->
+<!-- 				,'C'                                -->
+<!-- 				,'MDZ'                                -->
+<!-- 				,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 				,'Y'                                  -->
+<!-- 			) -->
+<!-- 	</update>	 -->
+	
+	<!-- 	벤더 인터페이스 받아서 ESAAURP 테이블에 merge로 처리(Role 부여) -->
+<!-- 	<update id="mergeVendorRole" parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.mergeVendorRole : 벤더 인터페이스 받아서 ESAAURP 테이블에 merge로 처리(Role 부여) */ -->
+<!-- 		BEGIN -->
+
+<!-- 			UPDATE	ESAAURP -->
+<!-- 			   SET	USR_ID = #{p.lifnr} -->
+<!-- 			   		, MOD_ID = 'MDZ' -->
+<!-- 			   		, MOD_DT = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 			 WHERE	1=1 -->
+<!-- 			   AND	USR_ID = #{p.stcd2} -->
+<!-- 			   AND	SYS_ID = 'SONE' -->
+<!-- 			; -->
+			 
+			
+<!-- 			MERGE INTO ESAAURP A -->
+<!-- 			USING  -->
+<!-- 			(SELECT USR_ID -->
+<!-- 			FROM ESAUSER -->
+<!-- 			WHERE VD_SN = TO_NUMBER(#{p.zzsrmcd}) -->
+<!-- 			) B -->
+<!-- 			ON(A.USR_ID = B.USR_ID) -->
+<!-- 			WHEN NOT MATCHED THEN -->
+<!-- 			INSERT( -->
+<!-- 				SYS_ID,  -->
+<!-- 				USR_ID,  -->
+<!-- 				ROLE_CD -->
+<!-- 			) -->
+<!-- 			VALUES( -->
+<!-- 				'SONE' -->
+<!-- 				,B.USR_ID -->
+<!-- 				,'R999' -->
+<!-- 			) -->
+<!-- 			; -->
+			
+<!-- 		END; -->
+<!-- 	</update>	 -->
+	
+	<!-- 	벤더 인터페이스 받아서 담당자 처리 -->
+	<!-- ENC_VARCHAR2_INS 관련 : 운영과 암호화 키가 다르므로 프로그램 변경/반영시 유의할 것	 -->
+<!-- 	<update id="mergeVendorCp" parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.mergeVendorCp : 벤더 인터페이스 받아서 담당자 처리 */ -->
+<!-- 		MERGE INTO ESMVDCP# A -->
+<!-- 		USING  -->
+<!-- 		(SELECT TO_NUMBER(#{p.zzsrmcd}) AS ZZSRMCD -->
+<!-- 				,#{p.zzcname1} AS ZZCNAME1 -->
+<!-- 				,XX1.ENC_VARCHAR2_INS(#{p.zztelf1_c},11,'HAES_DEV','ESMVDCP','HP_NO') AS ZZTELF1_C -->
+<!-- 		FROM DUAL) B -->
+<!-- 		ON(A.VD_SN = B.ZZSRMCD -->
+<!-- 			AND ( A.HP_NO = B.ZZTELF1_C -->
+<!-- 				OR A.PHN_NO = B.ZZTELF1_C ) ) -->
+<!-- 		WHEN MATCHED THEN -->
+<!-- 			UPDATE SET -->
+<!-- 				A.MOD_ID = 'MDZ' -->
+<!-- 				,A.MOD_DT = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 		WHEN NOT MATCHED THEN -->
+<!-- 		INSERT( -->
+<!-- 			SNO,  -->
+<!-- 			PLANT_ORG_CD,  -->
+<!-- 			VD_SN, -->
+<!-- 			PIC_CLS, -->
+<!-- 			USER_NM, -->
+<!-- 			HP_NO, -->
+<!-- 			USE_YN, -->
+<!-- 			REG_ID, -->
+<!-- 			REG_DT, -->
+<!-- 			DEL_YN, -->
+<!-- 			OPER_ORG_SN -->
+<!-- 		) -->
+<!-- 		VALUES( -->
+<!-- 			(SELECT coalesce(MAX(SNO), 0) + 1 FROM ESMVDCP# WHERE VD_SN = TO_NUMBER(#{p.zzsrmcd})) -->
+<!-- 			,'B100' -->
+<!-- 			,B.ZZSRMCD -->
+<!-- 			,'RFX' -->
+<!-- 			,B.ZZCNAME1 -->
+<!-- 			,B.ZZTELF1_C -->
+<!-- 			,'Y' -->
+<!-- 			,'MDZ' -->
+<!-- 			,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 			,'N' -->
+<!-- 			,'13' -->
+<!-- 		) -->
+<!-- 	</update>	 -->
+	
+<!-- 	<select id="getVd_cdCheck" resultType="map" > -->
+<!-- 	/*	D4MDZ0500.getVd_cdCheck :  */ -->
+<!-- 		SELECT VD_CD, VD_SN -->
+<!-- 		FROM ESMVDGL -->
+<!-- 		WHERE VD_CD = #{p.lifnr} -->
+<!-- 		ORDER BY MOD_DT DESC -->
+<!-- 	</select> -->
+<!-- 	<select id="checkBpHeader" resultType="map" > -->
+<!-- 	/*	D4MDZ0500.checkBpHeader :  */ -->
+<!-- 		SELECT VD_SN, VD_CD -->
+<!-- 		FROM ESMVDGL -->
+<!-- 		WHERE BIZ_REG_NO = #{p.stcd2} -->
+<!-- 	</select> -->
+	
+	
+<!-- 	<delete id="deleteVendorType" parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.deleteVendorType :  */ -->
+<!-- 		DELETE FROM EPRO.ESMVDTP -->
+<!-- 		 WHERE VD_SN = TO_NUMBER(#{p.zzsrmcd}) -->
+<!-- 	</delete> -->
+<!-- 	<insert id="insertVendorType" parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.insertVendorType :  */ -->
+<!-- 		INSERT INTO EPRO.ESMVDTP( -->
+<!-- 			SYS_ID, -->
+<!-- 			VD_SN, -->
+<!-- 			VENDOR_TYPE, -->
+<!-- 			BIZ_PART -->
+<!-- 		) -->
+<!-- 		VALUES( -->
+<!-- 			'SONE' -->
+<!-- 			, TO_NUMBER(#{p.zzsrmcd}) -->
+<!-- 			, (SELECT A.DTL_CD  -->
+<!--                       FROM ( SELECT D.SYS_ID, DL.LANG_CD, D.GRP_CD, D.DTL_CD, DL.DTL_CD_NM,  -->
+<!--                                     D.SORT_ORD, D.REM, D.USE_YN, L.LANG_CD_NM, ATTR_CD, DTLCD_ATTR_VAL -->
+<!--                                FROM ESACDDT D, ESALANG L, ESACDDL DL, ESADTAT T -->
+<!--                               WHERE D.SYS_ID   = 'SONE' -->
+<!--                                 AND D.GRP_CD   = 'ETC015' -->
+<!--                                 AND D.SYS_ID   = DL.SYS_ID -->
+<!--                                 AND D.GRP_CD   = DL.GRP_CD -->
+<!--                                 AND D.DTL_CD   = DL.DTL_CD -->
+<!--                                 AND DL.LANG_CD = 'ko_KR'                   -->
+<!--                                 AND DL.SYS_ID  = L.SYS_ID -->
+<!--                                 AND DL.LANG_CD = L.LANG_CD     -->
+<!--                                 AND D.STS &lt;&gt; 'D' -->
+<!--                                 AND D.SYS_ID = T.SYS_ID(+) -->
+<!--                                 AND D.GRP_CD = T.GRP_CD(+) -->
+<!--                                 AND D.DTL_CD = T.DTL_CD(+) -->
+<!--                            ) A -->
+<!--                   WHERE A.DTLCD_ATTR_VAL  = #{p.vendor_type}) -->
+<!--              , (SELECT DISTINCT CODE1.DTL_CD -->
+<!--                         FROM  ESRVMSG SG3   -->
+<!--                                LEFT OUTER JOIN ESRVMSG SG2 ON SG2.LVL = '2' AND SG2.SG_CD = SG3.UP_SG_CD -->
+<!--                                LEFT OUTER JOIN ESRVMSG SG1 ON SG1.LVL = '1' AND SG1.SG_CD = SG2.UP_SG_CD -->
+<!--                                LEFT OUTER JOIN ESADTAT CODE1 ON CODE1.GRP_CD = 'ETC014' AND CODE1.DTLCD_ATTR_VAL = SG1.SG_CD -->
+<!--                                LEFT OUTER JOIN ESADTAT CODE2 ON CODE2.GRP_CD = 'ETC015' AND CODE2.DTLCD_ATTR_VAL = SG2.SG_CD  -->
+<!--                         WHERE CODE2.DTL_CD =  -->
+<!--                         	(SELECT A.DTL_CD  -->
+<!--                               FROM ( SELECT D.SYS_ID, DL.LANG_CD, D.GRP_CD, D.DTL_CD, DL.DTL_CD_NM,  -->
+<!--                                             D.SORT_ORD, D.REM, D.USE_YN, L.LANG_CD_NM, ATTR_CD, DTLCD_ATTR_VAL -->
+<!--                                        FROM ESACDDT D, ESALANG L, ESACDDL DL, ESADTAT T -->
+<!--                                       WHERE D.SYS_ID   = 'SONE' -->
+<!--                                         AND D.GRP_CD   = 'ETC015' -->
+<!--                                         AND D.SYS_ID   = DL.SYS_ID -->
+<!--                                         AND D.GRP_CD   = DL.GRP_CD -->
+<!--                                         AND D.DTL_CD   = DL.DTL_CD -->
+<!--                                         AND DL.LANG_CD = 'ko_KR'                   -->
+<!--                                         AND DL.SYS_ID  = L.SYS_ID -->
+<!--                                         AND DL.LANG_CD = L.LANG_CD     -->
+<!--                                         AND D.STS &lt;&gt; 'D' -->
+<!--                                         AND D.SYS_ID = T.SYS_ID(+) -->
+<!--                                         AND D.GRP_CD = T.GRP_CD(+) -->
+<!--                                         AND D.DTL_CD = T.DTL_CD(+) -->
+<!--                                    ) A -->
+<!--                                    WHERE A.DTLCD_ATTR_VAL  = #{p.vendor_type}) -->
+<!--                )  -->
+<!-- 		      ) -->
+<!-- 	</insert> -->
+	
+<!-- 	<update id="rollback"> -->
+<!-- 		ROLLBACK -->
+<!-- 	</update> -->
+	
+<!-- 	<update id="commit"> -->
+<!-- 		COMMIT -->
+<!-- 	</update> -->
+<!-- 	<select id="checkSourcingGroup" resultType="map"> -->
+<!-- 	/*	D4MDZ0500.checkSourcingGroup :  */ -->
+<!-- 		SELECT A.DTL_CD  -->
+<!--                  FROM ( SELECT D.SYS_ID, DL.LANG_CD, D.GRP_CD, D.DTL_CD, DL.DTL_CD_NM,  -->
+<!--                                D.SORT_ORD, D.REM, D.USE_YN, L.LANG_CD_NM, ATTR_CD, DTLCD_ATTR_VAL -->
+<!--                           FROM ESACDDT D, ESALANG L, ESACDDL DL, ESADTAT T -->
+<!--                          WHERE D.SYS_ID   = 'SONE' -->
+<!--                            AND D.GRP_CD   = 'ETC015' -->
+<!--                            AND D.SYS_ID   = DL.SYS_ID -->
+<!--                            AND D.GRP_CD   = DL.GRP_CD -->
+<!--                            AND D.DTL_CD   = DL.DTL_CD -->
+<!--                            AND DL.LANG_CD = 'ko_KR'                   -->
+<!--                            AND DL.SYS_ID  = L.SYS_ID -->
+<!--                            AND DL.LANG_CD = L.LANG_CD     -->
+<!--                            AND D.STS &lt;&gt; 'D' -->
+<!--                            AND D.SYS_ID = T.SYS_ID(+) -->
+<!--                            AND D.GRP_CD = T.GRP_CD(+) -->
+<!--                            AND D.DTL_CD = T.DTL_CD(+) -->
+<!--                       ) A -->
+<!--                WHERE A.DTLCD_ATTR_VAL  = #{p.vendor_type} -->
+<!-- 	</select> -->
+	
+<!-- 	<update id="updateLicenseInfo" parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.updateLicenseInfo :  */ -->
+<!-- 		MERGE INTO ESMVDLC A -->
+<!-- 		USING ( -->
+<!-- 			SELECT -->
+<!-- 				#{p.vd_cd} AS VD_CD -->
+<!-- 				, #{p.zzcontyp} AS ZZCONTYP -->
+<!-- 				, #{p.zzlicnum} AS ZZLICNUM -->
+<!-- 			  FROM DUAL -->
+<!-- 		) B -->
+<!-- 			ON ( -->
+<!-- 				A.VD_CD = B.VD_CD -->
+<!-- 				AND A.ZZCONTYP = B.ZZCONTYP -->
+<!-- 				AND A.ZZLICNUM = B.ZZLICNUM -->
+<!-- 			) -->
+<!-- 		WHEN MATCHED THEN -->
+<!-- 			UPDATE SET -->
+<!-- 				A.ZZLICVALT = DECODE(#{p.zzlicvalt}, '00000000', '99991231', #{p.zzlicvalt}) -->
+<!-- 				, A.DEL = #{p.del} -->
+<!-- 				, A.MOD_DT = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') -->
+<!-- 		WHEN NOT MATCHED THEN -->
+<!-- 			INSERT ( -->
+<!-- 				SYS_ID -->
+<!-- 				, VD_CD -->
+<!-- 				, ZZCONTYP -->
+<!-- 				, ZZLICNUM -->
+<!-- 				, ZZLICVALT -->
+<!-- 				, DEL -->
+<!-- 			) VALUES ( -->
+<!-- 				'SONE' -->
+<!-- 				, #{p.vd_cd} -->
+<!-- 				, #{p.zzcontyp} -->
+<!-- 				, #{p.zzlicnum} -->
+<!-- 				, DECODE(#{p.zzlicvalt}, '00000000', '99991231', #{p.zzlicvalt}) -->
+<!-- 				, #{p.del} -->
+<!-- 			) -->
+<!-- 	</update> -->
+
+<!-- 	<delete id="deleteVendorTypeForPm" parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.deleteVendorTypeForPm :  */ -->
+<!-- 		DELETE -->
+<!-- 		  FROM EPRO_EVER.ESMVDTP -->
+<!-- 		 WHERE VD_SN = TO_NUMBER(#{p.vd_sn}) -->
+<!-- 	</delete> -->
+
+<!-- 	<insert id="insertVendorTypeForPm" parameterType="map"> -->
+<!-- 	/*	D4MDZ0500.insertVendorTypeForPm :  */ -->
+<!-- 		INSERT INTO EPRO_EVER.ESMVDTP ( -->
+<!-- 			SYS_ID -->
+<!-- 			, VD_SN -->
+<!-- 			, VENDOR_TYPE -->
+<!-- 		) -->
+<!-- 		VALUES ( -->
+<!-- 			'SONE' -->
+<!-- 			, TO_NUMBER(#{p.vd_sn}) -->
+<!-- 			, #{p.vendor_type} -->
+<!-- 		) -->
+<!-- 	</insert> -->
+</mapper>
