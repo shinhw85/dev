@@ -12,6 +12,8 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,8 @@ import java.util.function.Consumer;
  * - SELECT 실행 후: 결과 목록의 대상 키 값을 복호화 (모아서 List로 1회 호출)
  * - 호출 직전에 CryptoContext(쿼리 id, 값별 키 이름)를 설정해 하위 계층(추적/로깅)이 참고할 수 있게 한다.
  *
+ * 스위치: enabled=false 이면 플러그인이 MyBatis Executor에 아예 적용되지 않는다(plugin()이 원본을 그대로 반환).
+ *
  * 지원 범위: String 값. 파라미터는 Map / DTO / 단일 String(_parameter).
  * 미지원: ResultHandler 방식 조회, Cursor 조회, List/배열 파라미터(IN 조건) 내부 값.
  */
@@ -42,22 +46,35 @@ public class CryptoInterceptor implements Interceptor {
     /** 파라미터가 String 하나뿐인 쿼리의 대상 키 이름 */
     public static final String SINGLE_PARAM = "_parameter";
 
+    private static final Logger log = LoggerFactory.getLogger(CryptoInterceptor.class);
+
     private final CryptoClient client;
     private final CryptoTargets targets;
     private final String paramPrefix;      // 예: "p."  (없으면 "")
+    private final boolean enabled;         // false 이면 완전히 비활성 (환경별 스위치)
 
     public CryptoInterceptor(CryptoClient client, CryptoTargets targets) {
-        this(client, targets, "");
+        this(client, targets, "", true);
     }
 
     public CryptoInterceptor(CryptoClient client, CryptoTargets targets, String paramPrefix) {
+        this(client, targets, paramPrefix, true);
+    }
+
+    public CryptoInterceptor(CryptoClient client, CryptoTargets targets, String paramPrefix, boolean enabled) {
         this.client = client;
         this.targets = targets;
         this.paramPrefix = paramPrefix == null ? "" : paramPrefix;
+        this.enabled = enabled;
+        log.info("[crypto] MyBatis 암복호화 인터셉터: {}", enabled ? "ENABLED" : "DISABLED");
     }
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        if (!enabled) {
+            return invocation.proceed();
+        }
+
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
 
@@ -243,7 +260,7 @@ public class CryptoInterceptor implements Interceptor {
 
     @Override
     public Object plugin(Object target) {
-        return Plugin.wrap(target, this);
+        return enabled ? Plugin.wrap(target, this) : target;   // 비활성이면 Executor를 감싸지 않음(오버헤드 0)
     }
 
     @Override
