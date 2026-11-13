@@ -1,2 +1,32 @@
-chcp 65001
-java -Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -cp ".;ojdbc11.jar;postgresql.jar" TableMigrator TB_USER
+private static final DateTimeFormatter F14 = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+private static final DateTimeFormatter F8  = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+private static boolean isCharType(int t) {
+    return t == Types.VARCHAR || t == Types.CHAR || t == Types.NVARCHAR || t == Types.NCHAR;
+}
+
+private static boolean isTsType(int t) {
+    return t == Types.TIMESTAMP || t == Types.TIMESTAMP_WITH_TIMEZONE;
+}
+
+/** 'yyyyMMddHHmmss' / 'yyyyMMdd' 문자열 -> Timestamp. 비었거나 잘못된 값은 null */
+private static Timestamp parseTs(String s, String col) {
+    if (s == null) return null;
+    s = s.trim();
+    if (s.isEmpty()) return null;
+    try {
+        if (s.length() == 14) return Timestamp.valueOf(LocalDateTime.parse(s, F14));
+        if (s.length() == 8)  return Timestamp.valueOf(LocalDateTime.parse(s + "000000", F14));
+    } catch (Exception ignore) { }
+    System.err.println("[WARN] 날짜 변환 실패, NULL 처리: " + col + " = '" + s + "'");
+    return null;
+}
+
+
+
+for (int i = 0; i < n; i++) {
+    row[i] = read(rs, i + 1, srcTypes[i]);
+    if (row[i] instanceof String && isCharType(srcTypes[i]) && isTsType(pgTypes[i])) {
+        row[i] = parseTs((String) row[i], dstCols.get(i));
+    }
+}
