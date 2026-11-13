@@ -1,0 +1,254 @@
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
+import java.util.*;
+import java.util.regex.Pattern;
+
+/**
+ * Oracle -> PostgreSQL 테이블 단위 데이터 마이그레이션 (순수 JDBC, Java 17)
+ *
+ * 사용법:
+ *   java -cp ".:ojdbc11.jar:postgresql.jar" TableMigrator <테이블명> [옵션]
+ *
+ * 옵션:
+ *   --truncate            적재 전 PG 테이블 TRUNCATE
+ *   --batch=1000          배치 크기 (기본 1000)
+ *   --pg-table=xxx        PG 테이블명이 Oracle과 다를 때
+ *   --config=db.properties 접속정보 파일 (기본 db.properties)
+ */
+public class TableMigrator {
+
+    // Oracle 컬럼명(소문자) -> PostgreSQL 컬럼명. 여기에 매핑 추가
+    private static final Map<String, String> COLUMN_MAP = new LinkedHashMap<>();
+    static {
+        COLUMN_MAP.put("system_id", "ten_id");
+        COLUMN_MAP.put("reg_id", "regr_id");
+        COLUMN_MAP.put("reg_dt", "reg_dttm");
+        // COLUMN_MAP.put("mod_id", "modr_id");
+        // COLUMN_MAP.put("mod_dt", "mod_dttm");
+    }
+
+    private static final Pattern NAME = Pattern.compile("^[A-Za-z0-9_$]+$");
+    private long failed = 0;
+
+    public static void main(String[] args) throws Exception {
+        String table = null, pgTableArg = null, config = "db.properties";
+        boolean truncate = false;
+        int batch = 1000;
+
+        for (String a : args) {
+            if (a.equals("--truncate")) truncate = true;
+            else if (a.startsWith("--batch=")) batch = Integer.parseInt(a.substring(8));
+            else if (a.startsWith("--pg-table=")) pgTableArg = a.substring(11);
+            else if (a.startsWith("--config=")) config = a.substring(9);
+            else if (table == null) table = a;
+            else { usage(); return; }
+        }
+        if (table == null) { usage(); return; }
+        if (!NAME.matcher(table).matches() || (pgTableArg != null && !NAME.matcher(pgTableArg).matches())) {
+            System.err.println("테이블명이 올바르지 않습니다: " + table);
+            System.exit(1);
+        }
+
+        Properties p = new Properties();
+        try (Reader r = new InputStreamReader(new FileInputStream(config), StandardCharsets.UTF_8)) {
+            p.load(r);
+        }
+
+        boolean ok = new TableMigrator().run(p, table.toUpperCase(),
+                (pgTableArg != null ? pgTableArg : table).toLowerCase(), truncate, batch);
+        System.exit(ok ? 0 : 2);
+    }
+
+    private static void usage() {
+        System.err.println("Usage: java TableMigrator <table> [--truncate] [--batch=1000] [--pg-table=xxx] [--config=db.properties]");
+    }
+
+    private boolean run(Properties p, String oraTable, String pgTable, boolean truncate, int batch) throws Exception {
+        String pgSchema = p.getProperty("pg.schema", "public").toLowerCase();
+        String pgFull = q(pgSchema) + "." + q(pgTable);
+        long start = System.currentTimeMillis();
+
+        try (Connection ora = DriverManager.getConnection(
+                     p.getProperty("oracle.url"), p.getProperty("oracle.user"), p.getProperty("oracle.password"));
+             Connection pg = DriverManager.getConnection(
+                     p.getProperty("pg.url"), p.getProperty("pg.user"), p.getProperty("pg.password"))) {
+
+            pg.setAutoCommit(false);
+
+            // 1) PG 컬럼/타입 조회
+            Map<String, Integer> pgCols = new LinkedHashMap<>();
+            try (ResultSet rs = pg.getMetaData().getColumns(null, pgSchema, pgTable, null)) {
+                while (rs.next()) pgCols.put(rs.getString("COLUMN_NAME"), rs.getInt("DATA_TYPE"));
+            }
+            if (pgCols.isEmpty()) {
+                System.err.println("PG 테이블을 찾을 수 없습니다: " + pgSchema + "." + pgTable);
+                return false;
+            }
+
+            // 2) Oracle 컬럼 조회
+            List<String> oraNames = new ArrayList<>();
+            try (Statement st = ora.createStatement();
+                 ResultSet rs = st.executeQuery("SELECT * FROM " + q(oraTable) + " WHERE 1=0")) {
+                ResultSetMetaData md = rs.getMetaData();
+                for (int i = 1; i <= md.getColumnCount(); i++) oraNames.add(md.getColumnName(i));
+            }
+
+            // 3) 컬럼 매핑 (변경 매핑 적용 후 PG에 존재하는 컬럼만)
+            List<String> srcCols = new ArrayList<>(), dstCols = new ArrayList<>();
+            for (String o : oraNames) {
+                String lower = o.toLowerCase();
+                String target = COLUMN_MAP.getOrDefault(lower, lower);
+                if (pgCols.containsKey(target)) {
+                    srcCols.add(o);
+                    dstCols.add(target);
+                } else {
+                    System.out.println("[SKIP] PG에 없는 Oracle 컬럼: " + o + " -> " + target);
+                }
+            }
+            for (String c : pgCols.keySet()) {
+                if (!dstCols.contains(c)) System.out.println("[INFO] Oracle에 없는 PG 컬럼(NULL/default): " + c);
+            }
+            if (srcCols.isEmpty()) {
+                System.err.println("매핑되는 컬럼이 없습니다.");
+                return false;
+            }
+
+            int n = srcCols.size();
+            int[] pgTypes = new int[n];
+            for (int i = 0; i < n; i++) pgTypes[i] = pgCols.get(dstCols.get(i));
+
+            String selectSql = "SELECT " + joinQuoted(srcCols) + " FROM " + q(oraTable);
+            String insertSql = "INSERT INTO " + pgFull + " (" + joinQuoted(dstCols) + ") VALUES ("
+                    + String.join(",", Collections.nCopies(n, "?")) + ")";
+
+            // 4) 옵션: TRUNCATE
+            if (truncate) {
+                try (Statement st = pg.createStatement()) {
+                    st.execute("TRUNCATE TABLE " + pgFull);
+                }
+                pg.commit();
+                System.out.println("[INFO] TRUNCATE 완료: " + pgFull);
+            }
+
+            // 5) 읽기 -> 배치 insert
+            long total = 0;
+            try (Statement st = ora.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
+                st.setFetchSize(5000);
+                try (ResultSet rs = st.executeQuery(selectSql);
+                     PreparedStatement ps = pg.prepareStatement(insertSql)) {
+
+                    int[] srcTypes = new int[n];
+                    ResultSetMetaData md = rs.getMetaData();
+                    for (int i = 0; i < n; i++) srcTypes[i] = md.getColumnType(i + 1);
+
+                    List<Object[]> chunk = new ArrayList<>(batch);
+                    while (rs.next()) {
+                        Object[] row = new Object[n];
+                        for (int i = 0; i < n; i++) row[i] = read(rs, i + 1, srcTypes[i]);
+                        chunk.add(row);
+                        if (chunk.size() >= batch) {
+                            total += flush(pg, ps, chunk, pgTypes);
+                            chunk.clear();
+                            System.out.println("[PROGRESS] " + total + " rows");
+                        }
+                    }
+                    if (!chunk.isEmpty()) total += flush(pg, ps, chunk, pgTypes);
+                }
+            }
+
+            // 6) 건수 검증
+            long oraCnt = count(ora, "SELECT COUNT(*) FROM " + q(oraTable));
+            long pgCnt = count(pg, "SELECT COUNT(*) FROM " + pgFull);
+            boolean match = oraCnt == pgCnt && failed == 0;
+
+            System.out.println("==================================================");
+            System.out.println("테이블      : " + oraTable + " -> " + pgFull);
+            System.out.println("적재 성공   : " + total);
+            System.out.println("적재 실패   : " + failed);
+            System.out.println("Oracle 건수 : " + oraCnt);
+            System.out.println("PG 건수     : " + pgCnt + (truncate ? "" : " (--truncate 미사용 시 기존 데이터 포함)"));
+            System.out.println("결과        : " + (match ? "OK" : "확인 필요"));
+            System.out.println("소요시간    : " + (System.currentTimeMillis() - start) / 1000.0 + "s");
+            return match;
+        }
+    }
+
+    /** Oracle 값 읽기: LOB/날짜 타입은 안전하게 변환 */
+    private static Object read(ResultSet rs, int i, int type) throws SQLException {
+        switch (type) {
+            case Types.CLOB:
+            case Types.NCLOB:
+                return rs.getString(i);
+            case Types.BLOB:
+            case Types.BINARY:
+            case Types.VARBINARY:
+            case Types.LONGVARBINARY:
+                return rs.getBytes(i);
+            case Types.DATE:
+            case Types.TIMESTAMP:
+            case -101: // TIMESTAMP WITH TIME ZONE
+            case -102: // TIMESTAMP WITH LOCAL TIME ZONE
+                return rs.getTimestamp(i);
+            default:
+                return rs.getObject(i);
+        }
+    }
+
+    private static void bind(PreparedStatement ps, Object[] row, int[] types) throws SQLException {
+        for (int i = 0; i < row.length; i++) {
+            if (row[i] == null) ps.setNull(i + 1, types[i]);
+            else ps.setObject(i + 1, row[i], types[i]); // PG 컬럼 타입으로 변환
+        }
+    }
+
+    /** 배치 insert. 실패 시 롤백 후 건별 재시도하여 문제 행만 로그 */
+    private long flush(Connection pg, PreparedStatement ps, List<Object[]> chunk, int[] types) throws SQLException {
+        try {
+            for (Object[] row : chunk) {
+                bind(ps, row, types);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+            pg.commit();
+            return chunk.size();
+        } catch (SQLException e) {
+            pg.rollback();
+            ps.clearBatch();
+            System.err.println("[WARN] 배치 실패, 건별 재시도: " + e.getMessage());
+            long ok = 0;
+            for (Object[] row : chunk) {
+                try {
+                    bind(ps, row, types);
+                    ps.executeUpdate();
+                    pg.commit();
+                    ok++;
+                } catch (SQLException ex) {
+                    pg.rollback();
+                    failed++;
+                    String s = Arrays.toString(row);
+                    System.err.println("[FAIL] " + (s.length() > 300 ? s.substring(0, 300) + "..." : s)
+                            + " : " + ex.getMessage());
+                }
+            }
+            return ok;
+        }
+    }
+
+    private static long count(Connection c, String sql) throws SQLException {
+        try (Statement st = c.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            rs.next();
+            return rs.getLong(1);
+        }
+    }
+
+    private static String q(String name) {
+        return "\"" + name + "\"";
+    }
+
+    private static String joinQuoted(List<String> names) {
+        StringJoiner j = new StringJoiner(", ");
+        for (String s : names) j.add(q(s));
+        return j.toString();
+    }
+}
