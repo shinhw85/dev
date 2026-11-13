@@ -1,40 +1,8 @@
-Exception in thread "Timer-1" org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction
-	at org.springframework.data.transaction.ChainedTransactionManager.getTransaction(ChainedTransactionManager.java:142)
-	at org.springframework.data.transaction.ChainedTransactionManager.getTransaction(ChainedTransactionManager.java:70)
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:639)
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:374)
-	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
-	at jdk.proxy3/jdk.proxy3.$Proxy207.getAll(Unknown Source)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
-	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:216)
-	at jdk.proxy3/jdk.proxy3.$Proxy207.getAll(Unknown Source)
-	at smartsuite.ifproxy.core.task.ExecutionCleanTask.run(ExecutionCleanTask.java:23)
-	at java.base/java.util.TimerThread.mainLoop(Timer.java:566)
-	at java.base/java.util.TimerThread.run(Timer.java:516)
-Caused by: org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction
-	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:467)
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:532)
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405)
-	at org.springframework.data.transaction.MultiTransactionStatus.registerTransactionManager(MultiTransactionStatus.java:69)
-	at org.springframework.data.transaction.ChainedTransactionManager.getTransaction(ChainedTransactionManager.java:121)
-	... 17 more
-Caused by: java.lang.IllegalStateException: EntityManagerFactory is closed
-	at org.hibernate.internal.SessionFactoryImpl.validateNotClosed(SessionFactoryImpl.java:701)
-	at org.hibernate.internal.SessionFactoryImpl.createEntityManager(SessionFactoryImpl.java:759)
-	at org.hibernate.internal.SessionFactoryImpl.createEntityManager(SessionFactoryImpl.java:167)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.createNativeEntityManager(AbstractEntityManagerFactoryBean.java:594)
-	at jdk.internal.reflect.GeneratedMethodAccessor162.invoke(Unknown Source)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.invokeProxyMethod(AbstractEntityManagerFactoryBean.java:497)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean$ManagedEntityManagerFactoryInvocationHandler.invoke(AbstractEntityManagerFactoryBean.java:750)
-	at jdk.proxy3/jdk.proxy3.$Proxy131.createNativeEntityManager(Unknown Source)
-	at org.springframework.orm.jpa.JpaTransactionManager.createEntityManagerForTransaction(JpaTransactionManager.java:485)
-	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:410)
-	... 21 more
+oracle.url=jdbc:oracle:thin:@//localhost:1521/ORCLPDB1
+oracle.user=오라클계정
+oracle.password=오라클비밀번호
+
+pg.url=jdbc:postgresql://localhost:5432/mydb?reWriteBatchedInserts=true
+pg.user=PG계정
+pg.password=PG비밀번호
+pg.schema=public
