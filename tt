@@ -1,8 +1,2 @@
-oracle.url=jdbc:oracle:thin:@//localhost:1521/ORCLPDB1
-oracle.user=오라클계정
-oracle.password=오라클비밀번호
-
-pg.url=jdbc:postgresql://localhost:5432/mydb?reWriteBatchedInserts=true
-pg.user=PG계정
-pg.password=PG비밀번호
-pg.schema=public
+chcp 65001
+java -Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -cp ".;ojdbc11.jar;postgresql.jar" TableMigrator TB_USER
