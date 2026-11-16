@@ -1,0 +1,41 @@
+package smartsuite.config.security.filter;
+
+import java.io.IOException;
+
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.filter.GenericFilterBean;
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+
+/**
+ * matcher 에 해당하는 요청은 delegate 필터를 건너뛰고 다음 필터로 넘긴다.
+ * (SAMLResponse 파라미터가 XSS/복호화 필터에서 변형되어 서명 검증이 깨지는 것을 방지)
+ *
+ * 주의: Spring Security 는 필터 "클래스" 기준으로 순서를 등록하므로,
+ * 같은 체인에서 두 번 이상 쓸 때는 익명 서브클래스({}) 로 생성해 클래스를 구분할 것.
+ */
+public class SkipRequestFilter extends GenericFilterBean {
+
+	private final Filter delegate;
+	private final RequestMatcher skipMatcher;
+
+	public SkipRequestFilter(Filter delegate, RequestMatcher skipMatcher) {
+		this.delegate = delegate;
+		this.skipMatcher = skipMatcher;
+	}
+
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		if (request instanceof HttpServletRequest http && skipMatcher.matches(http)) {
+			chain.doFilter(request, response);
+			return;
+		}
+		delegate.doFilter(request, response, chain);
+	}
+}
