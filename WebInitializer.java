@@ -11,6 +11,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -51,9 +52,12 @@ public class WebInitializer implements WebApplicationInitializer {
 		encodingFilter.setEncoding("UTF-8");
 		container.addFilter("encodingFilter", encodingFilter).addMappingForUrlPatterns(null, false, "/*");
 
-
-		DelegatingFilterProxy delegatingFilterProxy = new DelegatingFilterProxy();
-		container.addFilter("springSecurityFilterChain", delegatingFilterProxy).addMappingForServletNames(null, false, "dispatcherServlet");
+		FilterRegistration.Dynamic sec = container.addFilter("springSecurityFilterChain", new DelegatingFilterProxy());
+		sec.addMappingForServletNames(null, false, "dispatcherServlet");
+		sec.addMappingForUrlPatterns(null, false, "/saml2/*", "/login/saml2/*", "/logout/saml2/*");
+		
+//		DelegatingFilterProxy delegatingFilterProxy = new DelegatingFilterProxy();
+//		container.addFilter("springSecurityFilterChain", delegatingFilterProxy).addMappingForServletNames(null, false, "dispatcherServlet");
 
 		ExecutionLoggingFilter executionLoggingFilter = new ExecutionLoggingFilter();
 		container.addFilter("executionLoggingFilter", executionLoggingFilter).addMappingForUrlPatterns(null, false, "*.do");
