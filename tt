@@ -1,11 +1,18 @@
-SELECT a.attname AS column_name,
-       pg_get_expr(d.adbin, d.adrelid) AS default_value
-FROM pg_attribute a
-JOIN pg_class c ON c.oid = a.attrelid
-JOIN pg_namespace n ON n.oid = c.relnamespace
-LEFT JOIN pg_attrdef d ON d.adrelid = a.attrelid AND d.adnum = a.attnum
-WHERE n.nspname = 'public'
-  AND c.relname = '테이블명'
-  AND a.attnum > 0
-  AND NOT a.attisdropped
-ORDER BY a.attnum;
+<div id="OZViewer" style="width:100%;height:800px;"></div>
+<script src="/ozrept/ozviewer/jquery-3.x.min.js"></script>
+<script src="/ozrept/ozviewer/OZJSViewer.js"></script>
+<script>
+function openReport(param) {
+  $.ajax({
+    url: '/report/data',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(param),
+    success: function (res) {
+      var oz = document.getElementById('OZViewer');
+      // 리포트 경로, 데이터 JSON을 파라미터로 전달
+      // (OZ 버전에 따라 start_ozviewer / OZViewer 객체 방식이 다름)
+    }
+  });
+}
+</script>
