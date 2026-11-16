@@ -322,7 +322,49 @@ public class SecurityConfiguration {
 		return http.build();
 	}
 
-	@Order(4)
+
+@Order(4)
+@Bean
+public SecurityFilterChain samlFilterChain(HttpSecurity http,
+    RelyingPartyRegistrationRepository repo,
+    @Qualifier("tenantFilter") GenericFilterBean tenantFilter,
+    @Qualifier("authenticationSuccessHandler") DefaultAuthenticationSuccessHandler successHandler,
+    @Qualifier("authenticationFailureHandler") SimpleUrlAuthenticationFailureHandler failureHandler,
+    @Qualifier("sessionAuthenticationStrategy") CompositeSessionAuthenticationStrategy sessionStrategy,
+    @Qualifier("concurrencyFilter") GenericFilterBean concurrencyFilter) throws Exception {
+
+  OpenSaml5AuthenticationProvider provider = new OpenSaml5AuthenticationProvider();
+  provider.setResponseAuthenticationConverter(token -> {
+    Saml2Authentication base = OpenSaml5AuthenticationProvider
+        .createDefaultResponseAuthenticationConverter().convert(token);
+    Saml2AuthenticatedPrincipal p = (Saml2AuthenticatedPrincipal) base.getPrincipal();
+    String loginId = p.getFirstAttribute("사번속성명"); // 또는 p.getName()
+    // 기존 로그인과 동일한 방식으로 사용자 조회 후, 기존 로그인이 만드는 Authentication 타입으로 반환
+    return /* 기존 Authentication 객체 */;
+  });
+
+  http
+    .securityMatcher(new OrRequestMatcher(
+        new AntPathRequestMatcher("/saml2/**"),
+        new AntPathRequestMatcher("/login/saml2/**"),
+        new AntPathRequestMatcher("/logout/saml2/**")))
+    .authorizeHttpRequests(a -> a.anyRequest().permitAll())
+    .saml2Login(s -> s
+        .relyingPartyRegistrationRepository(repo)
+        .authenticationManager(new ProviderManager(provider))
+        .successHandler(successHandler)
+        .failureHandler(failureHandler))
+    .csrf(c -> c.ignoringRequestMatchers(
+        new AntPathRequestMatcher("/login/saml2/**"),
+        new AntPathRequestMatcher("/logout/saml2/**")))
+    .securityContext(sc -> sc.requireExplicitSave(false))
+    .sessionManagement(s -> s.sessionAuthenticationStrategy(sessionStrategy))
+    .addFilterBefore(tenantFilter, DisableEncodeUrlFilter.class)
+    .addFilterAt(concurrencyFilter, ConcurrentSessionFilter.class);
+  return http.build();
+}
+
+	@Order(5)
 	@Bean
 	public SecurityFilterChain defaultFilterChain(HttpSecurity http,
 			@Qualifier("delegatingAuthenticationEntryPoint") AuthenticationEntryPoint delegatingAuthenticationEntryPoint,
