@@ -1,0 +1,14 @@
+@Configuration
+public class SamlConfiguration {
+  @Bean
+  public RelyingPartyRegistrationRepository relyingPartyRegistrationRepository() throws Exception {
+    RelyingPartyRegistration r = RelyingPartyRegistrations
+      .fromMetadataLocation("file:/경로/idp-metadata.xml")
+      .registrationId("idp")
+      .entityId("https://내서버/saml2/service-provider-metadata/idp")
+      .assertionConsumerServiceLocation("https://내서버/login/saml2/sso/idp")
+      .signingX509Credentials(c -> c.add(Saml2X509Credential.signing(privateKey, spCert)))
+      .build();
+    return new InMemoryRelyingPartyRegistrationRepository(r);
+  }
+}
