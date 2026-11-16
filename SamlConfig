@@ -1,24 +1,18 @@
-package smartsuite.config.security;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.saml2.core.Saml2X509Credential;
-import org.springframework.security.saml2.provider.service.registration.InMemoryRelyingPartyRegistrationRepository;
-import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistration;
-import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
-import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations;
-
-@Configuration
-public class SamlConfiguration {
-  @Bean
-  public RelyingPartyRegistrationRepository relyingPartyRegistrationRepository() throws Exception {
-    RelyingPartyRegistration r = RelyingPartyRegistrations
-      .fromMetadataLocation("file:/경로/dev-iam.s1.co.kr.metadata.xml") //소스내 경로를 찾게?
-      .registrationId("idp")
-      .entityId("http://localhost:8080/saml2/service-provider-metadata/idp")
-      .assertionConsumerServiceLocation("http://localhost:8080/login/saml2/sso/idp")
-      .signingX509Credentials(c -> c.add(Saml2X509Credential.signing(privateKey, spCert)))
-      .build();
-    return new InMemoryRelyingPartyRegistrationRepository(r);
+@Bean
+public RelyingPartyRegistrationRepository relyingPartyRegistrationRepository() throws Exception {
+  PrivateKey key;
+  X509Certificate cert;
+  try (InputStream ki = new ClassPathResource("saml/sp-key.pem").getInputStream();
+       InputStream ci = new ClassPathResource("saml/sp-cert.pem").getInputStream()) {
+    key = RsaKeyConverters.pkcs8().convert(ki);   // org.springframework.security.converter
+    cert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(ci);
   }
+  RelyingPartyRegistration r = RelyingPartyRegistrations
+    .fromMetadataLocation("classpath:saml/dev-iam.s1.co.kr.metadata.xml")
+    .registrationId("idp")
+    .entityId("{baseUrl}/saml2/service-provider-metadata/{registrationId}")
+    .assertionConsumerServiceLocation("{baseUrl}/login/saml2/sso/{registrationId}")
+    .signingX509Credentials(c -> c.add(Saml2X509Credential.signing(key, cert)))
+    .build();
+  return new InMemoryRelyingPartyRegistrationRepository(r);
 }
