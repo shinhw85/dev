@@ -1,7 +1,7 @@
 package smartsuite.config;
 
-import com.beust.jcommander.internal.Lists;
-import jakarta.servlet.Filter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,8 +10,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.saml2.provider.service.authentication.OpenSaml5AuthenticationProvider;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
+import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
+import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -30,12 +35,15 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.filter.GenericFilterBean;
 
+import com.beust.jcommander.internal.Lists;
+
+import jakarta.servlet.Filter;
 import smartsuite.config.data.SecurityConst;
 import smartsuite.config.security.CryptoConfiguration;
-import smartsuite.config.security.filter.OtherFilterConfiguration;
-import smartsuite.config.security.filter.DefaultFilterConfiguration;
 import smartsuite.config.security.MethodSecurityConfiguration;
 import smartsuite.config.security.SessionConfiguration;
+import smartsuite.config.security.filter.DefaultFilterConfiguration;
+import smartsuite.config.security.filter.OtherFilterConfiguration;
 import smartsuite.config.security.filter.SupplierFilterConfiguration;
 import smartsuite.security.authentication.AuthenticationUrlRequestManager;
 import smartsuite.security.authentication.DefaultAuthenticationSuccessHandler;
@@ -45,9 +53,6 @@ import smartsuite.security.authentication.SupplierAuthenticationSuccessHandler;
 import smartsuite.security.spring.web.util.matcher.DefaultRequiresCsrfMatcher;
 import smartsuite.security.spring.web.util.matcher.NegatedOrRequestMatcher;
 import smartsuite.security.web.filter.advanced.XssRequestFilter;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
@@ -322,48 +327,47 @@ public class SecurityConfiguration {
 		return http.build();
 	}
 
-
-@Order(4)
-@Bean
-public SecurityFilterChain samlFilterChain(HttpSecurity http,
-    RelyingPartyRegistrationRepository repo,
-    @Qualifier("tenantFilter") GenericFilterBean tenantFilter,
-    @Qualifier("authenticationSuccessHandler") DefaultAuthenticationSuccessHandler successHandler,
-    @Qualifier("authenticationFailureHandler") SimpleUrlAuthenticationFailureHandler failureHandler,
-    @Qualifier("sessionAuthenticationStrategy") CompositeSessionAuthenticationStrategy sessionStrategy,
-    @Qualifier("concurrencyFilter") GenericFilterBean concurrencyFilter) throws Exception {
-
-  OpenSaml5AuthenticationProvider provider = new OpenSaml5AuthenticationProvider();
-  provider.setResponseAuthenticationConverter(token -> {
-    Saml2Authentication base = OpenSaml5AuthenticationProvider
-        .createDefaultResponseAuthenticationConverter().convert(token);
-    Saml2AuthenticatedPrincipal p = (Saml2AuthenticatedPrincipal) base.getPrincipal();
-    String loginId = p.getFirstAttribute("사번속성명"); // 또는 p.getName()
-    // 기존 로그인과 동일한 방식으로 사용자 조회 후, 기존 로그인이 만드는 Authentication 타입으로 반환
-    return /* 기존 Authentication 객체 */;
-  });
-
-  http
-    .securityMatcher(new OrRequestMatcher(
-        new AntPathRequestMatcher("/saml2/**"),
-        new AntPathRequestMatcher("/login/saml2/**"),
-        new AntPathRequestMatcher("/logout/saml2/**")))
-    .authorizeHttpRequests(a -> a.anyRequest().permitAll())
-    .saml2Login(s -> s
-        .relyingPartyRegistrationRepository(repo)
-        .authenticationManager(new ProviderManager(provider))
-        .successHandler(successHandler)
-        .failureHandler(failureHandler))
-    .csrf(c -> c.ignoringRequestMatchers(
-        new AntPathRequestMatcher("/login/saml2/**"),
-        new AntPathRequestMatcher("/logout/saml2/**")))
-    .securityContext(sc -> sc.requireExplicitSave(false))
-    .sessionManagement(s -> s.sessionAuthenticationStrategy(sessionStrategy))
-    .addFilterBefore(tenantFilter, DisableEncodeUrlFilter.class)
-    .addFilterAt(concurrencyFilter, ConcurrentSessionFilter.class);
-  return http.build();
-}
-
+	@Order(4)
+	@Bean
+	public SecurityFilterChain samlFilterChain(HttpSecurity http,
+	    RelyingPartyRegistrationRepository repo,
+	    @Qualifier("tenantFilter") GenericFilterBean tenantFilter,
+	    @Qualifier("authenticationSuccessHandler") SsoAuthenticationSuccessHandler successHandler,
+	    @Qualifier("authenticationFailureHandler") SsoAuthenticationFailureHandler failureHandler,
+	    @Qualifier("sessionAuthenticationStrategy") CompositeSessionAuthenticationStrategy sessionStrategy,
+	    @Qualifier("concurrencyFilter") GenericFilterBean concurrencyFilter) throws Exception {
+	
+	  OpenSaml5AuthenticationProvider provider = new OpenSaml5AuthenticationProvider();
+	  provider.setResponseAuthenticationConverter(token -> {
+	    Saml2Authentication base = OpenSaml5AuthenticationProvider
+	        .createDefaultResponseAuthenticationConverter().convert(token);
+	    Saml2AuthenticatedPrincipal p = (Saml2AuthenticatedPrincipal) base.getPrincipal();
+	    String loginId = p.getFirstAttribute("사번속성명"); // 또는 p.getName()
+	    // 기존 로그인과 동일한 방식으로 사용자 조회 후, 기존 로그인이 만드는 Authentication 타입으로 반환
+	    return /* 기존 Authentication 객체 */;
+	  });
+	
+	  http
+	    .securityMatcher(new OrRequestMatcher(
+	        new AntPathRequestMatcher("/saml2/**"),
+	        new AntPathRequestMatcher("/login/saml2/**"),
+	        new AntPathRequestMatcher("/logout/saml2/**")))
+	    .authorizeHttpRequests(a -> a.anyRequest().permitAll())
+	    .saml2Login(s -> s
+	        .relyingPartyRegistrationRepository(repo)
+	        .authenticationManager(new ProviderManager(provider))
+	        .successHandler(successHandler)
+	        .failureHandler(failureHandler))
+	    .csrf(c -> c.ignoringRequestMatchers(
+	        new AntPathRequestMatcher("/login/saml2/**"),
+	        new AntPathRequestMatcher("/logout/saml2/**")))
+	    .securityContext(sc -> sc.requireExplicitSave(false))
+	    .sessionManagement(s -> s.sessionAuthenticationStrategy(sessionStrategy))
+	    .addFilterBefore(tenantFilter, DisableEncodeUrlFilter.class)
+	    .addFilterAt(concurrencyFilter, ConcurrentSessionFilter.class);
+	  return http.build();
+	}
+	
 	@Order(5)
 	@Bean
 	public SecurityFilterChain defaultFilterChain(HttpSecurity http,
