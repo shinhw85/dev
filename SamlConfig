@@ -1,18 +1,106 @@
-@Bean
-public RelyingPartyRegistrationRepository relyingPartyRegistrationRepository() throws Exception {
-  PrivateKey key;
-  X509Certificate cert;
-  try (InputStream ki = new ClassPathResource("saml/sp-key.pem").getInputStream();
-       InputStream ci = new ClassPathResource("saml/sp-cert.pem").getInputStream()) {
-    key = RsaKeyConverters.pkcs8().convert(ki);   // org.springframework.security.converter
-    cert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(ci);
-  }
-  RelyingPartyRegistration r = RelyingPartyRegistrations
-    .fromMetadataLocation("classpath:saml/dev-iam.s1.co.kr.metadata.xml")
-    .registrationId("idp")
-    .entityId("{baseUrl}/saml2/service-provider-metadata/{registrationId}")
-    .assertionConsumerServiceLocation("{baseUrl}/login/saml2/sso/{registrationId}")
-    .signingX509Credentials(c -> c.add(Saml2X509Credential.signing(key, cert)))
-    .build();
-  return new InMemoryRelyingPartyRegistrationRepository(r);
+package smartsuite.config.security;
+
+import java.io.InputStream;
+import java.security.PrivateKey;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.converter.RsaKeyConverters;
+import org.springframework.security.saml2.core.Saml2Error;
+import org.springframework.security.saml2.core.Saml2ErrorCodes;
+import org.springframework.security.saml2.core.Saml2X509Credential;
+import org.springframework.security.saml2.provider.service.authentication.OpenSaml5AuthenticationProvider;
+import org.springframework.security.saml2.provider.service.authentication.OpenSaml5AuthenticationProvider.ResponseToken;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticationException;
+import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
+import org.springframework.security.saml2.provider.service.registration.InMemoryRelyingPartyRegistrationRepository;
+import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistration;
+import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
+import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations;
+
+/**
+ * SAML2 SSO (SP 역할) 설정
+ *
+ * 리소스 위치 (src/main/resources/saml/)
+ *  - dev-iam.s1.co.kr.metadata.xml : IdP 메타데이터
+ *  - sp-key.pem  : SP 개인키 (PKCS8, "BEGIN PRIVATE KEY")
+ *  - sp-cert.pem : SP 인증서
+ *
+ * 선택 프로퍼티 (securityProperties, 없으면 기본값 사용)
+ *  - security.saml.idp-metadata    : IdP 메타데이터 위치 (기본 classpath:saml/dev-iam.s1.co.kr.metadata.xml)
+ *  - security.saml.userid-attribute: 사번/ID가 담긴 assertion 속성명 (비우면 NameID 사용)
+ */
+@Configuration
+public class SamlConfiguration {
+
+	public static final String REGISTRATION_ID = "idp";
+	/** IdP가 POST 하는 ACS 경로 (CSRF 예외, 필터 제외 대상) */
+	public static final String ACS_PATH = "/login/saml2/sso/" + REGISTRATION_ID;
+
+	@Value("#{securityProperties['security.saml.idp-metadata'] ?: 'classpath:saml/dev-iam.s1.co.kr.metadata.xml'}")
+	private String idpMetadataLocation;
+
+	@Value("#{securityProperties['security.saml.userid-attribute'] ?: ''}")
+	private String userIdAttribute;
+
+	@Bean
+	public RelyingPartyRegistrationRepository relyingPartyRegistrationRepository() throws Exception {
+		PrivateKey privateKey;
+		X509Certificate spCert;
+		try (InputStream keyIn = new ClassPathResource("saml/sp-key.pem").getInputStream();
+			 InputStream certIn = new ClassPathResource("saml/sp-cert.pem").getInputStream()) {
+			privateKey = RsaKeyConverters.pkcs8().convert(keyIn);
+			spCert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(certIn);
+		}
+
+		RelyingPartyRegistration registration = RelyingPartyRegistrations
+				.fromMetadataLocation(idpMetadataLocation)
+				.registrationId(REGISTRATION_ID)
+				// {baseUrl}: 요청 기준 scheme://host:port/contextPath 로 치환됨
+				.entityId("{baseUrl}/saml2/service-provider-metadata/{registrationId}")
+				.assertionConsumerServiceLocation("{baseUrl}/login/saml2/sso/{registrationId}")
+				.signingX509Credentials(c -> c.add(Saml2X509Credential.signing(privateKey, spCert)))
+				.build();
+		return new InMemoryRelyingPartyRegistrationRepository(registration);
+	}
+
+	@Bean("samlAuthenticationProvider")
+	public OpenSaml5AuthenticationProvider samlAuthenticationProvider() {
+		OpenSaml5AuthenticationProvider provider = new OpenSaml5AuthenticationProvider();
+		Converter<ResponseToken, Saml2Authentication> defaultConverter =
+				OpenSaml5AuthenticationProvider.createDefaultResponseAuthenticationConverter();
+
+		provider.setResponseAuthenticationConverter(token -> {
+			Saml2Authentication base = defaultConverter.convert(token);
+			Saml2AuthenticatedPrincipal principal = (Saml2AuthenticatedPrincipal) base.getPrincipal();
+
+			String loginId = (userIdAttribute == null || userIdAttribute.isBlank())
+					? principal.getName()
+					: principal.getFirstAttribute(userIdAttribute);
+
+			if (loginId == null || loginId.isBlank()) {
+				throw new Saml2AuthenticationException(
+						new Saml2Error(Saml2ErrorCodes.INVALID_ASSERTION, "SAML assertion에 사용자 식별값이 없습니다."));
+			}
+			return toAppAuthentication(loginId);
+		});
+		return provider;
+	}
+
+	/**
+	 * TODO: 기존 폼 로그인과 "동일한 타입"의 Authentication 을 만들어 반환해야 합니다.
+	 *  - 사용자 테이블에서 loginId 로 사용자 조회
+	 *  - 기존 로그인 성공 시 생성되는 principal(사용자 정보 객체) / authorities 로 토큰 생성
+	 *  (DefaultAuthenticationSuccessHandler 와 세션 후처리가 이 타입을 기대하기 때문)
+	 */
+	private AbstractAuthenticationToken toAppAuthentication(String loginId) {
+		throw new UnsupportedOperationException("기존 로그인 Authentication 생성 로직 연결 필요: " + loginId);
+	}
 }
