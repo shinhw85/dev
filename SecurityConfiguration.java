@@ -1,5 +1,6 @@
 package smartsuite.config;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,11 +12,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.saml2.provider.service.authentication.OpenSaml5AuthenticationProvider;
-import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
-import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -41,9 +41,11 @@ import jakarta.servlet.Filter;
 import smartsuite.config.data.SecurityConst;
 import smartsuite.config.security.CryptoConfiguration;
 import smartsuite.config.security.MethodSecurityConfiguration;
+import smartsuite.config.security.SamlConfiguration;
 import smartsuite.config.security.SessionConfiguration;
 import smartsuite.config.security.filter.DefaultFilterConfiguration;
 import smartsuite.config.security.filter.OtherFilterConfiguration;
+import smartsuite.config.security.filter.SkipRequestFilter;
 import smartsuite.config.security.filter.SupplierFilterConfiguration;
 import smartsuite.security.authentication.AuthenticationUrlRequestManager;
 import smartsuite.security.authentication.DefaultAuthenticationSuccessHandler;
@@ -58,7 +60,7 @@ import smartsuite.security.web.filter.advanced.XssRequestFilter;
 @EnableWebSecurity
 @SuppressWarnings ({ "rawtypes", "unchecked" })
 //@ImportResource(value = { "classpath:smartsuite/security-context.xml" })
-@Import({CryptoConfiguration.class, SessionConfiguration.class, DefaultFilterConfiguration.class, OtherFilterConfiguration.class, SupplierFilterConfiguration.class, MethodSecurityConfiguration.class})
+@Import({CryptoConfiguration.class, SessionConfiguration.class, DefaultFilterConfiguration.class, OtherFilterConfiguration.class, SupplierFilterConfiguration.class, MethodSecurityConfiguration.class, SamlConfiguration.class})
 public class SecurityConfiguration {
 
 	@Value("#{smartsuiteProperties['smartsuite.jsessionid']}")
@@ -213,17 +215,30 @@ public class SecurityConfiguration {
 
 	/**
 	 * csrf 필터 예외처리 url 와일드카드 사용금지
+	 * SAML ACS(IdP가 POST 하는 경로)는 CSRF 토큰을 가질 수 없으므로 정확한 경로만 예외 추가
 	 * @return
 	 */
 	@Bean("csrfExcludeRequest")
 	public RequestMatcher csrfExcludeRequestMather() {
 		List<RequestMatcher> excludeList = csrfExcludeRequestList.stream()
 				.map(matcher -> new AntPathRequestMatcher(matcher))
-				.collect(Collectors.toList());
+				.collect(Collectors.toCollection(ArrayList<RequestMatcher>::new));
+		excludeList.add(new AntPathRequestMatcher(SamlConfiguration.ACS_PATH));
 		return new AndRequestMatcher(
 				new NegatedOrRequestMatcher(excludeList),
 				new DefaultRequiresCsrfMatcher() // Spring Security CSRF Matcher GET, HEAD, TRACE, OPTIONS
 		);
+	}
+
+	/**
+	 * SAML 관련 경로 (인증요청 / ACS / 메타데이터 / 로그아웃)
+	 * XSS·복호화 필터 제외 및 permitAll 대상
+	 */
+	private RequestMatcher samlRequestMatcher() {
+		return new OrRequestMatcher(
+				new AntPathRequestMatcher("/saml2/**"),
+				new AntPathRequestMatcher("/login/saml2/**"),
+				new AntPathRequestMatcher("/logout/saml2/**"));
 	}
 
 	@Order(0)
@@ -329,47 +344,6 @@ public class SecurityConfiguration {
 
 	@Order(4)
 	@Bean
-	public SecurityFilterChain samlFilterChain(HttpSecurity http,
-	    RelyingPartyRegistrationRepository repo,
-	    @Qualifier("tenantFilter") GenericFilterBean tenantFilter,
-	    @Qualifier("authenticationSuccessHandler") SsoAuthenticationSuccessHandler successHandler,
-	    @Qualifier("authenticationFailureHandler") SsoAuthenticationFailureHandler failureHandler,
-	    @Qualifier("sessionAuthenticationStrategy") CompositeSessionAuthenticationStrategy sessionStrategy,
-	    @Qualifier("concurrencyFilter") GenericFilterBean concurrencyFilter) throws Exception {
-	
-	  OpenSaml5AuthenticationProvider provider = new OpenSaml5AuthenticationProvider();
-	  provider.setResponseAuthenticationConverter(token -> {
-	    Saml2Authentication base = OpenSaml5AuthenticationProvider
-	        .createDefaultResponseAuthenticationConverter().convert(token);
-	    Saml2AuthenticatedPrincipal p = (Saml2AuthenticatedPrincipal) base.getPrincipal();
-	    String loginId = p.getFirstAttribute("사번속성명"); // 또는 p.getName()
-	    // 기존 로그인과 동일한 방식으로 사용자 조회 후, 기존 로그인이 만드는 Authentication 타입으로 반환
-	    return /* 기존 Authentication 객체 */;
-	  });
-	
-	  http
-	    .securityMatcher(new OrRequestMatcher(
-	        new AntPathRequestMatcher("/saml2/**"),
-	        new AntPathRequestMatcher("/login/saml2/**"),
-	        new AntPathRequestMatcher("/logout/saml2/**")))
-	    .authorizeHttpRequests(a -> a.anyRequest().permitAll())
-	    .saml2Login(s -> s
-	        .relyingPartyRegistrationRepository(repo)
-	        .authenticationManager(new ProviderManager(provider))
-	        .successHandler(successHandler)
-	        .failureHandler(failureHandler))
-	    .csrf(c -> c.ignoringRequestMatchers(
-	        new AntPathRequestMatcher("/login/saml2/**"),
-	        new AntPathRequestMatcher("/logout/saml2/**")))
-	    .securityContext(sc -> sc.requireExplicitSave(false))
-	    .sessionManagement(s -> s.sessionAuthenticationStrategy(sessionStrategy))
-	    .addFilterBefore(tenantFilter, DisableEncodeUrlFilter.class)
-	    .addFilterAt(concurrencyFilter, ConcurrentSessionFilter.class);
-	  return http.build();
-	}
-	
-	@Order(5)
-	@Bean
 	public SecurityFilterChain defaultFilterChain(HttpSecurity http,
 			@Qualifier("delegatingAuthenticationEntryPoint") AuthenticationEntryPoint delegatingAuthenticationEntryPoint,
 			@Qualifier("defaultAuthenticationManager") AuthenticationManager defaultAuthenticationManager,
@@ -385,8 +359,13 @@ public class SecurityConfiguration {
 			@Qualifier("concurrencyFilter") GenericFilterBean concurrencyFilter,
 			@Qualifier("sessionInvalidateFilter") GenericFilterBean sessionInvalidateFilter,
 			@Qualifier("decrytRequestFilter") Filter decrytRequestFilter,
-			@Qualifier("xssRequestFilter") XssRequestFilter xssRequestFilter
+			@Qualifier("xssRequestFilter") XssRequestFilter xssRequestFilter,
+			// SAML
+			RelyingPartyRegistrationRepository samlRegistrationRepository,
+			@Qualifier("samlAuthenticationProvider") OpenSaml5AuthenticationProvider samlAuthenticationProvider
 			) throws Exception {
+
+		RequestMatcher samlRequestMatcher = samlRequestMatcher();
 
 		http
 			.securityMatcher(oauthManageRequest()) // OAUTH2
@@ -396,6 +375,7 @@ public class SecurityConfiguration {
 				.authenticationManager(defaultAuthenticationManager)
 			)		
 			.authorizeHttpRequests(req -> req
+				.requestMatchers(samlRequestMatcher).permitAll() // SAML 인증요청/ACS/메타데이터
 				.requestMatchers(new AntPathRequestMatcher(AuthenticationUrlRequestManager.BUYER_LOGOUT_SUCCESS_URL), new AntPathRequestMatcher(AuthenticationUrlRequestManager.BUYER_LOGOUT_SUCCESS_URL_EN)).permitAll()
 				.anyRequest().authenticated()
 			)	
@@ -465,6 +445,15 @@ public class SecurityConfiguration {
 				.successHandler(authenticationSuccessHandler)
 				.failureHandler(authenticationFailureHandler)
 			)
+			// SAML2 SSO (SP) : 진입 URL /saml2/authenticate/idp, ACS /login/saml2/sso/idp
+			.saml2Login(saml -> saml
+				.relyingPartyRegistrationRepository(samlRegistrationRepository)
+				.authenticationManager(new ProviderManager(samlAuthenticationProvider))
+				.successHandler(authenticationSuccessHandler)
+				.failureHandler(authenticationFailureHandler)
+			)
+			// SP 메타데이터 노출 : /saml2/service-provider-metadata/idp
+			.saml2Metadata(Customizer.withDefaults())
 			.logout(logout -> logout
 				.logoutUrl(AuthenticationUrlRequestManager.LOGOUT_PROCESS_PAGE)
 				.logoutSuccessHandler(logoutSuccessHandler)
@@ -472,8 +461,9 @@ public class SecurityConfiguration {
 				.deleteCookies(jsessionid)
 			)
 			.addFilterBefore(tenantFilter, DisableEncodeUrlFilter.class)
-			.addFilterBefore(decrytRequestFilter, SecurityContextPersistenceFilter.class)
-			.addFilterAfter(xssRequestFilter, SecurityContextPersistenceFilter.class)
+			// SAML 경로는 SAMLResponse 변형 방지를 위해 복호화/XSS 필터 제외 (익명 서브클래스: 필터 클래스별 순서 등록 충돌 방지)
+			.addFilterBefore(new SkipRequestFilter(decrytRequestFilter, samlRequestMatcher) {}, SecurityContextPersistenceFilter.class)
+			.addFilterAfter(new SkipRequestFilter(xssRequestFilter, samlRequestMatcher) {}, SecurityContextPersistenceFilter.class)
 			.addFilterAt(concurrencyFilter, ConcurrentSessionFilter.class)
 			.addFilterBefore(customAuthenticationProcessingFilters, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(sessionInvalidateFilter, SessionManagementFilter.class)
