@@ -1,7 +1,21 @@
-Map<String, Object> aprvLine = aprvLineList.stream()
-                    			.filter(r -> eml.equals(r.get("eml")) 
-                    					&& (seq+1) == ((Number) r.get("apvlln_sort")).intValue()
-                    					&& !apvllnApvlResCcdFinal.equals(r.get("apvlln_apvl_res_ccd"))
-                    					)
-                    			.findFirst()
-                    			.orElse(null);
+Predicate<Map<String, Object>> base = r ->
+        (seq + 1) == ((Number) r.get("apvlln_sort")).intValue()
+        && !apvllnApvlResCcdFinal.equals(r.get("apvlln_apvl_res_ccd"));
+
+List<Map<String, Object>> candidates = aprvLineList.stream()
+        .filter(base)
+        .collect(Collectors.toList());
+
+Map<String, Object> aprvLine = findByKey(candidates, "epid", epid);
+if (aprvLine == null) aprvLine = findByKey(candidates, "eml", eml);
+if (aprvLine == null) aprvLine = findByKey(candidates, "usr_id", usrId);
+
+private Map<String, Object> findByKey(List<Map<String, Object>> list, String key, String value) {
+    if (value == null || value.isBlank()) {
+        return null; // 비교값이 없으면 해당 단계는 건너뜀
+    }
+    return list.stream()
+            .filter(r -> value.equals(r.get(key)))
+            .findFirst()
+            .orElse(null);
+}
