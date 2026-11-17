@@ -1,26 +1,118 @@
-powershell -ExecutionPolicy Bypass -File check_deps.ps1 -Lib C:\temp\libs
-
-param([string]$Lib)
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-
-$jars = Get-ChildItem $Lib -Filter *.jar
-$have = New-Object System.Collections.Generic.HashSet[string]
-foreach ($j in $jars) { [void]$have.Add(($j.BaseName -replace '-\d[\w\.\-]*$','')) }
-
-$result = foreach ($j in $jars) {
-  $zip = [IO.Compression.ZipFile]::OpenRead($j.FullName)
-  foreach ($e in $zip.Entries) {
-    if ($e.FullName -like 'META-INF/maven/*/pom.xml') {
-      $sr = New-Object IO.StreamReader($e.Open())
-      [xml]$x = $sr.ReadToEnd(); $sr.Close()
-      foreach ($d in $x.project.dependencies.dependency) {
-        $scope = if ($d.scope) { $d.scope } else { 'compile' }
-        if (($scope -in 'compile','runtime') -and $d.optional -ne 'true' -and -not $have.Contains($d.artifactId)) {
-          "$($d.groupId):$($d.artifactId) <- $($j.Name)"
-        }
-      }
-    }
-  }
-  $zip.Dispose()
-}
-$result | Sort-Object -Unique
+${cxf.asm.groupId}:${cxf.asm.artifactId} <- cxf-rt-frontend-jaxws-4.1.4.jar
+${cxf.asm.groupId}:${cxf.asm.artifactId} <- cxf-rt-wsdl-4.1.4.jar
+${httpclient.groupId}:${httpclient.artifactId} <- opensaml-saml-impl-5.1.6.jar
+${httpclient.httpcore.groupId}:${httpclient.httpcore.artifactId} <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:base64-utils <- axiom-api-2.0.0.jar
+${project.groupId}:blob <- axiom-api-2.0.0.jar
+${project.groupId}:byte-buddy-dep <- byte-buddy-1.15.11.jar
+${project.groupId}:dom-mixins <- axiom-dom-2.0.0.jar
+${project.groupId}:httpspi-servlet <- jaxws-tools-4.0.3.jar
+${project.groupId}:om-mixins <- axiom-dom-2.0.0.jar
+${project.groupId}:om-mixins <- axiom-impl-2.0.0.jar
+${project.groupId}:opensaml-core-impl <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:opensaml-messaging-api <- opensaml-saml-api-5.1.6.jar
+${project.groupId}:opensaml-messaging-api <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:opensaml-profile-api <- opensaml-saml-api-5.1.6.jar
+${project.groupId}:opensaml-profile-api <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:opensaml-security-api <- opensaml-saml-api-5.1.6.jar
+${project.groupId}:opensaml-security-api <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:opensaml-security-impl <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:opensaml-soap-api <- opensaml-saml-api-5.1.6.jar
+${project.groupId}:opensaml-soap-api <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:opensaml-soap-impl <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:opensaml-storage-api <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:opensaml-xmlsec-api <- opensaml-saml-api-5.1.6.jar
+${project.groupId}:opensaml-xmlsec-api <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:opensaml-xmlsec-impl <- opensaml-saml-impl-5.1.6.jar
+${project.groupId}:rt <- jaxws-tools-4.0.3.jar
+${project.groupId}:rt-fi <- jaxws-tools-4.0.3.jar
+${project.groupId}:servlet <- jaxws-tools-4.0.3.jar
+${shib-shared.groupId}:shib-networking <- opensaml-saml-impl-5.1.6.jar
+${shib-shared.groupId}:shib-security <- opensaml-saml-api-5.1.6.jar
+${shib-shared.groupId}:shib-security <- opensaml-saml-impl-5.1.6.jar
+${shib-shared.groupId}:shib-velocity <- opensaml-saml-impl-5.1.6.jar
+caidentia:standard-common <- standard-devops-1.1.0.jar
+ch.randelshofer:fastdoubleparser <- jackson-core-2.18.3.jar
+com.barchart.udt:barchart-udt-bundle <- netty-transport-udt-4.1.128.Final.jar
+com.brsanthu:migbase64 <- docusign-esign-java-6.1.0.jar
+com.fasterxml.jackson.dataformat:jackson-dataformat-csv <- docusign-esign-java-6.1.0.jar
+com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-base <- docusign-esign-java-6.1.0.jar
+com.fasterxml:aalto-xml <- netty-codec-xml-4.1.128.Final.jar
+com.github.spotbugs:spotbugs-annotations <- ehcache-3.10.8-jakarta.jar
+com.google.errorprone:javac-shaded <- google-java-format-1.7.jar
+com.google.guava:guava-testlib <- google-java-format-1.7.jar
+com.google.truth:truth <- google-java-format-1.7.jar
+com.ktnet:tradesign <- score-itext217-3.0.4-kang-1.58.jar
+com.ktnet:tradesign-tsa <- score-pdf-3.2.7-kang-1.58.jar
+com.sun.xml.bind:jaxb-impl <- jaxb-jxc-4.0.5.jar
+com.sun.xml.ws:jaxws-rt <- jaxws-tools-4.0.3.jar
+io.dropwizard.metrics:metrics-core <- opensaml-core-api-5.1.6.jar
+io.dropwizard.metrics:metrics-core <- opensaml-saml-impl-5.1.6.jar
+io.swagger.core.v3:swagger-annotations <- docusign-esign-java-6.1.0.jar
+javax.xml.bind:jaxb-api <- ehcache-3.10.8-jakarta.jar
+org.apache.axis2:axis2 <- smartsuite-ifproxy-6.0.1.14.jar
+org.apache.santuario:xmlsec <- opensaml-saml-api-5.1.6.jar
+org.apache.santuario:xmlsec <- opensaml-saml-impl-5.1.6.jar
+org.assertj:assertj-core <- log4j-api-2.18.0.jar
+org.bouncycastle:bcmail-jdk15 <- score-itext217-3.0.4-kang-1.58.jar
+org.bouncycastle:bcmail-jdk15 <- score-pdf-3.2.7-kang-1.58.jar
+org.bouncycastle:bcprov-jdk15 <- score-itext217-3.0.4-kang-1.58.jar
+org.bouncycastle:bcprov-jdk15 <- score-pdf-3.2.7-kang-1.58.jar
+org.bouncycastle:bcprov-jdk15 <- vt-crypt-2.1.4.jar
+org.bouncycastle:bctsp-jdk15 <- score-itext217-3.0.4-kang-1.58.jar
+org.bouncycastle:bctsp-jdk15 <- score-pdf-3.2.7-kang-1.58.jar
+org.codehaus.jackson:jackson-smile <- ets-hub-kit-2.2.9.jar
+org.eclipse.angus:angus-core <- angus-mail-2.0.5.jar
+org.ehcache.modules:ehcache-api <- ehcache-3.10.8-jakarta.jar
+org.ehcache.modules:ehcache-core <- ehcache-3.10.8-jakarta.jar
+org.ehcache.modules:ehcache-impl <- ehcache-3.10.8-jakarta.jar
+org.ehcache.modules:ehcache-xml <- ehcache-3.10.8-jakarta.jar
+org.ehcache.modules:ehcache-xml-spi <- ehcache-3.10.8-jakarta.jar
+org.ehcache:sizeof <- ehcache-3.10.8-jakarta.jar
+org.hamcrest:hamcrest-all <- ets-hub-kit-2.2.9.jar
+org.jboss:jdk-misc <- netty-common-4.1.128.Final.jar
+org.jctools:jctools-core <- netty-common-4.1.128.Final.jar
+org.junit.jupiter:junit-jupiter-engine <- log4j-api-2.18.0.jar
+org.junit.jupiter:junit-jupiter-engine <- log4j-core-2.18.0.jar
+org.junit.jupiter:junit-jupiter-migrationsupport <- log4j-api-2.18.0.jar
+org.junit.jupiter:junit-jupiter-params <- log4j-api-2.18.0.jar
+org.junit.jupiter:junit-jupiter-params <- log4j-core-2.18.0.jar
+org.junit.vintage:junit-vintage-engine <- log4j-api-2.18.0.jar
+org.junit.vintage:junit-vintage-engine <- log4j-core-2.18.0.jar
+org.junit-pioneer:junit-pioneer <- log4j-api-2.18.0.jar
+org.junit-pioneer:junit-pioneer <- log4j-core-2.18.0.jar
+org.mockito:mockito-core <- log4j-core-2.18.0.jar
+org.mockito:mockito-core <- netty-buffer-4.1.128.Final.jar
+org.mockito:mockito-core <- netty-codec-4.1.128.Final.jar
+org.mockito:mockito-core <- netty-codec-http2-4.1.128.Final.jar
+org.mockito:mockito-core <- netty-codec-http-4.1.128.Final.jar
+org.mockito:mockito-core <- netty-codec-mqtt-4.1.128.Final.jar
+org.mockito:mockito-core <- netty-common-4.1.128.Final.jar
+org.mockito:mockito-core <- netty-handler-4.1.128.Final.jar
+org.mockito:mockito-core <- netty-handler-proxy-4.1.128.Final.jar
+org.mockito:mockito-core <- netty-resolver-4.1.128.Final.jar
+org.mockito:mockito-core <- netty-transport-4.1.128.Final.jar
+org.mockito:mockito-junit-jupiter <- log4j-core-2.18.0.jar
+org.reflections:reflections <- netty-codec-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-dns-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-haproxy-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-http2-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-http-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-memcache-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-mqtt-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-redis-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-smtp-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-socks-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-stomp-4.1.128.Final.jar
+org.reflections:reflections <- netty-codec-xml-4.1.128.Final.jar
+org.reflections:reflections <- netty-handler-4.1.128.Final.jar
+org.reflections:reflections <- netty-handler-proxy-4.1.128.Final.jar
+org.reflections:reflections <- netty-resolver-dns-4.1.128.Final.jar
+org.reflections:reflections <- netty-transport-4.1.128.Final.jar
+org.reflections:reflections <- netty-transport-sctp-4.1.128.Final.jar
+org.rxtx:rxtx <- netty-transport-rxtx-4.1.128.Final.jar
+org.terracotta:offheap-store <- ehcache-3.10.8-jakarta.jar
+org.terracotta:statistics <- ehcache-3.10.8-jakarta.jar
+org.terracotta:terracotta-utilities-tools <- ehcache-3.10.8-jakarta.jar
+relaxngDatatype:relaxngDatatype <- woodstox-core-7.1.1.jar
+uk.org.webcompere:system-stubs-jupiter <- log4j-api-2.18.0.jar
