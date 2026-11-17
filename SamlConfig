@@ -5,43 +5,49 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.converter.RsaKeyConverters;
+import org.springframework.security.core.userdetails.AccountStatusUserDetailsChecker;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.saml2.core.Saml2Error;
 import org.springframework.security.saml2.core.Saml2ErrorCodes;
 import org.springframework.security.saml2.core.Saml2X509Credential;
 import org.springframework.security.saml2.provider.service.authentication.OpenSaml5AuthenticationProvider;
 import org.springframework.security.saml2.provider.service.authentication.OpenSaml5AuthenticationProvider.ResponseToken;
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
-import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticationException;
 import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticationException;
 import org.springframework.security.saml2.provider.service.registration.InMemoryRelyingPartyRegistrationRepository;
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistration;
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations;
 
+import smartsuite.security.authentication.AuthenticationUrlRequestManager;
+import smartsuite.security.authentication.SsoAuthenticationFailureHandler;
+
 /**
  * SAML2 SSO (SP 역할) 설정
  *
- * 리소스 위치 (src/main/resources/saml/)
- *  - dev-iam.s1.co.kr.metadata.xml : IdP 메타데이터
- *  - sp-key.pem  : SP 개인키 (PKCS8, "BEGIN PRIVATE KEY")
- *  - sp-cert.pem : SP 인증서
+ * 리소스 (src/main/resources/saml/): IdP 메타데이터, sp-key.pem(PKCS8), sp-cert.pem
  *
- * 선택 프로퍼티 (securityProperties, 없으면 기본값 사용)
- *  - security.saml.idp-metadata    : IdP 메타데이터 위치 (기본 classpath:saml/dev-iam.s1.co.kr.metadata.xml)
- *  - security.saml.userid-attribute: 사번/ID가 담긴 assertion 속성명 (비우면 NameID 사용)
+ * 선택 프로퍼티 (securityProperties, 없으면 기본값)
+ *  - security.saml.idp-metadata     : IdP 메타데이터 위치
+ *  - security.saml.userid-attribute : 로그인 ID가 담긴 assertion 속성명 (예: loginid / userid), 비우면 NameID
  */
 @Configuration
 public class SamlConfiguration {
 
 	public static final String REGISTRATION_ID = "idp";
-	/** IdP가 POST 하는 ACS 경로 (CSRF 예외, 필터 제외 대상) */
+	/** IdP가 POST 하는 ACS 경로 (CSRF 예외 대상) */
 	public static final String ACS_PATH = "/login/saml2/sso/" + REGISTRATION_ID;
 
 	@Value("#{securityProperties['security.saml.idp-metadata'] ?: 'classpath:saml/dev-iam.s1.co.kr.metadata.xml'}")
@@ -63,7 +69,6 @@ public class SamlConfiguration {
 		RelyingPartyRegistration registration = RelyingPartyRegistrations
 				.fromMetadataLocation(idpMetadataLocation)
 				.registrationId(REGISTRATION_ID)
-				// {baseUrl}: 요청 기준 scheme://host:port/contextPath 로 치환됨
 				.entityId("{baseUrl}/saml2/service-provider-metadata/{registrationId}")
 				.assertionConsumerServiceLocation("{baseUrl}/login/saml2/sso/{registrationId}")
 				.signingX509Credentials(c -> c.add(Saml2X509Credential.signing(privateKey, spCert)))
@@ -71,8 +76,25 @@ public class SamlConfiguration {
 		return new InMemoryRelyingPartyRegistrationRepository(registration);
 	}
 
+	/**
+	 * SAML 인증 실패 핸들러 (기존 SsoAuthenticationFailureHandler 재사용)
+	 * defaultFailureUrl 을 지정하지 않으면 401 응답만 내려가므로 로그인 페이지로 보낸다.
+	 */
+	@Bean("samlAuthenticationFailureHandler")
+	public SsoAuthenticationFailureHandler samlAuthenticationFailureHandler() {
+		SsoAuthenticationFailureHandler handler = new SsoAuthenticationFailureHandler();
+		handler.setDefaultFailureUrl(AuthenticationUrlRequestManager.DEFAULT_BUYER_LOGIN_PAGE);
+		return handler;
+	}
+
+	/**
+	 * @param userDetailsService 기존 폼 로그인(defaultAuthenticationManager)이 사용자 조회에 쓰는 UserDetailsService.
+	 *                           실제 빈 이름으로 @Qualifier 수정 필요 (UserDetailsProxy 를 반환하는 것)
+	 */
 	@Bean("samlAuthenticationProvider")
-	public OpenSaml5AuthenticationProvider samlAuthenticationProvider() {
+	public OpenSaml5AuthenticationProvider samlAuthenticationProvider(
+			@Qualifier("userDetailsService") UserDetailsService userDetailsService) {
+
 		OpenSaml5AuthenticationProvider provider = new OpenSaml5AuthenticationProvider();
 		Converter<ResponseToken, Saml2Authentication> defaultConverter =
 				OpenSaml5AuthenticationProvider.createDefaultResponseAuthenticationConverter();
@@ -89,18 +111,31 @@ public class SamlConfiguration {
 				throw new Saml2AuthenticationException(
 						new Saml2Error(Saml2ErrorCodes.INVALID_ASSERTION, "SAML assertion에 사용자 식별값이 없습니다."));
 			}
-			return toAppAuthentication(loginId);
+			return toAppAuthentication(loginId, userDetailsService, base);
 		});
 		return provider;
 	}
 
 	/**
-	 * TODO: 기존 폼 로그인과 "동일한 타입"의 Authentication 을 만들어 반환해야 합니다.
-	 *  - 사용자 테이블에서 loginId 로 사용자 조회
-	 *  - 기존 로그인 성공 시 생성되는 principal(사용자 정보 객체) / authorities 로 토큰 생성
-	 *  (DefaultAuthenticationSuccessHandler 와 세션 후처리가 이 타입을 기대하기 때문)
+	 * SSO 로그인 ID 로 내부 사용자를 조회해, 폼 로그인 성공 시와 같은 형태의 Authentication 을 만든다.
+	 * (success handler 가 principal 을 UserDetailsProxy 로 캐스팅해 사용하기 때문)
 	 */
-	private AbstractAuthenticationToken toAppAuthentication(String loginId) {
-		throw new UnsupportedOperationException("기존 로그인 Authentication 생성 로직 연결 필요: " + loginId);
+	private AbstractAuthenticationToken toAppAuthentication(String loginId, UserDetailsService userDetailsService,
+			Saml2Authentication saml) {
+		UserDetails user;
+		try {
+			user = userDetailsService.loadUserByUsername(loginId);
+		} catch (UsernameNotFoundException e) {
+			throw new Saml2AuthenticationException(
+					new Saml2Error("user_not_found", "SSO 사용자가 시스템에 등록되어 있지 않습니다: " + loginId), e);
+		}
+
+		// 잠김/만료/비활성 계정 확인 (DaoAuthenticationProvider 의 사전 검사와 동일)
+		new AccountStatusUserDetailsChecker().check(user);
+
+		UsernamePasswordAuthenticationToken auth =
+				UsernamePasswordAuthenticationToken.authenticated(user, null, user.getAuthorities());
+		auth.setDetails(saml.getDetails());
+		return auth;
 	}
 }
