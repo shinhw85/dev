@@ -1,118 +1,414 @@
-${cxf.asm.groupId}:${cxf.asm.artifactId} <- cxf-rt-frontend-jaxws-4.1.4.jar
-${cxf.asm.groupId}:${cxf.asm.artifactId} <- cxf-rt-wsdl-4.1.4.jar
-${httpclient.groupId}:${httpclient.artifactId} <- opensaml-saml-impl-5.1.6.jar
-${httpclient.httpcore.groupId}:${httpclient.httpcore.artifactId} <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:base64-utils <- axiom-api-2.0.0.jar
-${project.groupId}:blob <- axiom-api-2.0.0.jar
-${project.groupId}:byte-buddy-dep <- byte-buddy-1.15.11.jar
-${project.groupId}:dom-mixins <- axiom-dom-2.0.0.jar
-${project.groupId}:httpspi-servlet <- jaxws-tools-4.0.3.jar
-${project.groupId}:om-mixins <- axiom-dom-2.0.0.jar
-${project.groupId}:om-mixins <- axiom-impl-2.0.0.jar
-${project.groupId}:opensaml-core-impl <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:opensaml-messaging-api <- opensaml-saml-api-5.1.6.jar
-${project.groupId}:opensaml-messaging-api <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:opensaml-profile-api <- opensaml-saml-api-5.1.6.jar
-${project.groupId}:opensaml-profile-api <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:opensaml-security-api <- opensaml-saml-api-5.1.6.jar
-${project.groupId}:opensaml-security-api <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:opensaml-security-impl <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:opensaml-soap-api <- opensaml-saml-api-5.1.6.jar
-${project.groupId}:opensaml-soap-api <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:opensaml-soap-impl <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:opensaml-storage-api <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:opensaml-xmlsec-api <- opensaml-saml-api-5.1.6.jar
-${project.groupId}:opensaml-xmlsec-api <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:opensaml-xmlsec-impl <- opensaml-saml-impl-5.1.6.jar
-${project.groupId}:rt <- jaxws-tools-4.0.3.jar
-${project.groupId}:rt-fi <- jaxws-tools-4.0.3.jar
-${project.groupId}:servlet <- jaxws-tools-4.0.3.jar
-${shib-shared.groupId}:shib-networking <- opensaml-saml-impl-5.1.6.jar
-${shib-shared.groupId}:shib-security <- opensaml-saml-api-5.1.6.jar
-${shib-shared.groupId}:shib-security <- opensaml-saml-impl-5.1.6.jar
-${shib-shared.groupId}:shib-velocity <- opensaml-saml-impl-5.1.6.jar
-caidentia:standard-common <- standard-devops-1.1.0.jar
-ch.randelshofer:fastdoubleparser <- jackson-core-2.18.3.jar
-com.barchart.udt:barchart-udt-bundle <- netty-transport-udt-4.1.128.Final.jar
-com.brsanthu:migbase64 <- docusign-esign-java-6.1.0.jar
-com.fasterxml.jackson.dataformat:jackson-dataformat-csv <- docusign-esign-java-6.1.0.jar
-com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-base <- docusign-esign-java-6.1.0.jar
-com.fasterxml:aalto-xml <- netty-codec-xml-4.1.128.Final.jar
-com.github.spotbugs:spotbugs-annotations <- ehcache-3.10.8-jakarta.jar
-com.google.errorprone:javac-shaded <- google-java-format-1.7.jar
-com.google.guava:guava-testlib <- google-java-format-1.7.jar
-com.google.truth:truth <- google-java-format-1.7.jar
-com.ktnet:tradesign <- score-itext217-3.0.4-kang-1.58.jar
-com.ktnet:tradesign-tsa <- score-pdf-3.2.7-kang-1.58.jar
-com.sun.xml.bind:jaxb-impl <- jaxb-jxc-4.0.5.jar
-com.sun.xml.ws:jaxws-rt <- jaxws-tools-4.0.3.jar
-io.dropwizard.metrics:metrics-core <- opensaml-core-api-5.1.6.jar
-io.dropwizard.metrics:metrics-core <- opensaml-saml-impl-5.1.6.jar
-io.swagger.core.v3:swagger-annotations <- docusign-esign-java-6.1.0.jar
-javax.xml.bind:jaxb-api <- ehcache-3.10.8-jakarta.jar
-org.apache.axis2:axis2 <- smartsuite-ifproxy-6.0.1.14.jar
-org.apache.santuario:xmlsec <- opensaml-saml-api-5.1.6.jar
-org.apache.santuario:xmlsec <- opensaml-saml-impl-5.1.6.jar
-org.assertj:assertj-core <- log4j-api-2.18.0.jar
-org.bouncycastle:bcmail-jdk15 <- score-itext217-3.0.4-kang-1.58.jar
-org.bouncycastle:bcmail-jdk15 <- score-pdf-3.2.7-kang-1.58.jar
-org.bouncycastle:bcprov-jdk15 <- score-itext217-3.0.4-kang-1.58.jar
-org.bouncycastle:bcprov-jdk15 <- score-pdf-3.2.7-kang-1.58.jar
-org.bouncycastle:bcprov-jdk15 <- vt-crypt-2.1.4.jar
-org.bouncycastle:bctsp-jdk15 <- score-itext217-3.0.4-kang-1.58.jar
-org.bouncycastle:bctsp-jdk15 <- score-pdf-3.2.7-kang-1.58.jar
-org.codehaus.jackson:jackson-smile <- ets-hub-kit-2.2.9.jar
-org.eclipse.angus:angus-core <- angus-mail-2.0.5.jar
-org.ehcache.modules:ehcache-api <- ehcache-3.10.8-jakarta.jar
-org.ehcache.modules:ehcache-core <- ehcache-3.10.8-jakarta.jar
-org.ehcache.modules:ehcache-impl <- ehcache-3.10.8-jakarta.jar
-org.ehcache.modules:ehcache-xml <- ehcache-3.10.8-jakarta.jar
-org.ehcache.modules:ehcache-xml-spi <- ehcache-3.10.8-jakarta.jar
-org.ehcache:sizeof <- ehcache-3.10.8-jakarta.jar
-org.hamcrest:hamcrest-all <- ets-hub-kit-2.2.9.jar
-org.jboss:jdk-misc <- netty-common-4.1.128.Final.jar
-org.jctools:jctools-core <- netty-common-4.1.128.Final.jar
-org.junit.jupiter:junit-jupiter-engine <- log4j-api-2.18.0.jar
-org.junit.jupiter:junit-jupiter-engine <- log4j-core-2.18.0.jar
-org.junit.jupiter:junit-jupiter-migrationsupport <- log4j-api-2.18.0.jar
-org.junit.jupiter:junit-jupiter-params <- log4j-api-2.18.0.jar
-org.junit.jupiter:junit-jupiter-params <- log4j-core-2.18.0.jar
-org.junit.vintage:junit-vintage-engine <- log4j-api-2.18.0.jar
-org.junit.vintage:junit-vintage-engine <- log4j-core-2.18.0.jar
-org.junit-pioneer:junit-pioneer <- log4j-api-2.18.0.jar
-org.junit-pioneer:junit-pioneer <- log4j-core-2.18.0.jar
-org.mockito:mockito-core <- log4j-core-2.18.0.jar
-org.mockito:mockito-core <- netty-buffer-4.1.128.Final.jar
-org.mockito:mockito-core <- netty-codec-4.1.128.Final.jar
-org.mockito:mockito-core <- netty-codec-http2-4.1.128.Final.jar
-org.mockito:mockito-core <- netty-codec-http-4.1.128.Final.jar
-org.mockito:mockito-core <- netty-codec-mqtt-4.1.128.Final.jar
-org.mockito:mockito-core <- netty-common-4.1.128.Final.jar
-org.mockito:mockito-core <- netty-handler-4.1.128.Final.jar
-org.mockito:mockito-core <- netty-handler-proxy-4.1.128.Final.jar
-org.mockito:mockito-core <- netty-resolver-4.1.128.Final.jar
-org.mockito:mockito-core <- netty-transport-4.1.128.Final.jar
-org.mockito:mockito-junit-jupiter <- log4j-core-2.18.0.jar
-org.reflections:reflections <- netty-codec-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-dns-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-haproxy-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-http2-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-http-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-memcache-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-mqtt-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-redis-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-smtp-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-socks-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-stomp-4.1.128.Final.jar
-org.reflections:reflections <- netty-codec-xml-4.1.128.Final.jar
-org.reflections:reflections <- netty-handler-4.1.128.Final.jar
-org.reflections:reflections <- netty-handler-proxy-4.1.128.Final.jar
-org.reflections:reflections <- netty-resolver-dns-4.1.128.Final.jar
-org.reflections:reflections <- netty-transport-4.1.128.Final.jar
-org.reflections:reflections <- netty-transport-sctp-4.1.128.Final.jar
-org.rxtx:rxtx <- netty-transport-rxtx-4.1.128.Final.jar
-org.terracotta:offheap-store <- ehcache-3.10.8-jakarta.jar
-org.terracotta:statistics <- ehcache-3.10.8-jakarta.jar
-org.terracotta:terracotta-utilities-tools <- ehcache-3.10.8-jakarta.jar
-relaxngDatatype:relaxngDatatype <- woodstox-core-7.1.1.jar
-uk.org.webcompere:system-stubs-jupiter <- log4j-api-2.18.0.jar
+11월 17, 2026 1:21:24 오후 org.apache.catalina.core.ContainerBase startInternal
+SEVERE: 자식 컨테이너를 시작 중 실패했습니다.
+java.util.concurrent.ExecutionException: org.apache.catalina.LifecycleException: 구성요소 [StandardEngine[Catalina].StandardHost[localhost].StandardContext[]]을(를) 시작하지 못했습니다.
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:754)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:783)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1201)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1191)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:81)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:747)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:201)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:410)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:868)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:758)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:342)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:473)
+Caused by: org.apache.catalina.LifecycleException: 구성요소 [StandardEngine[Catalina].StandardHost[localhost].StandardContext[]]을(를) 시작하지 못했습니다.
+	at org.apache.catalina.util.LifecycleBase.handleSubClassException(LifecycleBase.java:404)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:179)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1201)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1191)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:81)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:747)
+	... 21 more
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration': Unsatisfied dependency expressed through method 'setFilterChains' parameter 0: Error creating bean with name 'defaultFilterChain' defined in smartsuite.config.SecurityConfiguration: Unsatisfied dependency expressed through method 'defaultFilterChain' parameter 16: Error creating bean with name 'relyingPartyRegistrationRepository' defined in smartsuite.config.security.SamlConfiguration: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredMethodElement.resolveMethodArguments(AutowiredAnnotationBeanPostProcessor.java:895)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredMethodElement.inject(AutowiredAnnotationBeanPostProcessor.java:848)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1459)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1228)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1130)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:990)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at smartsuite.WebInitializer.onStartup(WebInitializer.java:39)
+	at org.springframework.web.SpringServletContainerInitializer.onStartup(SpringServletContainerInitializer.java:171)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4452)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	... 27 more
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'defaultFilterChain' defined in smartsuite.config.SecurityConfiguration: Unsatisfied dependency expressed through method 'defaultFilterChain' parameter 16: Error creating bean with name 'relyingPartyRegistrationRepository' defined in smartsuite.config.security.SamlConfiguration: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.addCandidateEntry(DefaultListableBeanFactory.java:2022)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.findAutowireCandidates(DefaultListableBeanFactory.java:1985)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveMultipleBeanCollection(DefaultListableBeanFactory.java:1875)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveMultipleBeans(DefaultListableBeanFactory.java:1843)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1719)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredMethodElement.resolveMethodArguments(AutowiredAnnotationBeanPostProcessor.java:887)
+	... 46 more
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'relyingPartyRegistrationRepository' defined in smartsuite.config.security.SamlConfiguration: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:489)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1770)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	... 63 more
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:200)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:89)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:169)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
+	... 77 more
+Caused by: org.springframework.security.saml2.Saml2Exception: Failed to deserialize payload
+	at org.springframework.security.saml2.provider.service.registration.OpenSaml5Template.deserialize(OpenSaml5Template.java:154)
+	at org.springframework.security.saml2.provider.service.registration.OpenSamlMetadataUtils.descriptors(OpenSamlMetadataUtils.java:66)
+	at org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations.collectionFromMetadata(RelyingPartyRegistrations.java:219)
+	at org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations.fromMetadata(RelyingPartyRegistrations.java:128)
+	at org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations.fromMetadataLocation(RelyingPartyRegistrations.java:80)
+	at smartsuite.config.security.SamlConfiguration.relyingPartyRegistrationRepository(SamlConfiguration.java:64)
+	at smartsuite.config.security.SamlConfiguration$$SpringCGLIB$$0.CGLIB$relyingPartyRegistrationRepository$1(<generated>)
+	at smartsuite.config.security.SamlConfiguration$$SpringCGLIB$$FastClass$$1.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:400)
+	at smartsuite.config.security.SamlConfiguration$$SpringCGLIB$$0.relyingPartyRegistrationRepository(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:172)
+	... 80 more
+Caused by: org.opensaml.core.xml.io.UnmarshallingException: Saw invalid attribute 'WantAuthnRequestsSigned' on element {urn:oasis:names:tc:SAML:2.0:metadata}SPSSODescriptor
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.processAttribute(AbstractXMLObjectUnmarshaller.java:405)
+	at org.opensaml.saml.saml2.metadata.impl.RoleDescriptorUnmarshaller.processAttribute(RoleDescriptorUnmarshaller.java:87)
+	at org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorUnmarshaller.processAttribute(SPSSODescriptorUnmarshaller.java:63)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshallAttribute(AbstractXMLObjectUnmarshaller.java:235)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshall(AbstractXMLObjectUnmarshaller.java:127)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshallChildElement(AbstractXMLObjectUnmarshaller.java:348)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshall(AbstractXMLObjectUnmarshaller.java:139)
+	at org.springframework.security.saml2.provider.service.registration.OpenSaml5Template.deserialize(OpenSaml5Template.java:148)
+	... 95 more
+
+11월 17, 2026 1:21:24 오후 org.apache.catalina.core.ContainerBase startInternal
+SEVERE: 자식 컨테이너를 시작 중 실패했습니다.
+java.util.concurrent.ExecutionException: org.apache.catalina.LifecycleException: 자식 컨테이너를 시작 중 실패했습니다.
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:754)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:201)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:410)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:868)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:758)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:342)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:473)
+Caused by: org.apache.catalina.LifecycleException: 자식 컨테이너를 시작 중 실패했습니다.
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:766)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:783)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1201)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1191)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:81)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:747)
+	... 13 more
+Caused by: java.util.concurrent.ExecutionException: org.apache.catalina.LifecycleException: 구성요소 [StandardEngine[Catalina].StandardHost[localhost].StandardContext[]]을(를) 시작하지 못했습니다.
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:754)
+	... 21 more
+Caused by: org.apache.catalina.LifecycleException: 구성요소 [StandardEngine[Catalina].StandardHost[localhost].StandardContext[]]을(를) 시작하지 못했습니다.
+	at org.apache.catalina.util.LifecycleBase.handleSubClassException(LifecycleBase.java:404)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:179)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1201)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1191)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:81)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:747)
+	... 21 more
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration': Unsatisfied dependency expressed through method 'setFilterChains' parameter 0: Error creating bean with name 'defaultFilterChain' defined in smartsuite.config.SecurityConfiguration: Unsatisfied dependency expressed through method 'defaultFilterChain' parameter 16: Error creating bean with name 'relyingPartyRegistrationRepository' defined in smartsuite.config.security.SamlConfiguration: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredMethodElement.resolveMethodArguments(AutowiredAnnotationBeanPostProcessor.java:895)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredMethodElement.inject(AutowiredAnnotationBeanPostProcessor.java:848)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1459)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1228)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1130)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:990)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at smartsuite.WebInitializer.onStartup(WebInitializer.java:39)
+	at org.springframework.web.SpringServletContainerInitializer.onStartup(SpringServletContainerInitializer.java:171)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4452)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	... 27 more
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'defaultFilterChain' defined in smartsuite.config.SecurityConfiguration: Unsatisfied dependency expressed through method 'defaultFilterChain' parameter 16: Error creating bean with name 'relyingPartyRegistrationRepository' defined in smartsuite.config.security.SamlConfiguration: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.addCandidateEntry(DefaultListableBeanFactory.java:2022)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.findAutowireCandidates(DefaultListableBeanFactory.java:1985)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveMultipleBeanCollection(DefaultListableBeanFactory.java:1875)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveMultipleBeans(DefaultListableBeanFactory.java:1843)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1719)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredMethodElement.resolveMethodArguments(AutowiredAnnotationBeanPostProcessor.java:887)
+	... 46 more
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'relyingPartyRegistrationRepository' defined in smartsuite.config.security.SamlConfiguration: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:489)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1770)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	... 63 more
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:200)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:89)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:169)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
+	... 77 more
+Caused by: org.springframework.security.saml2.Saml2Exception: Failed to deserialize payload
+	at org.springframework.security.saml2.provider.service.registration.OpenSaml5Template.deserialize(OpenSaml5Template.java:154)
+	at org.springframework.security.saml2.provider.service.registration.OpenSamlMetadataUtils.descriptors(OpenSamlMetadataUtils.java:66)
+	at org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations.collectionFromMetadata(RelyingPartyRegistrations.java:219)
+	at org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations.fromMetadata(RelyingPartyRegistrations.java:128)
+	at org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations.fromMetadataLocation(RelyingPartyRegistrations.java:80)
+	at smartsuite.config.security.SamlConfiguration.relyingPartyRegistrationRepository(SamlConfiguration.java:64)
+	at smartsuite.config.security.SamlConfiguration$$SpringCGLIB$$0.CGLIB$relyingPartyRegistrationRepository$1(<generated>)
+	at smartsuite.config.security.SamlConfiguration$$SpringCGLIB$$FastClass$$1.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:400)
+	at smartsuite.config.security.SamlConfiguration$$SpringCGLIB$$0.relyingPartyRegistrationRepository(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:172)
+	... 80 more
+Caused by: org.opensaml.core.xml.io.UnmarshallingException: Saw invalid attribute 'WantAuthnRequestsSigned' on element {urn:oasis:names:tc:SAML:2.0:metadata}SPSSODescriptor
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.processAttribute(AbstractXMLObjectUnmarshaller.java:405)
+	at org.opensaml.saml.saml2.metadata.impl.RoleDescriptorUnmarshaller.processAttribute(RoleDescriptorUnmarshaller.java:87)
+	at org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorUnmarshaller.processAttribute(SPSSODescriptorUnmarshaller.java:63)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshallAttribute(AbstractXMLObjectUnmarshaller.java:235)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshall(AbstractXMLObjectUnmarshaller.java:127)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshallChildElement(AbstractXMLObjectUnmarshaller.java:348)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshall(AbstractXMLObjectUnmarshaller.java:139)
+	at org.springframework.security.saml2.provider.service.registration.OpenSaml5Template.deserialize(OpenSaml5Template.java:148)
+	... 95 more
+
+11월 17, 2026 1:21:24 오후 org.apache.catalina.startup.Catalina start
+SEVERE: 필수 항목인 서버 구성요소가 제대로 시작되지 못하여, Tomcat이 시작될 수 없습니다.
+org.apache.catalina.LifecycleException: 자식 컨테이너를 시작 중 실패했습니다.
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:766)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:201)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:410)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:868)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:758)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:342)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:473)
+Caused by: java.util.concurrent.ExecutionException: org.apache.catalina.LifecycleException: 자식 컨테이너를 시작 중 실패했습니다.
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:754)
+	... 13 more
+Caused by: org.apache.catalina.LifecycleException: 자식 컨테이너를 시작 중 실패했습니다.
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:766)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:783)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1201)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1191)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:81)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:747)
+	... 13 more
+Caused by: java.util.concurrent.ExecutionException: org.apache.catalina.LifecycleException: 구성요소 [StandardEngine[Catalina].StandardHost[localhost].StandardContext[]]을(를) 시작하지 못했습니다.
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:754)
+	... 21 more
+Caused by: org.apache.catalina.LifecycleException: 구성요소 [StandardEngine[Catalina].StandardHost[localhost].StandardContext[]]을(를) 시작하지 못했습니다.
+	at org.apache.catalina.util.LifecycleBase.handleSubClassException(LifecycleBase.java:404)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:179)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1201)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1191)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:81)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:747)
+	... 21 more
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration': Unsatisfied dependency expressed through method 'setFilterChains' parameter 0: Error creating bean with name 'defaultFilterChain' defined in smartsuite.config.SecurityConfiguration: Unsatisfied dependency expressed through method 'defaultFilterChain' parameter 16: Error creating bean with name 'relyingPartyRegistrationRepository' defined in smartsuite.config.security.SamlConfiguration: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredMethodElement.resolveMethodArguments(AutowiredAnnotationBeanPostProcessor.java:895)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredMethodElement.inject(AutowiredAnnotationBeanPostProcessor.java:848)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:146)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1459)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1228)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1130)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:990)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627)
+	at smartsuite.WebInitializer.onStartup(WebInitializer.java:39)
+	at org.springframework.web.SpringServletContainerInitializer.onStartup(SpringServletContainerInitializer.java:171)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4452)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	... 27 more
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'defaultFilterChain' defined in smartsuite.config.SecurityConfiguration: Unsatisfied dependency expressed through method 'defaultFilterChain' parameter 16: Error creating bean with name 'relyingPartyRegistrationRepository' defined in smartsuite.config.security.SamlConfiguration: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.addCandidateEntry(DefaultListableBeanFactory.java:2022)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.findAutowireCandidates(DefaultListableBeanFactory.java:1985)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveMultipleBeanCollection(DefaultListableBeanFactory.java:1875)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveMultipleBeans(DefaultListableBeanFactory.java:1843)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1719)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredMethodElement.resolveMethodArguments(AutowiredAnnotationBeanPostProcessor.java:887)
+	... 46 more
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'relyingPartyRegistrationRepository' defined in smartsuite.config.security.SamlConfiguration: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:489)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1770)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	... 63 more
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository]: Factory method 'relyingPartyRegistrationRepository' threw exception with message: Failed to deserialize payload
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:200)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:89)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:169)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
+	... 77 more
+Caused by: org.springframework.security.saml2.Saml2Exception: Failed to deserialize payload
+	at org.springframework.security.saml2.provider.service.registration.OpenSaml5Template.deserialize(OpenSaml5Template.java:154)
+	at org.springframework.security.saml2.provider.service.registration.OpenSamlMetadataUtils.descriptors(OpenSamlMetadataUtils.java:66)
+	at org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations.collectionFromMetadata(RelyingPartyRegistrations.java:219)
+	at org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations.fromMetadata(RelyingPartyRegistrations.java:128)
+	at org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations.fromMetadataLocation(RelyingPartyRegistrations.java:80)
+	at smartsuite.config.security.SamlConfiguration.relyingPartyRegistrationRepository(SamlConfiguration.java:64)
+	at smartsuite.config.security.SamlConfiguration$$SpringCGLIB$$0.CGLIB$relyingPartyRegistrationRepository$1(<generated>)
+	at smartsuite.config.security.SamlConfiguration$$SpringCGLIB$$FastClass$$1.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:400)
+	at smartsuite.config.security.SamlConfiguration$$SpringCGLIB$$0.relyingPartyRegistrationRepository(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:172)
+	... 80 more
+Caused by: org.opensaml.core.xml.io.UnmarshallingException: Saw invalid attribute 'WantAuthnRequestsSigned' on element {urn:oasis:names:tc:SAML:2.0:metadata}SPSSODescriptor
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.processAttribute(AbstractXMLObjectUnmarshaller.java:405)
+	at org.opensaml.saml.saml2.metadata.impl.RoleDescriptorUnmarshaller.processAttribute(RoleDescriptorUnmarshaller.java:87)
+	at org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorUnmarshaller.processAttribute(SPSSODescriptorUnmarshaller.java:63)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshallAttribute(AbstractXMLObjectUnmarshaller.java:235)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshall(AbstractXMLObjectUnmarshaller.java:127)
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshallChildElement(AbstractXMLObjectUnmarshaller.java:348)13:21:24.064 [defaultScheduler_Worker-1] DEBUG    org.quartz.simpl.SimpleThreadPool [EID:] [SS-ID:] [USER-ID:] - WorkerThread is shut down.[END]
+13:21:24.064 [defaultScheduler_Worker-3] DEBUG    org.quartz.simpl.SimpleThreadPool [EID:] [SS-ID:] [USER-ID:] - WorkerThread is shut down.[END]
+13:21:24.064 [defaultScheduler_Worker-2] DEBUG    org.quartz.simpl.SimpleThreadPool [EID:] [SS-ID:] [USER-ID:] - WorkerThread is shut down.[END]
+
+	at org.opensaml.core.xml.io.AbstractXMLObjectUnmarshaller.unmarshall(AbstractXMLObjectUnmarshaller.java:139)
+	at org.springframework.security.saml2.provider.service.registration.OpenSaml5Template.deserialize(OpenSaml5Template.java:148)
+	... 95 more
