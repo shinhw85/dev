@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
+import org.springframework.security.core.userdetails.UserDetailsChecker;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -86,7 +86,8 @@ public class SamlConfiguration {
 
 	@Bean("samlAuthenticationProvider")
 	public OpenSaml5AuthenticationProvider samlAuthenticationProvider(
-			@Qualifier("samlUserDetailsService") UserDetailsService samlUserDetailsService) {
+			@Qualifier("samlUserDetailsService") UserDetailsService samlUserDetailsService,
+			@Qualifier("preAuthenticationChecks") UserDetailsChecker preAuthenticationChecks) {
 
 		OpenSaml5AuthenticationProvider provider = new OpenSaml5AuthenticationProvider();
 		Converter<ResponseToken, Saml2Authentication> defaultConverter =
@@ -104,7 +105,7 @@ public class SamlConfiguration {
 				throw new Saml2AuthenticationException(
 						new Saml2Error(Saml2ErrorCodes.INVALID_ASSERTION, "SAML assertion에 사용자 식별값이 없습니다."));
 			}
-			return toAppAuthentication(loginId, samlUserDetailsService, base);
+			return toAppAuthentication(loginId, samlUserDetailsService, preAuthenticationChecks, base);
 		});
 		return provider;
 	}
@@ -114,7 +115,7 @@ public class SamlConfiguration {
 	 * (success handler 가 principal 을 UserDetailsProxy 로 캐스팅해 사용하기 때문)
 	 */
 	private AbstractAuthenticationToken toAppAuthentication(String loginId, UserDetailsService userDetailsService,
-			Saml2Authentication saml) {
+			UserDetailsChecker preAuthenticationChecks, Saml2Authentication saml) {
 		UserDetails user;
 		try {
 			user = userDetailsService.loadUserByUsername(loginId);
@@ -123,8 +124,8 @@ public class SamlConfiguration {
 					new Saml2Error("user_not_found", "SSO 사용자가 시스템에 등록되어 있지 않습니다: " + loginId), e);
 		}
 
-		// 잠김/비활성/만료 계정 확인 (비밀번호 관련 post check 는 SSO 에서 제외)
-		new AccountStatusUserDetailsChecker().check(user);
+		// 폼 로그인과 동일한 사전 검사 (잠김/사용정지/계정만료, 메시지 포함). 비밀번호 관련 post check 는 SSO 에서 제외
+		preAuthenticationChecks.check(user);
 
 		UsernamePasswordAuthenticationToken auth =
 				UsernamePasswordAuthenticationToken.authenticated(user, null, user.getAuthorities());
@@ -132,4 +133,3 @@ public class SamlConfiguration {
 		return auth;
 	}
 }
-
