@@ -1,21 +1,24 @@
-Predicate<Map<String, Object>> base = r ->
-        (seq + 1) == ((Number) r.get("apvlln_sort")).intValue()
-        && !apvllnApvlResCcdFinal.equals(r.get("apvlln_apvl_res_ccd"));
+param([string]$Lib)
+Add-Type -AssemblyName System.IO.Compression.FileSystem
 
-List<Map<String, Object>> candidates = aprvLineList.stream()
-        .filter(base)
-        .collect(Collectors.toList());
+$jars = Get-ChildItem $Lib -Filter *.jar
+$have = New-Object System.Collections.Generic.HashSet[string]
+foreach ($j in $jars) { [void]$have.Add(($j.BaseName -replace '-\d[\w\.\-]*$','')) }
 
-Map<String, Object> aprvLine = findByKey(candidates, "epid", epid);
-if (aprvLine == null) aprvLine = findByKey(candidates, "eml", eml);
-if (aprvLine == null) aprvLine = findByKey(candidates, "usr_id", usrId);
-
-private Map<String, Object> findByKey(List<Map<String, Object>> list, String key, String value) {
-    if (value == null || value.isBlank()) {
-        return null; // 비교값이 없으면 해당 단계는 건너뜀
+$result = foreach ($j in $jars) {
+  $zip = [IO.Compression.ZipFile]::OpenRead($j.FullName)
+  foreach ($e in $zip.Entries) {
+    if ($e.FullName -like 'META-INF/maven/*/pom.xml') {
+      $sr = New-Object IO.StreamReader($e.Open())
+      [xml]$x = $sr.ReadToEnd(); $sr.Close()
+      foreach ($d in $x.project.dependencies.dependency) {
+        $scope = if ($d.scope) { $d.scope } else { 'compile' }
+        if (($scope -in 'compile','runtime') -and $d.optional -ne 'true' -and -not $have.Contains($d.artifactId)) {
+          "$($d.groupId):$($d.artifactId) <- $($j.Name)"
+        }
+      }
     }
-    return list.stream()
-            .filter(r -> value.equals(r.get(key)))
-            .findFirst()
-            .orElse(null);
+  }
+  $zip.Dispose()
 }
+$result | Sort-Object -Unique
