@@ -362,6 +362,7 @@ public class SecurityConfiguration {
 			@Qualifier("xssRequestFilter") XssRequestFilter xssRequestFilter,
 			// SAML
 			RelyingPartyRegistrationRepository samlRegistrationRepository,
+			@Qualifier("samlAuthenticationFailureHandler") SsoAuthenticationFailureHandler samlAuthenticationFailureHandler,
 			@Qualifier("samlAuthenticationProvider") OpenSaml5AuthenticationProvider samlAuthenticationProvider
 			) throws Exception {
 
@@ -450,7 +451,7 @@ public class SecurityConfiguration {
 				.relyingPartyRegistrationRepository(samlRegistrationRepository)
 				.authenticationManager(new ProviderManager(samlAuthenticationProvider))
 				.successHandler(authenticationSuccessHandler)
-				.failureHandler(authenticationFailureHandler)
+				.failureHandler(samlAuthenticationFailureHandler)
 			)
 			// SP 메타데이터 노출 : /saml2/service-provider-metadata/idp
 			.saml2Metadata(Customizer.withDefaults())
