@@ -1,92 +1,41 @@
-# SAML 용으로 추가한 jar 중 "SAML 의존성에서 도달하지 않는" jar 를 찾는다.
-# jar 안의 META-INF/maven/**/pom.xml 의 compile/runtime(optional 제외) 의존성을 따라간다.
-#
-# 사용법:
-#   powershell -ExecutionPolicy Bypass -File find_unused_jars.ps1 -Lib "C:\...\WEB-INF\lib" -Added "C:\temp\libs"
-#
-#   -Lib   : jar 를 추가한 뒤의 WEB-INF\lib (전체)
-#   -Added : SAML 용으로 추가한 jar 만 들어 있는 폴더 (예: 외부 PC 에서 받아온 libs).
-#            파일명이 -Lib 안의 파일명과 같아야 한다.
-#   -Roots : 의존성 추적의 시작점 artifactId (기본값 아래)
-param(
-  [Parameter(Mandatory = $true)][string]$Lib,
-  [Parameter(Mandatory = $true)][string]$Added,
-  [string[]]$Roots = @('spring-security-saml2-service-provider', 'opensaml-saml-api', 'opensaml-saml-impl')
-)
+PS D:\> powershell -ExecutionPolicy Bypass -File find_unused_jars.ps1 -Lib "D:\lib" -Added "D:\tt"
 
-Add-Type -AssemblyName System.IO.Compression.FileSystem
+=== ?꾩슂 (SAML 猷⑦듃?먯꽌 ?꾨떖) ===
+cryptacular-1.2.4.jar
+metrics-core-4.2.26.jar
+opensaml-core-api-5.1.6.jar
+opensaml-core-impl-5.1.6.jar
+opensaml-profile-api-5.1.6.jar
+opensaml-saml-api-5.1.6.jar
+opensaml-saml-impl-5.1.6.jar
+opensaml-security-api-5.1.6.jar
+opensaml-security-impl-5.1.6.jar
+opensaml-soap-api-5.1.6.jar
+opensaml-soap-impl-5.1.6.jar
+opensaml-storage-api-5.1.6.jar
+opensaml-xmlsec-api-5.1.6.jar
+opensaml-xmlsec-impl-5.1.6.jar
+shib-networking-9.1.6.jar
+shib-security-9.1.6.jar
+shib-support-9.1.6.jar
+shib-velocity-9.1.6.jar
+spring-security-saml2-service-provider-6.5.7.jar
+xmlsec-3.0.5.jar
 
-# 파일명(확장자 제외) -> artifactId 추정 (뒤쪽 버전 부분 제거)
-function Get-ArtifactName([string]$baseName) {
-  return ($baseName -replace '-\d[\w\.\-]*$', '')
-}
+=== ?쒓굅 ?꾨낫 (SAML ?섏〈?깆뿉???꾨떖?섏? ?딆쓬) ===
 
-$libJars = Get-ChildItem $Lib -Filter *.jar
-$byArtifact = @{}
-foreach ($j in $libJars) { $byArtifact[(Get-ArtifactName $j.BaseName)] = $j.Name }
-
-# jar 파일명 -> 의존하는 artifactId 목록
-$deps = @{}
-foreach ($j in $libJars) {
-  $list = New-Object System.Collections.Generic.List[string]
-  $zip = [IO.Compression.ZipFile]::OpenRead($j.FullName)
-  try {
-    foreach ($e in $zip.Entries) {
-      if ($e.FullName -like 'META-INF/maven/*/pom.xml') {
-        try {
-          $sr = New-Object IO.StreamReader($e.Open())
-          $text = $sr.ReadToEnd()
-          $sr.Close()
-          $x = [xml]$text
-          foreach ($d in $x.project.dependencies.dependency) {
-            $scope = if ($d.scope) { [string]$d.scope } else { 'compile' }
-            if (($scope -eq 'compile' -or $scope -eq 'runtime') -and $d.optional -ne 'true') {
-              [void]$list.Add([string]$d.artifactId)
-            }
-          }
-        }
-        catch {
-          Write-Host "pom 파싱 실패: $($j.Name)" -ForegroundColor Yellow
-        }
-      }
-    }
-  }
-  finally { $zip.Dispose() }
-  $deps[$j.Name] = $list
-}
-
-# 루트에서 의존성 따라가기
-$reached = New-Object System.Collections.Generic.HashSet[string]
-$queue = New-Object System.Collections.Generic.Queue[string]
-$unresolved = New-Object System.Collections.Generic.HashSet[string]
-
-foreach ($r in $Roots) {
-  if ($byArtifact.ContainsKey($r)) { $queue.Enqueue($byArtifact[$r]) }
-  else { Write-Host "루트 jar 없음: $r" -ForegroundColor Yellow }
-}
-while ($queue.Count -gt 0) {
-  $cur = $queue.Dequeue()
-  if (-not $reached.Add($cur)) { continue }
-  foreach ($a in $deps[$cur]) {
-    if ($a -like '${*') { [void]$unresolved.Add("$a <- $cur"); continue }
-    if ($byArtifact.ContainsKey($a)) { $queue.Enqueue($byArtifact[$a]) }
-  }
-}
-
-$addedNames = Get-ChildItem $Added -Filter *.jar | Select-Object -ExpandProperty Name
-
-Write-Host ""
-Write-Host "=== 필요 (SAML 루트에서 도달) ===" -ForegroundColor Green
-$addedNames | Where-Object { $reached.Contains($_) } | Sort-Object
-
-Write-Host ""
-Write-Host "=== 제거 후보 (SAML 의존성에서 도달하지 않음) ===" -ForegroundColor Cyan
-$addedNames | Where-Object { -not $reached.Contains($_) } | Sort-Object
-
-if ($unresolved.Count -gt 0) {
-  Write-Host ""
-  Write-Host "=== 참고: pom 속성(`${...})이라 해석하지 못한 의존성 (이로 인해 아래 제거 후보가 필요한 jar 일 수 있음) ===" -ForegroundColor Yellow
-  $unresolved | Sort-Object
-}
-
-powershell -ExecutionPolicy Bypass -File find_unused_jars.ps1 -Lib "C:\...\WEB-INF\lib" -Added "C:\temp\libs"
+=== 李멸퀬: pom ?띿꽦(${...})?대씪 ?댁꽍?섏? 紐삵븳 ?섏〈??(?대줈 ?명빐 ?꾨옒 ?쒓굅 ?꾨낫媛 ?꾩슂??jar ?????덉쓬) ===
+${httpclient.artifactId} <- opensaml-core-impl-5.1.6.jar
+${httpclient.artifactId} <- opensaml-saml-impl-5.1.6.jar
+${httpclient.artifactId} <- opensaml-security-api-5.1.6.jar
+${httpclient.artifactId} <- opensaml-soap-api-5.1.6.jar
+${httpclient.artifactId} <- opensaml-soap-impl-5.1.6.jar
+${httpclient.artifactId} <- shib-networking-9.1.6.jar
+${httpclient.cache.artifactId} <- shib-networking-9.1.6.jar
+${httpclient.httpcore.artifactId} <- opensaml-core-impl-5.1.6.jar
+${httpclient.httpcore.artifactId} <- opensaml-saml-impl-5.1.6.jar
+${httpclient.httpcore.artifactId} <- opensaml-security-api-5.1.6.jar
+${httpclient.httpcore.artifactId} <- opensaml-soap-api-5.1.6.jar
+${httpclient.httpcore.artifactId} <- opensaml-soap-impl-5.1.6.jar
+${httpclient.httpcore.artifactId} <- shib-networking-9.1.6.jar
+PS D:\>
