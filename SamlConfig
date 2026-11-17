@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.saml2.core.Saml2Error;
 import org.springframework.security.saml2.core.Saml2ErrorCodes;
@@ -29,11 +30,11 @@ import smartsuite.security.userdetails.DefaultUserDetailsService;
 /**
  * SAML2 SSO (SP 역할) 설정
  *
- * 리소스 (src/main/resources/saml/): IdP 메타데이터, sp-key.pem(PKCS8), sp-cert.pem
+ * 리소스 (src/main/resources/saml/): IdP 메타데이터
  *
  * 선택 프로퍼티 (securityProperties, 없으면 기본값)
  *  - security.saml.idp-metadata     : IdP 메타데이터 위치
- *  - security.saml.userid-attribute : 로그인 ID가 담긴 assertion 속성명 (예: loginid / userid), 비우면 NameID
+ *  - security.saml.userid-attribute : 로그인 ID가 담긴 assertion 속성명 (기본 userid), 비우면 NameID
  */
 @Configuration
 public class SamlConfiguration {
@@ -50,7 +51,6 @@ public class SamlConfiguration {
 
 	@Bean
 	public RelyingPartyRegistrationRepository relyingPartyRegistrationRepository() throws Exception {
-
 		RelyingPartyRegistration registration = RelyingPartyRegistrations
 				.fromMetadataLocation(idpMetadataLocation)
 				.registrationId(REGISTRATION_ID)
@@ -62,22 +62,31 @@ public class SamlConfiguration {
 
 	/**
 	 * SAML 인증 실패 핸들러 (기존 SsoAuthenticationFailureHandler 재사용)
-	 * defaultFailureUrl 을 지정하지 않으면 401 응답만 내려가므로 로그인 페이지로 보낸다.
+	 * defaultFailureUrl 을 지정하지 않으면 401 응답만 내려가므로 로그인 실패 페이지로 보낸다.
 	 */
 	@Bean("samlAuthenticationFailureHandler")
 	public SsoAuthenticationFailureHandler samlAuthenticationFailureHandler() {
 		SsoAuthenticationFailureHandler handler = new SsoAuthenticationFailureHandler();
-		handler.setDefaultFailureUrl(AuthenticationUrlRequestManager.DEFAULT_BUYER_LOGIN_PAGE);
+		handler.setDefaultFailureUrl(AuthenticationUrlRequestManager.DEFAULT_BUYER_LOGIN_FAIL_PAGE);
 		return handler;
 	}
 
 	/**
-	 * @param userDetailsService 기존 폼 로그인(defaultAuthenticationManager)이 사용자 조회에 쓰는 UserDetailsService.
-	 *                           실제 빈 이름으로 @Qualifier 수정 필요 (UserDetailsProxy 를 반환하는 것)
+	 * SSO 전용 UserDetailsService
+	 * withoutPassword=true : 비밀번호 없이 로그인하므로 비밀번호 만료 여부를 체크하지 않음
+	 * (defaultUserDetailsService 를 그대로 쓰면 비밀번호 만료/미설정 사용자는 SSO 로그인이 막힘)
+	 * 이미 같은 설정의 SSO용 빈이 있으면 그것을 @Qualifier 로 지정해 재사용해도 됨
 	 */
+	@Bean("samlUserDetailsService")
+	public UserDetailsService samlUserDetailsService() {
+		DefaultUserDetailsService service = new DefaultUserDetailsService();
+		service.setWithoutPassword(true);
+		return service;
+	}
+
 	@Bean("samlAuthenticationProvider")
 	public OpenSaml5AuthenticationProvider samlAuthenticationProvider(
-			@Qualifier("defaultUserDetailsService") DefaultUserDetailsService defaultUserDetailsService) {
+			@Qualifier("samlUserDetailsService") UserDetailsService samlUserDetailsService) {
 
 		OpenSaml5AuthenticationProvider provider = new OpenSaml5AuthenticationProvider();
 		Converter<ResponseToken, Saml2Authentication> defaultConverter =
@@ -95,7 +104,7 @@ public class SamlConfiguration {
 				throw new Saml2AuthenticationException(
 						new Saml2Error(Saml2ErrorCodes.INVALID_ASSERTION, "SAML assertion에 사용자 식별값이 없습니다."));
 			}
-			return toAppAuthentication(loginId, defaultUserDetailsService, base);
+			return toAppAuthentication(loginId, samlUserDetailsService, base);
 		});
 		return provider;
 	}
@@ -104,17 +113,17 @@ public class SamlConfiguration {
 	 * SSO 로그인 ID 로 내부 사용자를 조회해, 폼 로그인 성공 시와 같은 형태의 Authentication 을 만든다.
 	 * (success handler 가 principal 을 UserDetailsProxy 로 캐스팅해 사용하기 때문)
 	 */
-	private AbstractAuthenticationToken toAppAuthentication(String loginId, DefaultUserDetailsService defaultUserDetailsService,
+	private AbstractAuthenticationToken toAppAuthentication(String loginId, UserDetailsService userDetailsService,
 			Saml2Authentication saml) {
 		UserDetails user;
 		try {
-			user = defaultUserDetailsService.loadUserByUsername(loginId);
+			user = userDetailsService.loadUserByUsername(loginId);
 		} catch (UsernameNotFoundException e) {
 			throw new Saml2AuthenticationException(
 					new Saml2Error("user_not_found", "SSO 사용자가 시스템에 등록되어 있지 않습니다: " + loginId), e);
 		}
 
-		// 잠김/만료/비활성 계정 확인 (DaoAuthenticationProvider 의 사전 검사와 동일)
+		// 잠김/비활성/만료 계정 확인 (비밀번호 관련 post check 는 SSO 에서 제외)
 		new AccountStatusUserDetailsChecker().check(user);
 
 		UsernamePasswordAuthenticationToken auth =
@@ -123,3 +132,4 @@ public class SamlConfiguration {
 		return auth;
 	}
 }
+
