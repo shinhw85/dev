@@ -1,3 +1,5 @@
+powershell -ExecutionPolicy Bypass -File check_deps.ps1 -Lib C:\temp\libs
+
 param([string]$Lib)
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
