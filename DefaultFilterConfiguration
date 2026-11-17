@@ -1,0 +1,279 @@
+package smartsuite.config.security.filter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+import org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.ELRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.filter.CompositeFilter;
+import org.springframework.web.filter.GenericFilterBean;
+
+import jakarta.servlet.Filter;
+import smartsuite.config.data.SecurityConst;
+import smartsuite.security.SecurityProviderImpl;
+import smartsuite.security.account.info.AccountInitializer;
+import smartsuite.security.account.spring.DefaultPostAuthenticationChecks;
+import smartsuite.security.account.spring.DefaultPreAuthenticationChecks;
+import smartsuite.security.account.spring.SupplierPostAuthenticationChecks;
+import smartsuite.security.account.spring.SupplierPreAuthenticationChecks;
+import smartsuite.security.authentication.*;
+import smartsuite.security.core.crypto.AESCipherUtil;
+import smartsuite.security.spring.core.session.SessionRegistryImpl;
+import smartsuite.security.spring.web.session.ConcurrentSessionFilter;
+import smartsuite.security.spring.web.session.ExpiredSessionStrategy;
+import smartsuite.security.userdetails.DefaultUserDetailsService;
+import smartsuite.security.userdetails.SupplierUserDetailsService;
+import smartsuite.security.web.filter.DecryptRequestFilter;
+import smartsuite.security.web.filter.advanced.XssRequestFilter;
+import smartsuite.security.web.filter.advanced.action.XssReplaceAction;
+import smartsuite.security.web.filter.advanced.action.handler.ExistRuleReplaceHandler;
+import smartsuite.security.web.filter.advanced.action.handler.rule.HTML5RuleAttribute;
+
+@Configuration
+public class DefaultFilterConfiguration {
+
+	private static final String XSS_ACTION_TYPE = "WHITELIST";
+
+	private static final String XSS_REPLACE_TAG_TEXT = "[[TAG]]";
+
+	private static final String XSS_REPLACE_ATTR_TEXT = "[[ATTR]]";
+
+	@Value("#{securityProperties['filter.xss.requestList'].split(',')}")
+	private List<String> xssRequestList;
+
+	@Value("#{securityProperties['filter.xss.tagList'].split(',')}")
+	private List<String> xssTagList;
+
+	@Value("#{securityProperties['filter.xss.attributeList'].split(',')}")
+	private List<String> attributeList;
+	
+	/**
+	 * XSS 예외 필터
+	 * @return
+	 */
+	private List<RequestMatcher> xssRequestMatchers(){
+		List<RequestMatcher> antPathRequestMatchers = new ArrayList<RequestMatcher>();
+		for (String antPathRequestMatcher : xssRequestList){
+			antPathRequestMatchers.add(new AntPathRequestMatcher(antPathRequestMatcher));
+		}
+		return antPathRequestMatchers;
+	}
+
+	/** http://alm.emro.co.kr/browse/SMARTTEN-492 보안정책적용 화이트리스트 반영 */
+	@Bean(name ="xssRequestFilter")
+	public XssRequestFilter xssRequestFilter() {
+		XssRequestFilter filter = new XssRequestFilter();
+		filter.setRequestMatcher(new OrRequestMatcher(this.xssRequestMatchers()));
+
+		XssReplaceAction action = new XssReplaceAction();
+		//default html5 tag attr
+		ExistRuleReplaceHandler handler = new ExistRuleReplaceHandler(); //핸들러 객체 정의
+		HTML5RuleAttribute rule = new HTML5RuleAttribute(); //속성 룰 객체 정의
+		rule.setFilteringEventHandler(true); // 신규 속성 설정
+		handler.setAttributeRule(rule);
+		action.setReplaceHandler(handler);
+		action.setActionType(XSS_ACTION_TYPE);
+		action.setTagList(new ArrayList<>(xssTagList));
+		action.setUseEscapeHtml(false);
+		action.setAttrList(new ArrayList<>(attributeList));
+		action.setReplaceTagString(XSS_REPLACE_TAG_TEXT);
+		action.setReplaceAttrString(XSS_REPLACE_ATTR_TEXT);
+		filter.setFilterAction(action);
+		return filter;
+	}
+
+
+	// ******************************* //
+	// UserDetailsService
+	// ******************************* //
+	// 패스워드 로그인 방식에서 사용하는 기본 UserDetailsService
+	@Bean(name = "defaultUserDetailsService")
+	public UserDetailsService defaultUserDetailsService() {
+		DefaultUserDetailsService service = new DefaultUserDetailsService();
+		service.setWithoutPassword(false);
+		return service;
+	}
+
+	
+	// ******************************* //
+	// Provider
+	// ******************************* //
+	@Bean(name = "defaultAuthenticationProvider")
+	public AbstractUserDetailsAuthenticationProvider defaultAuthenticationProvider(
+			@Qualifier("defaultUserDetailsService") UserDetailsService defaultUserDetailsService,
+			PasswordEncoder passwordEncoder,
+			DefaultPreAuthenticationChecks preAuthenticationChecks, 
+			DefaultPostAuthenticationChecks postAuthenticationChecks
+		) {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setHideUserNotFoundExceptions(false);
+		provider.setUserDetailsService(defaultUserDetailsService);
+		provider.setPasswordEncoder(passwordEncoder);
+		provider.setPreAuthenticationChecks(preAuthenticationChecks);
+		provider.setPostAuthenticationChecks(postAuthenticationChecks);
+		return provider;
+	}
+	
+
+	
+	// ******************************* //
+	// AuthenticationManager
+	// ******************************* //
+	@Primary
+	@Bean(name = "defaultAuthenticationManager")
+	public AuthenticationManager defaultAuthenticationManager(@Qualifier("defaultAuthenticationProvider") AbstractUserDetailsAuthenticationProvider defaultAuthenticationProvider) {
+		return new ProviderManager(defaultAuthenticationProvider);
+	}
+
+	
+	// ******************************* //
+	// handler
+	// ******************************* //	
+	@Bean(name = "authenticationSuccessHandler")
+	public DefaultAuthenticationSuccessHandler authenticationSuccessHandler() {
+		DefaultAuthenticationSuccessHandler hadler = new DefaultAuthenticationSuccessHandler();
+	    hadler.setDefaultTargetUrl(AuthenticationUrlRequestManager.DEFAULT_BUYER_LOGIN_AFTER_PAGE);
+		hadler.setAlwaysUseDefaultTargetUrl(true);
+	    return hadler;
+	}
+	
+	@Bean(name = "authenticationFailureHandler")
+	public SimpleUrlAuthenticationFailureHandler authenticationFailureHandler() {
+		SimpleUrlAuthenticationFailureHandler hadler = new DefaultAuthenticationFailureHandler();
+		hadler.setDefaultFailureUrl(AuthenticationUrlRequestManager.DEFAULT_BUYER_LOGIN_FAIL_PAGE);
+	    return hadler;
+	}
+
+	// logout 성공시 핸들러
+	@Bean(name = "logoutSuccessHandler")
+	public SimpleUrlLogoutSuccessHandler logoutSuccessHandler() {
+		return new LogoutSuccessHandler();
+	}
+
+
+
+	// 중복로그인 필터로 SessionRegistry 인터페이스를 구현체 생성자 인자로 추가해야 하며 ExpiredSessionStrategy 인터페이스 구현체를  expiredSessionStrategy 프로퍼티에 주입해야 합니다.
+	@Bean(name = "concurrencyFilter")
+	public GenericFilterBean concurrencyFilter(SessionRegistryImpl sessionRegistryImpl, ExpiredSessionStrategy expiredSessionStrategy) {
+		ConcurrentSessionFilter filter = new ConcurrentSessionFilter(sessionRegistryImpl);
+		filter.setExpiredSessionStrategy(expiredSessionStrategy);
+		return filter;
+	}
+
+	// parameter decryt 필터
+	@Bean(name = "decrytRequestFilter")
+	public Filter decrytRequestFilter(@Qualifier("cipherUtil") AESCipherUtil cipherUtil) {
+		DecryptRequestFilter filter = new DecryptRequestFilter();
+		filter.setCipherUtil(cipherUtil);
+		return filter;
+	}
+	
+	@Bean(name = "defaultLoginAuthenticationProcessingFilter")
+	public AbstractAuthenticationProcessingFilter defaultLoginAuthenticationProcessingFilter(
+			@Qualifier("sessionAuthenticationStrategy") CompositeSessionAuthenticationStrategy sessionAuthenticationStrategy,
+			@Qualifier("defaultAuthenticationManager") AuthenticationManager defaultAuthenticationManager,
+			@Qualifier("authenticationSuccessHandler") DefaultAuthenticationSuccessHandler authenticationSuccessHandler,
+			@Qualifier("authenticationFailureHandler") SimpleUrlAuthenticationFailureHandler authenticationFailureHandler
+		) {
+		/** [TO-DO] DefaultLoginAuthenticationProcessingFilter 생성자 Public 변경 */
+		DefaultLoginAuthenticationProcessingFilter filter = new DefaultLoginAuthenticationProcessingFilter(AuthenticationUrlRequestManager.BUYER_LOGIN_PROCESS_PAGE);
+		filter.setUsernameParameter(SecurityConst.USER_NAME_PARAMETER);
+		filter.setPasswordParameter(SecurityConst.ENCRYPT_PARAMETER); //NOSONAR : 폼 필드명 설정용 하드코딩이며, 실제 비밀번호가 아님. 오탐 방지 목적.
+		filter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
+		filter.setAuthenticationManager(defaultAuthenticationManager);
+		filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+		filter.setAuthenticationFailureHandler(authenticationFailureHandler);
+		return filter;
+	}
+	
+
+	
+	@Bean(name = "customAuthenticationProcessingFilters")
+	public CompositeFilter customAuthenticationProcessingFilters(
+			@Qualifier("defaultLoginAuthenticationProcessingFilter") AbstractAuthenticationProcessingFilter defaultLoginAuthenticationProcessingFilter,
+			@Qualifier("spLoginAuthenticationProcessingFilter") AbstractAuthenticationProcessingFilter spLoginAuthenticationProcessingFilter,
+			@Qualifier("usernameOnlyAuthenticationProcessingFilter") UsernameOnlyAuthenticationProcessingFilter usernameOnlyAuthenticationProcessingFilter,
+			@Qualifier("ssoAuthenticationProcessingFilter") SsoAuthenticationProcessingFilter ssoAuthenticationProcessingFilter,
+			@Qualifier("certificateAuthenticationProcessingFilter") CertificateAuthenticationProcessingFilter certificateAuthenticationProcessingFilter,
+			@Qualifier("usernameOnlySupplierAuthenticationProcessingFilter") AbstractAuthenticationProcessingFilter usernameOnlySupplierAuthenticationProcessingFilter) {
+		CompositeFilter filter = new CompositeFilter();
+		filter.setFilters(
+			Arrays.asList(
+				defaultLoginAuthenticationProcessingFilter,
+				spLoginAuthenticationProcessingFilter,
+//				usernameOnlyAuthenticationProcessingFilter,
+				ssoAuthenticationProcessingFilter,
+				certificateAuthenticationProcessingFilter,
+				usernameOnlySupplierAuthenticationProcessingFilter
+			)
+		);
+		return filter;
+	}
+	
+	// ******************************* //
+	// checks
+	// ******************************* //	
+	@Bean(name = "preAuthenticationChecks")
+	public DefaultPreAuthenticationChecks preAuthenticationChecks() {
+		return new DefaultPreAuthenticationChecks();
+	}
+	
+	@Bean(name = "postAuthenticationChecks")
+	public DefaultPostAuthenticationChecks postAuthenticationChecks() {
+		return new DefaultPostAuthenticationChecks();
+	}
+
+	
+	// ******************************* //
+	// 기타
+	// ******************************* //	
+	@Bean(name = "delegatingAuthenticationEntryPoint")
+	public AuthenticationEntryPoint delegatingAuthenticationEntryPoint() {
+		LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> entryPoints = new LinkedHashMap<RequestMatcher, AuthenticationEntryPoint>();
+		entryPoints.put(new ELRequestMatcher("hasHeader('X-Requested-With','XMLHttpRequest')"), new Http403ForbiddenEntryPoint()); // Ajax 일 때 403 forbidden 처리
+		DelegatingAuthenticationEntryPoint entryPoint = new DelegatingAuthenticationEntryPoint(entryPoints);
+		entryPoint.setDefaultEntryPoint(new LoginUrlAuthenticationEntryPoint(AuthenticationUrlRequestManager.DEFAULT_BUYER_LOGIN_PAGE));
+		return entryPoint;
+	}
+
+	@Bean(name = "requestCache")
+	public HttpSessionRequestCache requestCache() {
+		return new HttpSessionRequestCache();
+	}
+	
+	@Bean("securityProviderImpl")
+	public SecurityProviderImpl securityProviderImpl() {
+		return new SecurityProviderImpl();
+	}
+
+	@Bean(name = "accountInitializer")
+	public AccountInitializer accountInitializer() {
+		return new AccountInitializer();
+	}
+	
+
+}
