@@ -1,0 +1,46 @@
+package smartsuite.security.account.spring;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsChecker;
+import smartsuite.app.common.message.MessageUtil;
+
+public class DefaultPreAuthenticationChecks implements UserDetailsChecker {
+
+	static final Logger LOG = LoggerFactory.getLogger(DefaultPreAuthenticationChecks.class);
+	@Autowired
+	MessageUtil messageUtil;
+
+	@Override
+	public void check(UserDetails user) {
+		if (!user.isAccountNonLocked()) {
+			MessageUtil.MessageBean messageBean = new MessageUtil.MessageBean();
+			messageBean.setCodeName("STD.SEC1001");
+			messageBean.setDefaultMessage("계정이 잠겨 있습니다. 관리자에게 문의하시기 바랍니다.");
+			LOG.info(String.format(messageUtil.getCodeMessage(messageBean) + " USER ID = [" +user.getUsername() + "]"));
+
+            throw new LockedException(messageUtil.getCodeMessage(messageBean));
+		}
+        if (!user.isEnabled()) {
+			MessageUtil.MessageBean messageBean = new MessageUtil.MessageBean();
+			messageBean.setCodeName("STD.SEC1002");
+			messageBean.setDefaultMessage("계정이 사용정지 되었습니다. 관리자에게 문의하시기 바랍니다.");
+			LOG.info(String.format(messageUtil.getCodeMessage(messageBean) + " USER ID = [" +user.getUsername() + "]"));
+            throw new DisabledException(messageUtil.getCodeMessage(messageBean));
+        }
+        if (!user.isAccountNonExpired()) {
+			MessageUtil.MessageBean messageBean = new MessageUtil.MessageBean();
+			messageBean.setCodeName("STD.SEC1003");
+			messageBean.setDefaultMessage("사용자 계정이 만료되었습니다. 관리자에게 문의하시기 바랍니다.");
+			LOG.info(String.format(messageUtil.getCodeMessage(messageBean) + " USER ID = [" +user.getUsername() + "]"));
+            throw new AccountExpiredException(messageUtil.getCodeMessage(messageBean));
+        }
+	}
+
+}
