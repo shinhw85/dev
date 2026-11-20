@@ -1,0 +1,63 @@
+(function (global) {
+  'use strict';
+
+  var VIEW_URL = '/report/view';   // 컨텍스트 패스가 있으면 앞에 붙이세요
+  var seq = 0;
+
+  /**
+   * 리포트 호출
+   * @param {string} reportId  Provider에 등록된 ID (예: 'PO_ORDER')
+   * @param {object} params    JSON으로 전달할 조회 조건
+   * @param {object} [opt]     { width, height, target: 'popup' | '_blank' | 'iframeName' }
+   */
+  function open(reportId, params, opt) {
+    if (!reportId) { throw new Error('reportId는 필수입니다.'); }
+    opt = opt || {};
+
+    var winName = 'ozWin_' + (++seq);
+    var target  = opt.target || 'popup';
+
+    if (target === 'popup') {
+      var w = opt.width  || 1000;
+      var h = opt.height || 800;
+      var left = Math.max(0, (screen.width  - w) / 2);
+      var top  = Math.max(0, (screen.height - h) / 2);
+      var win = window.open('', winName,
+        'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top + ',resizable=yes,scrollbars=yes');
+      if (!win) { alert('팝업이 차단되었습니다. 팝업 허용 후 다시 시도하세요.'); return; }
+      target = winName;
+    } else if (target === '_blank') {
+      window.open('', winName);
+      target = winName;
+    }
+    // 그 외 값은 iframe name으로 간주
+
+    var form = document.createElement('form');
+    form.method = 'post';
+    form.action = VIEW_URL;
+    form.target = target;
+    form.style.display = 'none';
+
+    form.appendChild(hidden('reportId', reportId));
+    form.appendChild(hidden('params', JSON.stringify(params || {})));
+
+    // CSRF 사용 시: meta 태그에서 읽어 추가 (사용하지 않으면 무시됨)
+    var token  = document.querySelector('meta[name="_csrf"]');
+    var header = document.querySelector('meta[name="_csrf_parameter"]');
+    if (token && header) { form.appendChild(hidden(header.content, token.content)); }
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+  }
+
+  function hidden(name, value) {
+    var i = document.createElement('input');
+    i.type = 'hidden';
+    i.name = name;
+    i.value = value;
+    return i;
+  }
+
+  global.OzReport = { open: open };
+})(window);
