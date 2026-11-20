@@ -1,0 +1,18 @@
+@RestController
+@RequestMapping("/report")
+public class ReportController {
+    private final Map<String, ReportDataProvider> providers;
+
+    public ReportController(List<ReportDataProvider> list) {
+        this.providers = list.stream()
+            .collect(Collectors.toMap(ReportDataProvider::reportId, p -> p));
+    }
+
+    @PostMapping("/data/{reportId}")
+    public Map<String, Object> data(@PathVariable String reportId,
+                                    @RequestBody Map<String, Object> params) {
+        ReportDataProvider p = providers.get(reportId);
+        if (p == null) throw new IllegalArgumentException("미등록 리포트: " + reportId);
+        return Map.of("ozr", p.ozrPath(), "data", p.getData(params));
+    }
+}
