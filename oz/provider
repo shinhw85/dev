@@ -1,0 +1,5 @@
+public interface ReportDataProvider {
+    String reportId();                    // 예: "PO_ORDER"
+    String ozrPath();                     // 예: "/po/order.ozr"
+    Object getData(Map<String, Object> params);  // JSON으로 직렬화될 데이터
+}
