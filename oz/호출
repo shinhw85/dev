@@ -1,0 +1,14 @@
+<form id="ozForm" method="post" action="/report/view" target="ozWin">
+  <input type="hidden" name="reportId" value="PO_ORDER">
+  <input type="hidden" name="params"   id="ozParams">
+</form>
+<script>
+function openOz(reportId, paramObj) {
+  var f = document.getElementById('ozForm');
+  f.reportId.value = reportId;
+  document.getElementById('ozParams').value = JSON.stringify(paramObj);
+  window.open('', 'ozWin', 'width=1000,height=800');
+  f.submit();
+}
+// openOz('PO_ORDER', { poNo: 'PO2026110001' });
+</script>
