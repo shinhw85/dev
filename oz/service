@@ -1,0 +1,25 @@
+@Service
+public class ReportService {
+    private final Map<String, ReportDataProvider> providers;
+    private final ObjectMapper objectMapper;
+
+    public ReportService(List<ReportDataProvider> list, ObjectMapper objectMapper) {
+        this.providers = list.stream()
+            .collect(Collectors.toMap(ReportDataProvider::reportId, p -> p));
+        this.objectMapper = objectMapper;
+    }
+
+    public ReportResult build(String reportId, Map<String, Object> params) throws JsonProcessingException {
+        ReportDataProvider p = providers.get(reportId);
+        if (p == null) throw new IllegalArgumentException("미등록 리포트: " + reportId);
+
+        String json = objectMapper.writeValueAsString(p.getData(params));
+        // <script> 안에 심으므로 '<' 및 줄 구분자 이스케이프
+        json = json.replace("<", "\\u003c")
+                   .replace("\u2028", "\\u2028")
+                   .replace("\u2029", "\\u2029");
+        return new ReportResult(p.ozrPath(), json);
+    }
+
+    public record ReportResult(String ozrPath, String dataJson) {}
+}
