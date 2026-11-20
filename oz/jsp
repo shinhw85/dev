@@ -1,27 +1,20 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <div id="OZViewer" style="width:100%;height:100vh;"></div>
-<script src="/ozrept/ozhviewer/jquery.js"></script>
-<script src="/ozrept/ozhviewer/ozviewer.js"></script>
-<script>
-var reportId = '<c:out value="${param.reportId}" />';   // 값 이스케이프
-var params   = ${empty requestScope.paramsJson ? '{}' : requestScope.paramsJson};
-// paramsJson은 /report/view 컨트롤러가 POST로 받아 model에 담아줌
 
-$.ajax({
-  url: '/report/data/' + encodeURIComponent(reportId),
-  type: 'POST',
-  contentType: 'application/json; charset=UTF-8',
-  data: JSON.stringify(params)
-}).done(function (res) {
-  window.__oz = res;                      // {ozr, data}
-  start_ozjs('OZViewer', '/ozrept/ozhviewer/');
-});
+<script type="application/json" id="ozData">${dataJson}</script>
+<script src="/ozrept/ozhviewer/ozviewer.js"></script>   <!-- 실제 제공받은 경로로 -->
+<script>
+var OZ_REPORT = '<c:out value="${ozrPath}" />';
+var OZ_DATA   = document.getElementById('ozData').textContent;  // JSON 문자열 그대로
+
+start_ozjs('OZViewer', '/ozrept/ozhviewer/');
 
 function SetOZParamters_OZViewer() {
   var oz = document.getElementById('OZViewer');
   oz.sendToActionScript('connection.servlet', '/ozrept/server');
-  oz.sendToActionScript('connection.reportname', window.__oz.ozr);
-  oz.sendToActionScript('connection.inputjson', JSON.stringify(window.__oz.data)); // ★ 키 확인 필요
+  oz.sendToActionScript('connection.reportname', OZ_REPORT);
+  oz.sendToActionScript('connection.inputjson', OZ_DATA);   // ★ 키는 OZ 9 매뉴얼로 확인
   return true;
 }
 </script>
