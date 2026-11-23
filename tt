@@ -1,18 +1,16 @@
-<div id="OZViewer" style="width:100%;height:800px;"></div>
-<script src="/ozrept/ozviewer/jquery-3.x.min.js"></script>
-<script src="/ozrept/ozviewer/OZJSViewer.js"></script>
-<script>
-function openReport(param) {
-  $.ajax({
-    url: '/report/data',
-    type: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify(param),
-    success: function (res) {
-      var oz = document.getElementById('OZViewer');
-      // 리포트 경로, 데이터 JSON을 파라미터로 전달
-      // (OZ 버전에 따라 start_ozviewer / OZViewer 객체 방식이 다름)
-    }
-  });
-}
-</script>
+WITH RECURSIVE chain AS (
+    SELECT u.usr_id, u.dh_usr_id, 0 AS lvl, ARRAY[u.usr_id] AS path
+    FROM usr u
+    WHERE u.usr_id = #{usrId}
+
+    UNION ALL
+
+    SELECT p.usr_id, p.dh_usr_id, c.lvl + 1, c.path || p.usr_id
+    FROM chain c
+    JOIN usr p ON p.usr_id = c.dh_usr_id
+    WHERE c.lvl < #{depth}
+      AND p.usr_id <> ALL(c.path)   -- 순환/자기참조 방지
+)
+SELECT *
+FROM chain
+WHERE lvl = #{depth};
