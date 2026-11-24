@@ -1,471 +1,56 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+-- 기준: 키(TEN_ID 포함)별로 REG_DTTM이 가장 최신인 1건만 남기고 나머지를 삭제 대상으로 추출
+-- 동일 REG_DTTM이면 ctid가 큰 행을 남김
 
-<mapper namespace="apiSapps">
-	<insert id="insertProject" parameterType="map">
-	/*	apiSapps.insertProject (MERGE) :  	*/
-		MERGE INTO PROJECT T
-		USING (SELECT 1) S
-		   ON (T.TEN_ID = #{g.tenant}
-			 AND T.PSPID = #{p.pspid}
-			 AND T.SJCONFYN = #{p.sjconfyn}
-			 AND T.ZZPTYPE = #{p.zzptype})
-		WHEN MATCHED THEN
-			UPDATE SET
-				ZZCTYPE = #{p.zzctype},
-				OBJECT_ID = #{p.object_id},
-				ZZCNTRTNM = #{p.zzcntrtnm},
-				ZZCNTRTNM_B = #{p.zzcntrtnm_b},
-				POST1 = #{p.post1},
-				PROFL = #{p.profl},
-				PLFAZ = #{p.plfaz},
-				PLSEZ = #{p.plsez},
-				ZTEHT = #{p.zteht},
-				VKOKR = #{p.vkokr},
-				VBUKR = #{p.vbukr},
-				VGSBR = #{p.vgsbr},
-				WERKS = #{p.werks},
-				FUNC_AREA = #{p.func_area},
-				PRCTR = #{p.prctr},
-				PWHIE = #{p.pwhie},
-				STTXT_INT = #{p.sttxt_int},
-				STTXT_EXT = #{p.sttxt_ext},
-				ERNAM = #{p.ernam},
-				ER_KR_TIMESTAMP = #{p.er_kr_timestamp},
-				AENAM = #{p.aenam},
-				AE_KR_TIMESTAMP = #{p.ae_kr_timestamp}
-		WHEN NOT MATCHED THEN
-			INSERT
-				(TEN_ID,
-				 PROJECT_UUID,
-				 PSPID,
-				 SJCONFYN,
-				 ZZPTYPE,
-				 ZZCTYPE,
-				 OBJECT_ID,
-				 ZZCNTRTNM,
-				 ZZCNTRTNM_B,
-				 POST1,
-				 PROFL,
-				 PLFAZ,
-				 PLSEZ,
-				 ZTEHT,
-				 VKOKR,
-				 VBUKR,
-				 VGSBR,
-				 WERKS,
-				 FUNC_AREA,
-				 PRCTR,
-				 PWHIE,
-				 STTXT_INT,
-				 STTXT_EXT,
-				 ERNAM,
-				 ER_KR_TIMESTAMP,
-				 AENAM,
-				 AE_KR_TIMESTAMP,
-				 REGR_ID,
-				 REG_DTTM)
-			VALUES
-				(#{g.tenant},
-				 #{p.project_uuid},
-				 #{p.pspid},
-				 #{p.sjconfyn},
-				 #{p.zzptype},
-				 #{p.zzctype},
-				 #{p.object_id},
-				 #{p.zzcntrtnm},
-				 #{p.zzcntrtnm_b},
-				 #{p.post1},
-				 #{p.profl},
-				 #{p.plfaz},
-				 #{p.plsez},
-				 #{p.zteht},
-				 #{p.vkokr},
-				 #{p.vbukr},
-				 #{p.vgsbr},
-				 #{p.werks},
-				 #{p.func_area},
-				 #{p.prctr},
-				 #{p.pwhie},
-				 #{p.sttxt_int},
-				 #{p.sttxt_ext},
-				 #{p.ernam},
-				 #{p.er_kr_timestamp},
-				 #{p.aenam},
-				 #{p.ae_kr_timestamp},
-				 'IF',
-				 #{g.now})
-	</insert>
+------------------------------------------------------------
+-- 1) 조회(삭제 대상 확인)
+------------------------------------------------------------
+-- PROJECT
+SELECT x.*
+  FROM (SELECT t.*,
+               ROW_NUMBER() OVER (PARTITION BY t.ten_id, t.pspid, t.sjconfyn, t.zzptype
+                                  ORDER BY t.reg_dttm DESC NULLS LAST, t.ctid DESC) AS rn
+          FROM project t) x
+ WHERE x.rn > 1;
 
-	<insert id="insertWbs" parameterType="map">
-	/*	apiSapps.insertWbs (MERGE) :  	*/
-		MERGE INTO PROJECT_WBS T
-		USING (SELECT 1) S
-		   ON (T.TEN_ID = #{g.tenant}
-			 AND T.PSPID = #{p.pspid}
-			 AND T.PSPNR = #{p.pspnr})
-		WHEN MATCHED THEN
-			UPDATE SET
-				ZZWBS_TYPE = #{p.zzwbs_type},
-				ZZBIZPL_A = #{p.zzbizpl_a},
-				ZZBIZPL_T = #{p.zzbizpl_t},
-				ZZBIZPL = #{p.zzbizpl},
-				ZZCOUNTRY = #{p.zzcountry},
-				ZZWBS_CODE = #{p.zzwbs_code},
-				ZZSYSGOOD_CD = #{p.zzsysgood_cd},
-				POSID = #{p.posid},
-				POST1 = #{p.post1},
-				STUFE = #{p.stufe},
-				PRART = #{p.prart},
-				STTXT_INT = #{p.sttxt_int},
-				STTXT_EXT = #{p.sttxt_ext},
-				FKSTL = #{p.fkstl},
-				PSTRT = #{p.pstrt},
-				PENDE = #{p.pende},
-				UP = #{p.up},
-				DOWN = #{p.down},
-				LEFT_HI = #{p.left},
-				RIGHT_HI = #{p.right},
-				ERNAM = #{p.ernam},
-				ER_KR_TIMESTAMP = #{p.er_kr_timestamp},
-				AENAM = #{p.aenam},
-				AE_KR_TIMESTAMP = #{p.ae_kr_timestamp},
-				LOEVM = #{p.loevm}
-		WHEN NOT MATCHED THEN
-			INSERT
-				(TEN_ID,
-				 WBS_UUID,
-				 PSPID,
-				 PSPNR,
-				 ZZWBS_TYPE,
-				 ZZBIZPL_A,
-				 ZZBIZPL_T,
-				 ZZBIZPL,
-				 ZZCOUNTRY,
-				 ZZWBS_CODE,
-				 ZZSYSGOOD_CD,
-				 POSID,
-				 POST1,
-				 STUFE,
-				 PRART,
-				 STTXT_INT,
-				 STTXT_EXT,
-				 FKSTL,
-				 PSTRT,
-				 PENDE,
-				 UP,
-				 DOWN,
-				 LEFT_HI,
-				 RIGHT_HI,
-				 ERNAM,
-				 ER_KR_TIMESTAMP,
-				 AENAM,
-				 AE_KR_TIMESTAMP,
-				 LOEVM,
-				 REGR_ID,
-				 REG_DTTM)
-			VALUES
-				(#{g.tenant},
-				 #{p.wbs_uuid},
-				 #{p.pspid},
-				 #{p.pspnr},
-				 #{p.zzwbs_type},
-				 #{p.zzbizpl_a},
-				 #{p.zzbizpl_t},
-				 #{p.zzbizpl},
-				 #{p.zzcountry},
-				 #{p.zzwbs_code},
-				 #{p.zzsysgood_cd},
-				 #{p.posid},
-				 #{p.post1},
-				 #{p.stufe},
-				 #{p.prart},
-				 #{p.sttxt_int},
-				 #{p.sttxt_ext},
-				 #{p.fkstl},
-				 #{p.pstrt},
-				 #{p.pende},
-				 #{p.up},
-				 #{p.down},
-				 #{p.left},
-				 #{p.right},
-				 #{p.ernam},
-				 #{p.er_kr_timestamp},
-				 #{p.aenam},
-				 #{p.ae_kr_timestamp},
-				 #{p.loevm},
-				 'IF',
-				 #{g.now})
-	</insert>
+-- PROJECT_WBS
+SELECT x.*
+  FROM (SELECT t.*,
+               ROW_NUMBER() OVER (PARTITION BY t.ten_id, t.pspid, t.pspnr
+                                  ORDER BY t.reg_dttm DESC NULLS LAST, t.ctid DESC) AS rn
+          FROM project_wbs t) x
+ WHERE x.rn > 1;
 
-	<insert id="insertAttr" parameterType="map">
-	/*	apiSapps.insertAttr (MERGE) :  	*/
-		MERGE INTO PROJECT_ATTR T
-		USING (SELECT 1) S
-		   ON (T.TEN_ID = #{g.tenant}
-			 AND T.POSID = #{p.posid}
-			 AND T.BSTYPES = #{p.bstypes}
-			 AND T.FKSTL = #{p.fkstl})
-		WHEN MATCHED THEN
-			UPDATE SET
-				AKSTL = #{p.akstl},
-				ZZOPBIZPL = #{p.zzopbizpl},
-				COUNTRYID = #{p.countryid},
-				DOMTYPE = #{p.domtype},
-				EXECUMAN = #{p.execuman},
-				SALES_PERSON = #{p.sales_person},
-				SITEADDR = #{p.siteaddr},
-				VKBUR = #{p.vkbur},
-				VKGRP = #{p.vkgrp},
-				ZZPDTYPE = #{p.zzpdtype},
-				ZZSTATUS = #{p.zzstatus},
-				ZZCNTRT_PERSON = #{p.zzcntrt_person},
-				ZZCUST_L1 = #{p.zzcust_l1},
-				ZZCUST_TEXT = #{p.zzcust_text},
-				ZZINCOTERMS = #{p.zzincoterms},
-				ZZSIGOODS_FC = #{p.zzsigoods_fc},
-				ZZPSTLZ = #{p.zzpstlz},
-				ZZSITENM = #{p.zzsitenm},
-				ZZSITEZIP = #{p.zzsitezip},
-				ZZLOEVM = #{p.zzloevm},
-				STTXT_EXT = #{p.sttxt_ext},
-				ZZCOMPANYID = #{p.zzcompanyid},
-				ZZCUSTGRP = #{p.zzcustgrp},
-				ZZCUSTTYPE = #{p.zzcusttype},
-				JOINTYN = #{p.jointyn},
-				ORDERCLS = #{p.ordercls},
-				OWNRT = #{p.ownrt},
-				ZZJVNM = #{p.zzjvnm},
-				ZZJVNM_P = #{p.zzjvnm_p},
-				ZZJVNM_T = #{p.zzjvnm_t},
-				ZZJVNM_U = #{p.zzjvnm_u},
-				ZZKEYMAN = #{p.zzkeyman},
-				AMPDRAT = #{p.ampdrat},
-				CONTCRNCD = #{p.contcrncd},
-				KURSK = #{p.kursk},
-				ZZKWERT = #{p.zzkwert},
-				ZZCCTKWERT = #{p.zzcctkwert},
-				ZZPOSITIONTYPE = #{p.zzpositiontype},
-				ZZCONTRACTTYPE = #{p.zzcontracttype},
-				ZZCONTMETH = #{p.zzcontmeth},
-				BSN_STR_DUE_YMD = #{p.bsn_str_due_ymd},
-				BSN_END_DUE_YMD = #{p.bsn_end_due_ymd},
-				CONTDTC = #{p.contdtc},
-				ZZCTS_DT = #{p.zzcts_dt},
-				ZZCTE_DT = #{p.zzcte_dt},
-				ZZCTPERIOD = #{p.zzctperiod},
-				ZZCCTDAT = #{p.zzcctdat},
-				CHNGTERMFM = #{p.chngtermfm},
-				CHNGTERMTO = #{p.chngtermto},
-				ZZCCTPERIOD = #{p.zzcctperiod},
-				ZZPBONDAMT = #{p.zzpbondamt},
-				ZZDEFECT_DT = #{p.zzdefect_dt},
-				CONTRAT = #{p.contrat},
-				CONTTERMFM = #{p.conttermfm},
-				CONTTERMTO = #{p.conttermto},
-				DELAYRAT = #{p.delayrat},
-				HAJAGRNTDUR = #{p.hajagrntdur},
-				HAJAGRNTRATE = #{p.hajagrntrate},
-				PAY_TERMS = #{p.pay_terms},
-				ZZKUNNRH = #{p.zzkunnrh},
-				ZZKUNNRO = #{p.zzkunnro},
-				PREPAYAMT = #{p.prepayamt},
-				ZZRECMETH = #{p.zzrecmeth},
-				ZZCODEZIP = #{p.zzcodezip},
-				ZZBIDMETH = #{p.zzbidmeth},
-				ZZADDRAXTYPE = #{p.zzaddraxtype},
-				ZZADDTAX = #{p.zzaddtax},
-				ZZSVCDEPCD = #{p.zzsvcdepcd},
-				ZZBILLDEPCD = #{p.zzbilldepcd},
-				ZZEXPWCNT_DT = #{p.zzexpwcnt_dt},
-				EXP_REVENUE = #{p.exp_revenue},
-				ZZEXPREV_RATE = #{p.zzexprev_rate},
-				ZZPROJ_CD1 = #{p.zzproj_cd1},
-				ZZPROJ_CD = #{p.zzproj_cd},
-				ZZPROJ_CD3 = #{p.zzproj_cd3},
-				ERNAM = #{p.ernam},
-				ER_KR_TIMESTAMP = #{p.er_kr_timestamp},
-				AENAM = #{p.aenam},
-				AE_KR_TIMESTAMP = #{p.ae_kr_timestamp},
-				DEL = #{p.del}
-		WHEN NOT MATCHED THEN
-			INSERT
-				(TEN_ID,
-				 ATTR_UUID,
-				 POSID,
-				 BSTYPES,
-				 FKSTL,
-				 AKSTL,
-				 ZZOPBIZPL,
-				 COUNTRYID,
-				 DOMTYPE,
-				 EXECUMAN,
-				 SALES_PERSON,
-				 SITEADDR,
-				 VKBUR,
-				 VKGRP,
-				 ZZPDTYPE,
-				 ZZSTATUS,
-				 ZZCNTRT_PERSON,
-				 ZZCUST_L1,
-				 ZZCUST_TEXT,
-				 ZZINCOTERMS,
-				 ZZSIGOODS_FC,
-				 ZZPSTLZ,
-				 ZZSITENM,
-				 ZZSITEZIP,
-				 ZZLOEVM,
-				 STTXT_EXT,
-				 ZZCOMPANYID,
-				 ZZCUSTGRP,
-				 ZZCUSTTYPE,
-				 JOINTYN,
-				 ORDERCLS,
-				 OWNRT,
-				 ZZJVNM,
-				 ZZJVNM_P,
-				 ZZJVNM_T,
-				 ZZJVNM_U,
-				 ZZKEYMAN,
-				 AMPDRAT,
-				 CONTCRNCD,
-				 KURSK,
-				 ZZKWERT,
-				 ZZCCTKWERT,
-				 ZZPOSITIONTYPE,
-				 ZZCONTRACTTYPE,
-				 ZZCONTMETH,
-				 BSN_STR_DUE_YMD,
-				 BSN_END_DUE_YMD,
-				 CONTDTC,
-				 ZZCTS_DT,
-				 ZZCTE_DT,
-				 ZZCTPERIOD,
-				 ZZCCTDAT,
-				 CHNGTERMFM,
-				 CHNGTERMTO,
-				 ZZCCTPERIOD,
-				 ZZPBONDAMT,
-				 ZZDEFECT_DT,
-				 CONTRAT,
-				 CONTTERMFM,
-				 CONTTERMTO,
-				 DELAYRAT,
-				 HAJAGRNTDUR,
-				 HAJAGRNTRATE,
-				 PAY_TERMS,
-				 ZZKUNNRH,
-				 ZZKUNNRO,
-				 PREPAYAMT,
-				 ZZRECMETH,
-				 ZZCODEZIP,
-				 ZZBIDMETH,
-				 ZZADDRAXTYPE,
-				 ZZADDTAX,
-				 ZZSVCDEPCD,
-				 ZZBILLDEPCD,
-				 ZZEXPWCNT_DT,
-				 EXP_REVENUE,
-				 ZZEXPREV_RATE,
-				 ZZPROJ_CD1,
-				 ZZPROJ_CD,
-				 ZZPROJ_CD3,
-				 ERNAM,
-				 ER_KR_TIMESTAMP,
-				 AENAM,
-				 AE_KR_TIMESTAMP,
-				 DEL,
-				 REGR_ID,
-				 REG_DTTM)
-			VALUES
-				(#{g.tenant},
-				 #{p.attr_uuid},
-				 #{p.posid},
-				 #{p.bstypes},
-				 #{p.fkstl},
-				 #{p.akstl},
-				 #{p.zzopbizpl},
-				 #{p.countryid},
-				 #{p.domtype},
-				 #{p.execuman},
-				 #{p.sales_person},
-				 #{p.siteaddr},
-				 #{p.vkbur},
-				 #{p.vkgrp},
-				 #{p.zzpdtype},
-				 #{p.zzstatus},
-				 #{p.zzcntrt_person},
-				 #{p.zzcust_l1},
-				 #{p.zzcust_text},
-				 #{p.zzincoterms},
-				 #{p.zzsigoods_fc},
-				 #{p.zzpstlz},
-				 #{p.zzsitenm},
-				 #{p.zzsitezip},
-				 #{p.zzloevm},
-				 #{p.sttxt_ext},
-				 #{p.zzcompanyid},
-				 #{p.zzcustgrp},
-				 #{p.zzcusttype},
-				 #{p.jointyn},
-				 #{p.ordercls},
-				 #{p.ownrt},
-				 #{p.zzjvnm},
-				 #{p.zzjvnm_p},
-				 #{p.zzjvnm_t},
-				 #{p.zzjvnm_u},
-				 #{p.zzkeyman},
-				 #{p.ampdrat},
-				 #{p.contcrncd},
-				 #{p.kursk},
-				 #{p.zzkwert},
-				 #{p.zzcctkwert},
-				 #{p.zzpositiontype},
-				 #{p.zzcontracttype},
-				 #{p.zzcontmeth},
-				 #{p.bsn_str_due_ymd},
-				 #{p.bsn_end_due_ymd},
-				 #{p.contdtc},
-				 #{p.zzcts_dt},
-				 #{p.zzcte_dt},
-				 #{p.zzctperiod},
-				 #{p.zzcctdat},
-				 #{p.chngtermfm},
-				 #{p.chngtermto},
-				 #{p.zzcctperiod},
-				 #{p.zzpbondamt},
-				 #{p.zzdefect_dt},
-				 #{p.contrat},
-				 #{p.conttermfm},
-				 #{p.conttermto},
-				 #{p.delayrat},
-				 #{p.hajagrntdur},
-				 #{p.hajagrntrate},
-				 #{p.pay_terms},
-				 #{p.zzkunnrh},
-				 #{p.zzkunnro},
-				 #{p.prepayamt},
-				 #{p.zzrecmeth},
-				 #{p.zzcodezip},
-				 #{p.zzbidmeth},
-				 #{p.zzaddraxtype},
-				 #{p.zzaddtax},
-				 #{p.zzsvcdepcd},
-				 #{p.zzbilldepcd},
-				 #{p.zzexpwcnt_dt},
-				 #{p.exp_revenue},
-				 #{p.zzexprev_rate},
-				 #{p.zzproj_cd1},
-				 #{p.zzproj_cd},
-				 #{p.zzproj_cd3},
-				 #{p.ernam},
-				 #{p.er_kr_timestamp},
-				 #{p.aenam},
-				 #{p.ae_kr_timestamp},
-				 #{p.del},
-				 'IF',
-				 #{g.now})
-	</insert>
+-- PROJECT_ATTR
+SELECT x.*
+  FROM (SELECT t.*,
+               ROW_NUMBER() OVER (PARTITION BY t.ten_id, t.posid, t.bstypes, t.fkstl
+                                  ORDER BY t.reg_dttm DESC NULLS LAST, t.ctid DESC) AS rn
+          FROM project_attr t) x
+ WHERE x.rn > 1;
 
-</mapper>
+------------------------------------------------------------
+-- 2) 삭제 (조회 결과 확인 후 실행, 백업/트랜잭션 권장)
+------------------------------------------------------------
+DELETE FROM project
+ WHERE ctid IN (SELECT x.ctid
+                  FROM (SELECT t.ctid,
+                               ROW_NUMBER() OVER (PARTITION BY t.ten_id, t.pspid, t.sjconfyn, t.zzptype
+                                                  ORDER BY t.reg_dttm DESC NULLS LAST, t.ctid DESC) AS rn
+                          FROM project t) x
+                 WHERE x.rn > 1);
+
+DELETE FROM project_wbs
+ WHERE ctid IN (SELECT x.ctid
+                  FROM (SELECT t.ctid,
+                               ROW_NUMBER() OVER (PARTITION BY t.ten_id, t.pspid, t.pspnr
+                                                  ORDER BY t.reg_dttm DESC NULLS LAST, t.ctid DESC) AS rn
+                          FROM project_wbs t) x
+                 WHERE x.rn > 1);
+
+DELETE FROM project_attr
+ WHERE ctid IN (SELECT x.ctid
+                  FROM (SELECT t.ctid,
+                               ROW_NUMBER() OVER (PARTITION BY t.ten_id, t.posid, t.bstypes, t.fkstl
+                                                  ORDER BY t.reg_dttm DESC NULLS LAST, t.ctid DESC) AS rn
+                          FROM project_attr t) x
+                 WHERE x.rn > 1);
