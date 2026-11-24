@@ -1,40 +1,13 @@
-package smartsuite.app.common.report.service;
+private static final Logger log = LoggerFactory.getLogger(OzReportService.class);
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+public OzReportService(List<ReportDataProvider> list) {
+    log.info("[OZ] 주입된 Provider 수={}, ids={}", list.size(),
+        list.stream().map(ReportDataProvider::reportId).toList());
+    this.providers = list.stream()
+        .collect(Collectors.toMap(ReportDataProvider::reportId, p -> p));
+}
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import smartsuite.app.common.report.ReportDataProvider;
-
-@Service
-public class OzReportService {
-    private final Map<String, ReportDataProvider> providers;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    public OzReportService(List<ReportDataProvider> list) {
-        this.providers = list.stream()
-            .collect(Collectors.toMap(ReportDataProvider::reportId, p -> p));
-    }
-
-    public ReportResult build(String reportId, Map<String, Object> params) throws JsonProcessingException {
-        ReportDataProvider p = providers.get(reportId);
-        if (p == null) throw new IllegalArgumentException("미등록 리포트: " + reportId);
-
-        String json = objectMapper.writeValueAsString(p.getData(params));
-        // <script> 안에 심으므로 '<' 및 줄 구분자 이스케이프
-        json = json.replace("<", "\\u003c")
-                   .replace("\u2028", "\\u2028")
-                   .replace("\u2029", "\\u2029");
-        return new ReportResult(p.ozrPath(), json);
-    }
-
-    public record ReportResult(String ozrPath, String dataJson) {}
+public ReportResult build(String reportId, Map<String, Object> params) throws JsonProcessingException {
+    log.info("[OZ] 요청 reportId=[{}], 등록 키={}", reportId, providers.keySet());
+    ...
 }
