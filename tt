@@ -1,6 +1,49 @@
-<c:out value="/납품번호확인서.ozr" />
-view.do:32 {"podetail":{"vd_rg_no":"10000123","vd_nm":"업체명1"},"t_matrList":[{"matnr":"A0001","es_p_inco1":"0001"},{"matnr":"A0002","es_p_inco1":"0002"}]}
-jquery.dynatree.js:57 13:22:51.823 - Dynatree._create(): version='1.2.8', debugLevel=1.
+/납품번호확인서.ozr
+view.do:35 {"podetail":{"vd_nm":"업체명1","vd_rg_no":"10000123"},"t_matrList":[{"es_p_inco1":"0001","matnr":"A0001"},{"es_p_inco1":"0002","matnr":"A0002"}]}
+favicon.ico:1  GET http://localhost:8080/favicon.ico 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/ozlang_ko_KR.js' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/ozlang_ko_KR.js net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/ozlang_ko_KR.js' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/ozlang_ko_KR.js net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/viewer_server_error_msg_ko_KR.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/viewer_server_error_msg_ko_KR.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/viewer_server_error_msg_ko_KR.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/viewer_server_error_msg_ko_KR.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/viewer_server_error_msg_ko.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/viewer_server_error_msg_ko.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/viewer_server_error_msg_ko.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/viewer_server_error_msg_ko.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/viewer_server_error_msg_en_US.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/viewer_server_error_msg_en_US.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/viewer_server_error_msg_en_US.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/viewer_server_error_msg_en_US.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/viewer_error_msg_ko_KR.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/viewer_error_msg_ko_KR.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/viewer_error_msg_ko_KR.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/viewer_error_msg_ko_KR.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/viewer_error_msg_ko.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/viewer_error_msg_ko.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/viewer_error_msg_ko.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/viewer_error_msg_ko.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/viewer_error_msg_en_US.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/viewer_error_msg_en_US.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/viewer_error_msg_en_US.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/viewer_error_msg_en_US.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/chartres_ko_KR.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/chartres_ko_KR.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/chartres_ko_KR.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/chartres_ko_KR.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/chartres_ko.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/chartres_ko.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/chartres_ko.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/chartres_ko.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/res/chartres_en_US.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/res/chartres_en_US.xml net::ERR_FAILED 404 (Not Found)
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/chartres_en_US.xml' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:5999 Access to XMLHttpRequest at 'http://81.181.68.111:8080/ozrviewer/OZJSViewer_ozimg_pc.js?Version%20-%2080%2C2023%2C0519%2C100' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:5999  GET http://81.181.68.111:8080/ozrviewer/OZJSViewer_ozimg_pc.js?Version%20-%2080%2C2023%2C0519%2C100 net::ERR_FAILED 404 (Not Found)
+OZJSViewer.js:5958 Failed to execute 'send' on 'XMLHttpRequest': Failed to load 'http://81.181.68.111:8080/ozrviewer/OZJSViewer_ozimg_pc.js?Version%20-%2080%2C2023%2C0519%2C100'.
+jquery.dynatree.js:57 16:48:46.346 - Dynatree._create(): version='1.2.8', debugLevel=1.
+OZJSViewer.js:14478  GET http://81.181.68.111:8080/ozrviewer/chartres_en_US.xml net::ERR_FAILED 404 (Not Found)
 view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/oz/server' from origin 'http://localhost:8080' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
 OZJSViewer.js:14493  POST http://81.181.68.111:8080/oz/server net::ERR_FAILED
-
