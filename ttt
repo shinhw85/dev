@@ -1,41 +1,271 @@
-PS D:\> powershell -ExecutionPolicy Bypass -File find_unused_jars.ps1 -Lib "D:\lib" -Added "D:\tt"
+# Default Content Security Policy (CSP) settings for general security
+security.csp.default-policy=\
+  default-src 'self' \
+  ws://127.0.0.1:7070 \
+  wss://smartdev-10.emro.co.kr \
+  wss://rum.beusable.net \
+  wss://script.beusable.net \
+  https://127.0.0.1:15018 \
+  https://127.0.0.1:14315 \
+  http://81.181.68.111:8080 \
+  http://127.0.0.1:14319 data: 'unsafe-inline' 'unsafe-eval';\
+  script-src 'self' \
+  http://rum.beusable.net \
+  https://script.beusable.net \
+  https://127.0.0.1:15018 \
+  https://127.0.0.1:14315 \
+  http://127.0.0.1:14319 \
+  https://maps.googleapis.com \
+  http://81.181.68.111:8080 \
+  data: 'unsafe-inline' 'unsafe-eval' blob:;\
+  object-src 'self' data: 'unsafe-inline' 'unsafe-eval'; \
+  img-src 'self' \
+  https://shopping-phinf.pstatic.net \
+  *.beusable.net \
+  http://www.unisign.co.kr \
+  https://127.0.0.1:15018 \
+  https://127.0.0.1:14315 \
+  http://127.0.0.1:14319 \
+  http://www.sgic.co.kr \
+  https://a.tile.openstreetmap.org \
+  https://b.tile.openstreetmap.org \
+  https://c.tile.openstreetmap.org \
+  https://maps.googleapis.com \
+  https://maps.gstatic.com data: 'unsafe-inline' 'unsafe-eval' blob:;\
+  frame-src 'self' \
+  https://127.0.0.1:15018 \
+  https://stg-mobilescm.samsungsds.com/ \
+  https://apps-d.docusign.com/ \
+  https://account-d.docusign.com/ \
+  https://demo.docusign.net/ \
+  https://apps.docusign.com/ \
+  https://account.docusign.com/ \
+  http://81.181.68.111:8080 \
+  https://www.docusign.net/; \
+  style-src 'self' \
+  https://cdnjs.cloudflare.com \
+  http://81.181.68.111:8080 \
+  https://fonts.googleapis.com 'unsafe-inline'; \
+  font-src 'self' \
+  https://fonts.gstatic.com; \
+  connect-src 'self' \
+  https://maps.googleapis.com \
+  https://maps.gstatic.com \
+  https://127.0.0.1:15018 \
+  https://127.0.0.1:14315 \
+  http://127.0.0.1:14319 \
+  http://81.181.68.111:8080;
 
-=== ?꾩슂 (SAML 猷⑦듃?먯꽌 ?꾨떖) ===
-cryptacular-1.2.4.jar
-metrics-core-4.2.26.jar
-opensaml-core-api-5.1.6.jar
-opensaml-core-impl-5.1.6.jar
-opensaml-profile-api-5.1.6.jar
-opensaml-saml-api-5.1.6.jar
-opensaml-saml-impl-5.1.6.jar
-opensaml-security-api-5.1.6.jar
-opensaml-security-impl-5.1.6.jar
-opensaml-soap-api-5.1.6.jar
-opensaml-soap-impl-5.1.6.jar
-opensaml-storage-api-5.1.6.jar
-opensaml-xmlsec-api-5.1.6.jar
-opensaml-xmlsec-impl-5.1.6.jar
-shib-networking-9.1.6.jar
-shib-security-9.1.6.jar
-shib-support-9.1.6.jar
-shib-velocity-9.1.6.jar
-spring-security-saml2-service-provider-6.5.7.jar
-xmlsec-3.0.5.jar
 
-=== ?쒓굅 ?꾨낫 (SAML ?섏〈?깆뿉???꾨떖?섏? ?딆쓬) ===
+# Content Security Policy (CSP) for no-session scenarios (e.g., public pages)
+security.csp.no-session-policy=\
+  default-src 'self' \
+  https://127.0.0.1:15018 \
+  https://127.0.0.1:14315 \
+  http://81.181.68.111:8080 \
+  http://127.0.0.1:14319 'unsafe-inline' 'unsafe-eval' data:; \
+  script-src 'self' \
+  https://127.0.0.1:15018 \
+  https://127.0.0.1:14315 \
+  http://127.0.0.1:14319 'unsafe-inline' 'unsafe-eval' data:; \
+  object-src 'self' 'unsafe-inline' 'unsafe-eval' data:; \
+  img-src 'self' \
+  https://shopping-phinf.pstatic.net \
+  https://127.0.0.1:15018 \
+  https://127.0.0.1:14315 \
+  http://127.0.0.1:14319 'unsafe-inline' 'unsafe-eval' data:;
 
-=== 李멸퀬: pom ?띿꽦(${...})?대씪 ?댁꽍?섏? 紐삵븳 ?섏〈??(?대줈 ?명빐 ?꾨옒 ?쒓굅 ?꾨낫媛 ?꾩슂??jar ?????덉쓬) ===
-${httpclient.artifactId} <- opensaml-core-impl-5.1.6.jar
-${httpclient.artifactId} <- opensaml-saml-impl-5.1.6.jar
-${httpclient.artifactId} <- opensaml-security-api-5.1.6.jar
-${httpclient.artifactId} <- opensaml-soap-api-5.1.6.jar
-${httpclient.artifactId} <- opensaml-soap-impl-5.1.6.jar
-${httpclient.artifactId} <- shib-networking-9.1.6.jar
-${httpclient.cache.artifactId} <- shib-networking-9.1.6.jar
-${httpclient.httpcore.artifactId} <- opensaml-core-impl-5.1.6.jar
-${httpclient.httpcore.artifactId} <- opensaml-saml-impl-5.1.6.jar
-${httpclient.httpcore.artifactId} <- opensaml-security-api-5.1.6.jar
-${httpclient.httpcore.artifactId} <- opensaml-soap-api-5.1.6.jar
-${httpclient.httpcore.artifactId} <- opensaml-soap-impl-5.1.6.jar
-${httpclient.httpcore.artifactId} <- shib-networking-9.1.6.jar
-PS D:\>
+# Content Security Policy (CSP) settings for high-security guarantee mode
+security.csp.guarantee-policy=\
+  default-src 'self' 'unsafe-inline' 'unsafe-eval' data:; \
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' data:; \
+  object-src 'self' 'unsafe-inline' 'unsafe-eval' data:; \
+  img-src 'self' 'unsafe-inline' 'unsafe-eval' data:;
+
+security.csp.docusign-policy=\
+  default-src 'self' data: 'unsafe-inline' 'unsafe-eval'; \
+  script-src 'self' data: 'unsafe-inline' 'unsafe-eval'; \
+  object-src 'none'; img-src 'self' data:; \
+  frame-ancestors 'self' \
+  https://apps-d.docusign.com/ \
+  https://account-d.docusign.com/ \
+  https://demo.docusign.net/ \
+  https://apps.docusign.com/ \
+  https://account.docusign.com/ \
+  https://www.docusign.net/;
+
+
+
+security.csp.no-session-vendor-decrypt-policy=\
+default-src 'self' \
+https://127.0.0.1:15018 \
+https://127.0.0.1:14315  \
+http://127.0.0.1:14319 'unsafe-inline' 'unsafe-eval' data:; \
+script-src 'self' \
+https://127.0.0.1:15018 \
+https://127.0.0.1:14315 \
+http://127.0.0.1:14319 'unsafe-inline' 'unsafe-eval' data:; \
+object-src 'self' 'unsafe-inline' 'unsafe-eval' data:; \
+img-src 'self' \
+https://shopping-phinf.pstatic.net \
+https://127.0.0.1:15018 \
+https://127.0.0.1:14315 \
+http://127.0.0.1:14319 'unsafe-inline' 'unsafe-eval' data:
+
+security.noSession.vendor.decrypt.requestList=\
+/ui/sp/vendorMaster/vendorReg/initSessionInfo.do,\
+/ui/sp/vendorMaster/vendorInfo/checkDuplicatedVdInfo.do,\
+/ui/sp/vendorMaster/vendorReg/checkInfoDuplicatedVd.do,\
+/ui/sp/vendorMaster/vendorReg/isExistsEmail.do,\
+/ui/sp/vendorMaster/vendorReg/findTermsList.do,\
+/ui/sp/vendorMaster/vendorReg/saveBasicVdInfo.do,\
+/ui/sp/vendorMaster/vendorReg/updateBasicVdInfo.do,\
+/ui/sp/vendorMaster/vendorReg/findInviVdInfo.do,\
+/ui/sp/vendorMaster/vendorReg/updateVendorRegSts.do,\
+/findListCommonCodeByNoSession.do,\
+/attachment/download.do,\
+/attachment/downloadZip.do,\
+
+
+security.noSession.requestList=\
+/index.do,\
+/login.do,\
+/loginKr.do,\
+/loginEn.do,\
+/spLogin.do,\
+/spLoginKr.do,\
+/spLoginEn.do,\
+/newVendor.do,\
+/loginFailure.do,\
+/spLoginFailure.do,\
+/spLogoutSuccess.do,\
+/spLogoutSuccessEn.do,\
+/logoutSuccess.do,\
+/logoutSuccessEn.do,\
+/invalidSession.do,\
+/sessionExpired.do,\
+/docs.do,\
+/**/sessionTimeUpdate.do,\
+/multipart/importexcel.do,\
+/mobileLogin.do,\
+/eformSignLogin.do,\
+/eformSignPwLogin.do,\
+/eformSignPwLoginProcess.do,\
+/bp/edoc/eform/notUser/findSignTargetInfoFormerNByMail.do,\
+/bp/edoc/eform/notUser/rejectSignDocumentByMail.do,\
+/bp/edoc/eform/notUser/sendNextSignTargetByMail.do,\
+/bp/edoc/eform/notUser/findCompanyStampListByMail.do,\
+/bp/edoc/eform/notUser/findUserStampListByMail.do,\
+/bp/edoc/eform/notUser/createTextSignaturesByMail.do,\
+/bp/eform/noSession/getEFormPdf.do,\
+/bp/eform/getEFormPdf.do,\
+recVideoDown.do,\
+/noticeLink.do,\
+/biddingNoticeLink.do,\
+/login/bp/findPassword.do,\
+/login/sp/board.do,\
+/login/sp/boardDetail.do,\
+/login/sp/tenderNotice.do,\
+/login/sp/findPassword.do,\
+/login/sp/findId.do,\
+/login/sp/findIdEn.do,\
+/login/bp/findId.do,\
+/login/bpfindIdEn,\
+/login/bp/findPasswordEn.do,\
+/login/sp/findPasswordEn.do,\
+/login/bp/initPassword.do,\
+/login/sp/initPassword.do,\
+/login/bp/login/bp/findPassword.do,\
+/login/sp/login/sp/findPassword.do,\
+**/findId.do,\
+/login/sp/login/bp/findPassword.do,\
+/**/findAllInfoTermsConditions.do,\
+/**/findInfoTermsVersion.do,\
+/login/sp/findUserIdByBusinessRegistrationNumber.do,\
+/**/findAllInfoSpTermsConditions.do,\
+/**/findInfoSpTermsVersion.do,\
+/i18n/getByKeys.do,\
+/i18n/updateI18nKeys.do,\
+/i18n/getByLastUpdated.do,\
+/i18n/getAvailableLocalizedLocales.do,\
+/completeCertLogin.do,\
+/openCertSelectionPage.do,\
+/findListFormatter.do,\
+/getModules.do,\
+/findListMenu.do,\
+/supplierAuthNumberVerify.do,\
+/supplierAuthNumberVerifyProcess.do,\
+/findTerms.do,\
+/findBpTerms.do,\
+/findSpTerms.do,\
+/bp/adobesign/callbackAdobeSignPopup.do,\
+/gateway_login.do,\
+/completeIntegriAuth.do,\
+/ui/bp/alm/getAlmConstPhoto.do,\
+/ui/bp/alm/getAlmASPhoto.do,\
+/findListCommonCodeByNoSession.do,\
+/public/attachment/image.do,\
+/ui/bp/alm/saveJudgeResult.do,
+
+security.guarantee.requestList=\
+/sgic/recv.do,
+
+
+security.docusign.requestList=\
+/bp/docusign/returnTemplateEditView.do,\
+/bp/docusign/returnRecipientView.do,\
+/sp/docusign/returnRecipientView.do,
+
+security.ouath.requestList=\
+/oauth2/*,\
+/api/**,
+
+security.csrf-exclude.requestList=\
+/index.do,\
+/sp/edoc/contract/findSignContract.do,\
+/sp/edoc/contract/saveSign.do,\
+/rest/api/**,\
+/sgic/recv.do,\
+/ssoLoginProcess.do,\
+/mobileLogin.do,\
+/eformSignLogin.do,\
+/eformSignPwLogin.do,\
+/eformSignPwLoginProcess.do,\
+/bp/edoc/eform/notUser/findSignTargetInfoFormerNByMail.do,\
+/bp/edoc/eform/notUser/rejectSignDocumentByMail.do,\
+/bp/edoc/eform/notUser/sendNextSignTargetByMail.do,\
+/bp/edoc/eform/notUser/findCompanyStampListByMail.do,\
+/bp/edoc/eform/notUser/findUserStampListByMail.do,\
+/bp/edoc/eform/notUser/createTextSignaturesByMail.do,\
+/oauth2/**,\
+/api/**,\
+/openCertSelectionPage.do,\
+/newVendor.do,\
+/supplierAuthNumberVerifyProcess.do,\
+/openAuthSignPopup.do,\
+/sone/api/**,\
+/completeIntegriAuth.do,\
+/saml2/**,
+
+# XSS Exclude Url List
+filter.xss.requestList=\
+/ui/bp/workflow/**,\
+/**/ifproxy/**,\
+/ui/bp/**/approval/**,\
+/ui/bp/common/approval/**,\
+/ui/bp/edoc/contract/**,\
+/i18n/getByKeys.do,\
+/ui/bp/common/code/multilang/**,\
+/**/infoRenewRequest.do,\
+/ui/common/csr/**,\
+/pro/fi/**.do,\
+/smartsuite/oauth2/**,\
+/ui/bp/eform/popup/**,\
+/saml2/**,
+
+# XSS Tag List
+filter.xss.tagList=div,sc-*,*-emro,object,html,head,body,meta,img,table,tr,td,th,a,span,p,br,u,!doctype html,style,title,col,colgroup,tbody,footer,article,h1,h2,h3,h4,h5,section,input,textarea,ul,li,b,strong,thead,link,hr
+
+# XSS attribute List
+filter.xss.attributeList=style,onload,colspan,src,charset,type,class,href,rowspan,moznomarginboxes,mozdisallowselectionprint,http-equiv,content,type,media,onclick,title,name,value,maxlength,width,border,border-collapse,border-spacing,cellpadding,cellspacing,align,valign,target,cols,rows,id,rel,alt
+
