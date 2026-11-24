@@ -1,0 +1,27 @@
+package smartsuite.app.common.report;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class PoAsnReportProvider implements ReportDataProvider {
+
+    @Override public String reportId() { return "PO_ASN"; }
+    @Override public String ozrPath()  { return "/납품번호확인서.ozr"; }
+
+    @Override
+    public Object getData(Map<String, Object> params) {
+
+        // 공통 규칙: {"header": {...}, "items": [...]}
+        Map<String, Object> data = Map.of("vd_rg_no","10000123", "vd_nm","업체명1");
+        data.put("podetail", data);
+        List<Map<String, Object>> items = new ArrayList<Map<String,Object>>();
+        items.add(Map.of("es_p_inco1", "0001", "matnr", "A0001"));
+        items.add(Map.of("es_p_inco1", "0002", "matnr", "A0002"));
+        data.put("t_matrList", items);
+        return data;
+    }
+}
