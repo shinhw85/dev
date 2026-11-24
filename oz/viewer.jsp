@@ -5,14 +5,17 @@
 <!-- <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>         -->
 <!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" type="text/css"/> -->
 <!-- <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.min.js"></script> -->
+<!-- <link rel="stylesheet" href="http://81.181.68.111:8080/ozrviewer/ui.dynatree.css" type="text/css"/> -->
+<!-- <script type="text/javascript" src="http://81.181.68.111:8080/ozrviewer/jquery.dynatree.js" charset="utf-8"></script> -->
+<!-- <script type="text/javascript" src="http://81.181.68.111:8080/ozrviewer/OZJSViewer.js" charset="utf-8"></script> -->
 
-<script src="/js/jquery.min.js" charset="utf-8"></script>
-<link rel="stylesheet" href="/css/oz/jquery-ui.css" type="text/css"/>
-<script src="/js/oz/jquery-ui.min.js" charset="utf-8"></script>
+<script src="/oz/jquery/jquery-3.7.1.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="/oz/jquery/jquery-ui.css" type="text/css"/>
+<script src="/oz/jquery/jquery-ui.min.js" charset="utf-8"></script>
 
-<script src="/js/oz/OZJSViewer.js" charset="utf-8"></script>
-<script src="/js/oz/jquery.dynatree.js" charset="utf-8"></script>
-<link rel="stylesheet" href="/css/oz/ui.dynatree.css" type="text/css"/>
+<script src="/oz/OZJSViewer.js" charset="utf-8"></script>
+<script src="/oz/jquery.dynatree.js" charset="utf-8"></script>
+<link rel="stylesheet" href="/oz/ui.dynatree.css" type="text/css"/>
   
 <script type="application/json" id="ozData">${dataJson}</script>
 </head>
@@ -31,10 +34,9 @@
        oz.sendToActionScript("connection.servlet","http://81.181.68.111:8080/oz/server");
        oz.sendToActionScript('connection.reportname', OZ_REPORT);
        oz.sendToActionScript('connection.inputjson', OZ_DATA);  
-//        oz.sendToActionScript("connection.reportname","category_path/sample.ozr");
        return true;
    }
-   start_ozjs("OZViewer","http://81.181.68.111:8080/ozrviewer/");
+   start_ozjs("OZViewer","/oz/");
 </script>
 </body>
 </html>
