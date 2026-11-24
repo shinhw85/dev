@@ -1,10 +1,19 @@
-Loading the script 'http://code.jquery.com/jquery-1.8.3.min.js' violates the following Content Security Policy directive: "script-src 'self' http://rum.beusable.net https://script.beusable.net https://127.0.0.1:15018 https://127.0.0.1:14315 http://127.0.0.1:14319 https://maps.googleapis.com data: 'unsafe-inline' 'unsafe-eval' blob:". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.
-view.do:6 Loading the stylesheet 'http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' violates the following Content Security Policy directive: "style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'". Note that 'style-src-elem' was not explicitly set, so 'style-src' is used as a fallback. The action has been blocked.
-view.do:1 Loading the script 'http://code.jquery.com/ui/1.9.2/jquery-ui.min.js' violates the following Content Security Policy directive: "script-src 'self' http://rum.beusable.net https://script.beusable.net https://127.0.0.1:15018 https://127.0.0.1:14315 http://127.0.0.1:14319 https://maps.googleapis.com data: 'unsafe-inline' 'unsafe-eval' blob:". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.
-view.do:8 Loading the stylesheet 'http://81.181.68.111:8080/ozrviewer/ui.dynatree.css' violates the following Content Security Policy directive: "style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'". Note that 'style-src-elem' was not explicitly set, so 'style-src' is used as a fallback. The action has been blocked.
-view.do:1 Loading the script 'http://81.181.68.111:8080/ozrviewer/jquery.dynatree.js' violates the following Content Security Policy directive: "script-src 'self' http://rum.beusable.net https://script.beusable.net https://127.0.0.1:15018 https://127.0.0.1:14315 http://127.0.0.1:14319 https://maps.googleapis.com data: 'unsafe-inline' 'unsafe-eval' blob:". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.
-view.do:1 Loading the script 'http://81.181.68.111:8080/ozrviewer/OZJSViewer.js' violates the following Content Security Policy directive: "script-src 'self' http://rum.beusable.net https://script.beusable.net https://127.0.0.1:15018 https://127.0.0.1:14315 http://127.0.0.1:14319 https://maps.googleapis.com data: 'unsafe-inline' 'unsafe-eval' blob:". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.
-view.do:31 Uncaught ReferenceError: start_ozjs is not defined
-    at view.do:31:4
-view.do:1 Loading the stylesheet 'http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' violates the following Content Security Policy directive: "style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'". Note that 'style-src-elem' was not explicitly set, so 'style-src' is used as a fallback. The action has been blocked.
-view.do:1 Loading the stylesheet 'http://81.181.68.111:8080/ozrviewer/ui.dynatree.css' violates the following Content Security Policy directive: "style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'". Note that 'style-src-elem' was not explicitly set, so 'style-src' is used as a fallback. The action has been blocked.
+jquery.dynatree.js:197 Uncaught TypeError: Cannot read properties of undefined (reading 'version')
+    at jquery.dynatree.js:197:37
+    at jquery.dynatree.js:3466:2
+view.do:26 <c:out value="/납품번호확인서.ozr" />
+view.do:27 {"podetail":{"vd_rg_no":"10000123","vd_nm":"업체명1"},"t_matrList":[{"matnr":"A0001","es_p_inco1":"0001"},{"matnr":"A0002","es_p_inco1":"0002"}]}
+21Connecting to '<URL>' violates the following Content Security Policy directive: "connect-src 'self' <URL> <URL> <URL> <URL> <URL>". The action has been blocked.
+OZJSViewer.js:5958 Failed to execute 'send' on 'XMLHttpRequest': Failed to load 'http://81.181.68.111:8080/ozrviewer/OZJSViewer_ozimg_pc.js?Version%20-%2080%2C2023%2C0519%2C100'.
+OZJSViewer.js:5958 TypeError: $(...).dynatree is not a function
+    at Xn.gOT (OZJSViewer.js:15337:13676)
+    at Xn.MYD (OZJSViewer.js:14105:8796)
+    at Xn.zYD (OZJSViewer.js:14105:4251)
+    at Xn.PGh (OZJSViewer.js:6217:7220)
+    at Xn.gT (OZJSViewer.js:6782:345)
+    at Xn.JhO (OZJSViewer.js:14036:1192)
+    at Xn.gT (OZJSViewer.js:6782:345)
+    at OT.Vuq (OZJSViewer.js:13898:97)
+    at Xn.Ye (OZJSViewer.js:6782:647)
+    at Xn.slj (OZJSViewer.js:13902:825)
+:8080/favicon.ico:1  Failed to load resource: the server responded with a status of 404 ()
