@@ -1,20 +1,6 @@
-21Connecting to '<URL>' violates the following Content Security Policy directive: "connect-src 'self' <URL> <URL> <URL> <URL> <URL>". The action has been blocked.
-OZJSViewer.js:5958 Failed to execute 'send' on 'XMLHttpRequest': Failed to load 'http://81.181.68.111:8080/ozrviewer/OZJSViewer_ozimg_pc.js?Version%20-%2080%2C2023%2C0519%2C100'.
-jquery.dynatree.js:57 10:59:31.741 - Dynatree._create(): version='1.2.8', debugLevel=1.
-OZJSViewer.js:5958 TypeError: r.getClientRects is not a function
-    at S.offset (jquery.min.js:2:85980)
-    at Object.getWithinInfo (jquery-ui.min.js:5:190717)
-    at e.fn.position (jquery-ui.min.js:5:190988)
-    at e.fn.position (jquery-ui.min.js:5:195779)
-    at e.<computed>.<computed>._position (jquery-ui.min.js:5:164807)
-    at e.<computed>.<computed>._position (jquery-ui.min.js:5:5392)
-    at e.<computed>.<computed>.open (jquery-ui.min.js:5:161907)
-    at e.<computed>.<computed>.open (jquery-ui.min.js:5:5392)
-    at HTMLDivElement.<anonymous> (jquery-ui.min.js:5:6541)
-    at S.each (jquery.min.js:2:2976)
-ui-bg_highlight-soft_75_cccccc_1x100.png:1  Failed to load resource: the server responded with a status of 404 ()
-ui-bg_flat_75_ffffff_40x100.png:1  Failed to load resource: the server responded with a status of 404 ()
-ui-icons_222222_256x240.png:1  Failed to load resource: the server responded with a status of 404 ()
-:8080/favicon.ico:1  Failed to load resource: the server responded with a status of 404 ()
-jquery-ui.css:1  GET http://localhost:8080/css/oz/images/ui-bg_glass_75_dadada_1x400.png 404 (Not Found)
-jquery-ui.css:1  GET http://localhost:8080/css/oz/images/ui-icons_454545_256x240.png 404 (Not Found)
+<c:out value="/납품번호확인서.ozr" />
+view.do:32 {"podetail":{"vd_rg_no":"10000123","vd_nm":"업체명1"},"t_matrList":[{"matnr":"A0001","es_p_inco1":"0001"},{"matnr":"A0002","es_p_inco1":"0002"}]}
+jquery.dynatree.js:57 13:22:51.823 - Dynatree._create(): version='1.2.8', debugLevel=1.
+view.do:1 Access to XMLHttpRequest at 'http://81.181.68.111:8080/oz/server' from origin 'http://localhost:8080' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+OZJSViewer.js:14493  POST http://81.181.68.111:8080/oz/server net::ERR_FAILED
+
