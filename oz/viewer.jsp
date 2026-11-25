@@ -10,15 +10,15 @@
 <!-- <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.min.js"></script> -->
 <!-- <link rel="stylesheet" href="http://81.181.68.111:8080/ozrviewer/ui.dynatree.css" type="text/css"/> -->
 <!-- <script type="text/javascript" src="http://81.181.68.111:8080/ozrviewer/jquery.dynatree.js" charset="utf-8"></script> -->
-<!-- <script type="text/javascript" src="http://81.181.68.111:8080/ozrviewer/OZJSViewer.js" charset="utf-8"></script> -->
+<!-- <script type="text/javascript" src="http://81.181.68.111:8080/ozhviewer/OZJSViewer.js" charset="utf-8"></script> -->
 
-<script src="/oz80/jquery/jquery-3.7.1.min.js" charset="utf-8"></script>
-<link rel="stylesheet" href="/oz80/jquery/jquery-ui.css" type="text/css"/>
-<script src="/oz80/jquery/jquery-ui.min.js" charset="utf-8"></script>
+<script src="/oz90/jquery/jquery-3.7.1.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="/ozserver/ozhviewer/jquery-ui.css" type="text/css"/>
+<script src="/ozserver/ozhviewer/jquery-ui.min.js" charset="utf-8"></script>
 
-<script src="/oz80/OZJSViewer.js" charset="utf-8"></script>
-<script src="/oz80/jquery.dynatree.js" charset="utf-8"></script>
-<link rel="stylesheet" href="/oz80/ui.dynatree.css" type="text/css"/>
+<script src="/ozserver/ozhviewer/OZJSViewer.js" charset="utf-8"></script>
+<script src="/ozserver/ozhviewer/jquery.dynatree.js" charset="utf-8"></script>
+<link rel="stylesheet" href="/ozserver/ozhviewer/ui.dynatree.css" type="text/css"/>
   
 <script type="application/json" id="ozData">${dataJson}</script>
 </head>
@@ -34,13 +34,13 @@
        console.log(OZ_REPORT);
        console.log(OZ_DATA);
        oz = document.getElementById("OZViewer");
-       oz.sendToActionScript("connection.servlet","http://81.181.68.111:8080/oz/server");
+       oz.sendToActionScript("connection.servlet","/ozserver/server");
        oz.sendToActionScript('connection.reportname', OZ_REPORT);
        oz.sendToActionScript('connection.pcount', "1");  
        oz.sendToActionScript("connection.args1","jsondata="+OZ_DATA);
        return true;
    }
-   start_ozjs("OZViewer","http://81.181.68.111:8080/ozrviewer/");
+   start_ozjs("OZViewer","/ozserver/ozhviewer/");
 </script>
 </body>
 </html>
