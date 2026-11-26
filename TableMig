@@ -1,3 +1,37 @@
+// 고정값 컬럼: Oracle에서 매핑되지 않은 PG 컬럼만
+List<String> fixedCols = new ArrayList<>();
+List<String> fixedVals = new ArrayList<>();
+for (String key : p.stringPropertyNames()) {
+    if (!key.startsWith("fixed.")) continue;
+    String col = key.substring(6).toLowerCase();
+    if (!pgCols.containsKey(col)) {
+        System.out.println("[SKIP] PG에 없는 고정값 컬럼: " + col);
+        continue;
+    }
+    if (dstCols.contains(col)) continue; // Oracle 값 우선
+    fixedCols.add(col);
+    fixedVals.add(p.getProperty(key));
+    System.out.println("[INFO] 고정값 적용: " + col + " = " + p.getProperty(key));
+}
+
+List<String> allCols = new ArrayList<>(dstCols);
+allCols.addAll(fixedCols);
+
+for (String c : pgCols.keySet()) {
+    if (!allCols.contains(c)) System.out.println("[INFO] Oracle에 없는 PG 컬럼(NULL/default): " + c);
+}
+
+int n = srcCols.size();
+int m = fixedCols.size();
+int[] pgTypes = new int[n + m];
+for (int i = 0; i < n + m; i++) pgTypes[i] = pgCols.get(allCols.get(i));
+
+String selectSql = "SELECT " + joinQuoted(srcCols) + " FROM " + q(oraTable);
+String insertSql = "INSERT INTO " + pgFull + " (" + joinQuoted(allCols) + ") VALUES ("
+        + String.join(",", Collections.nCopies(n + m, "?")) + ")";
+
+
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
