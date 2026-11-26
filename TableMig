@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
  *
  * db.properties의 fixed.<PG컬럼명>=값 : Oracle에 해당 컬럼이 없을 때 모든 행에 고정값 입력
  *   예) fixed.ten_id=TEN001
+ *   값이 ${UUID}이면 행마다 새 UUID 생성  예) fixed.id=${UUID}
  */
 public class TableMigrator {
 
@@ -181,7 +182,10 @@ public class TableMigrator {
                                 row[i] = parseTs((String) row[i], dstCols.get(i));
                             }
                         }
-                        for (int j = 0; j < m; j++) row[n + j] = fixedVals.get(j);
+                        for (int j = 0; j < m; j++) {
+                            String v = fixedVals.get(j);
+                            row[n + j] = "${UUID}".equalsIgnoreCase(v) ? UUID.randomUUID().toString() : v;
+                        }
 
                         chunk.add(row);
                         if (chunk.size() >= batch) {
