@@ -1,40 +1,8 @@
-// 고정값 컬럼: Oracle에서 매핑되지 않은 PG 컬럼만
-List<String> fixedCols = new ArrayList<>();
-List<String> fixedVals = new ArrayList<>();
-for (String key : p.stringPropertyNames()) {
-    if (!key.startsWith("fixed.")) continue;
-    String col = key.substring(6).toLowerCase();
-    if (!pgCols.containsKey(col)) {
-        System.out.println("[SKIP] PG에 없는 고정값 컬럼: " + col);
-        continue;
-    }
-    if (dstCols.contains(col)) continue; // Oracle 값 우선
-    fixedCols.add(col);
-    fixedVals.add(p.getProperty(key));
-    System.out.println("[INFO] 고정값 적용: " + col + " = " + p.getProperty(key));
-}
-
-List<String> allCols = new ArrayList<>(dstCols);
-allCols.addAll(fixedCols);
-
-for (String c : pgCols.keySet()) {
-    if (!allCols.contains(c)) System.out.println("[INFO] Oracle에 없는 PG 컬럼(NULL/default): " + c);
-}
-
-int n = srcCols.size();
-int m = fixedCols.size();
-int[] pgTypes = new int[n + m];
-for (int i = 0; i < n + m; i++) pgTypes[i] = pgCols.get(allCols.get(i));
-
-String selectSql = "SELECT " + joinQuoted(srcCols) + " FROM " + q(oraTable);
-String insertSql = "INSERT INTO " + pgFull + " (" + joinQuoted(allCols) + ") VALUES ("
-        + String.join(",", Collections.nCopies(n + m, "?")) + ")";
-
-
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -43,12 +11,16 @@ import java.util.regex.Pattern;
  *
  * 사용법:
  *   java -cp ".:ojdbc11.jar:postgresql.jar" TableMigrator <테이블명> [옵션]
+ *   (Windows는 클래스패스 구분자 ';')
  *
  * 옵션:
- *   --truncate            적재 전 PG 테이블 TRUNCATE
- *   --batch=1000          배치 크기 (기본 1000)
- *   --pg-table=xxx        PG 테이블명이 Oracle과 다를 때
+ *   --truncate             적재 전 PG 테이블 TRUNCATE
+ *   --batch=1000           배치 크기 (기본 1000)
+ *   --pg-table=xxx         PG 테이블명이 Oracle과 다를 때
  *   --config=db.properties 접속정보 파일 (기본 db.properties)
+ *
+ * db.properties의 fixed.<PG컬럼명>=값 : Oracle에 해당 컬럼이 없을 때 모든 행에 고정값 입력
+ *   예) fixed.ten_id=TEN001
  */
 public class TableMigrator {
 
@@ -63,6 +35,8 @@ public class TableMigrator {
     }
 
     private static final Pattern NAME = Pattern.compile("^[A-Za-z0-9_$]+$");
+    private static final DateTimeFormatter F14 = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
     private long failed = 0;
 
     public static void main(String[] args) throws Exception {
@@ -140,23 +114,44 @@ public class TableMigrator {
                     System.out.println("[SKIP] PG에 없는 Oracle 컬럼: " + o + " -> " + target);
                 }
             }
-            for (String c : pgCols.keySet()) {
-                if (!dstCols.contains(c)) System.out.println("[INFO] Oracle에 없는 PG 컬럼(NULL/default): " + c);
-            }
             if (srcCols.isEmpty()) {
                 System.err.println("매핑되는 컬럼이 없습니다.");
                 return false;
             }
 
+            // 4) 고정값 컬럼: Oracle에서 매핑되지 않은 PG 컬럼만 (fixed.<컬럼>=값)
+            List<String> fixedCols = new ArrayList<>();
+            List<String> fixedVals = new ArrayList<>();
+            for (String key : new TreeSet<>(p.stringPropertyNames())) {
+                if (!key.startsWith("fixed.")) continue;
+                String col = key.substring(6).toLowerCase();
+                if (!pgCols.containsKey(col)) {
+                    System.out.println("[SKIP] PG에 없는 고정값 컬럼: " + col);
+                    continue;
+                }
+                if (dstCols.contains(col)) continue; // Oracle 값 우선
+                fixedCols.add(col);
+                fixedVals.add(p.getProperty(key));
+                System.out.println("[INFO] 고정값 적용: " + col + " = " + p.getProperty(key));
+            }
+
+            List<String> allCols = new ArrayList<>(dstCols);
+            allCols.addAll(fixedCols);
+
+            for (String c : pgCols.keySet()) {
+                if (!allCols.contains(c)) System.out.println("[INFO] Oracle에 없는 PG 컬럼(NULL/default): " + c);
+            }
+
             int n = srcCols.size();
-            int[] pgTypes = new int[n];
-            for (int i = 0; i < n; i++) pgTypes[i] = pgCols.get(dstCols.get(i));
+            int m = fixedCols.size();
+            int[] pgTypes = new int[n + m];
+            for (int i = 0; i < n + m; i++) pgTypes[i] = pgCols.get(allCols.get(i));
 
             String selectSql = "SELECT " + joinQuoted(srcCols) + " FROM " + q(oraTable);
-            String insertSql = "INSERT INTO " + pgFull + " (" + joinQuoted(dstCols) + ") VALUES ("
-                    + String.join(",", Collections.nCopies(n, "?")) + ")";
+            String insertSql = "INSERT INTO " + pgFull + " (" + joinQuoted(allCols) + ") VALUES ("
+                    + String.join(",", Collections.nCopies(n + m, "?")) + ")";
 
-            // 4) 옵션: TRUNCATE
+            // 5) 옵션: TRUNCATE
             if (truncate) {
                 try (Statement st = pg.createStatement()) {
                     st.execute("TRUNCATE TABLE " + pgFull);
@@ -165,7 +160,7 @@ public class TableMigrator {
                 System.out.println("[INFO] TRUNCATE 완료: " + pgFull);
             }
 
-            // 5) 읽기 -> 배치 insert
+            // 6) 읽기 -> 배치 insert
             long total = 0;
             try (Statement st = ora.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
                 st.setFetchSize(5000);
@@ -178,8 +173,16 @@ public class TableMigrator {
 
                     List<Object[]> chunk = new ArrayList<>(batch);
                     while (rs.next()) {
-                        Object[] row = new Object[n];
-                        for (int i = 0; i < n; i++) row[i] = read(rs, i + 1, srcTypes[i]);
+                        Object[] row = new Object[n + m];
+                        for (int i = 0; i < n; i++) {
+                            row[i] = read(rs, i + 1, srcTypes[i]);
+                            // Oracle 문자형(yyyyMMddHHmmss) -> PG timestamp
+                            if (row[i] instanceof String && isCharType(srcTypes[i]) && isTsType(pgTypes[i])) {
+                                row[i] = parseTs((String) row[i], dstCols.get(i));
+                            }
+                        }
+                        for (int j = 0; j < m; j++) row[n + j] = fixedVals.get(j);
+
                         chunk.add(row);
                         if (chunk.size() >= batch) {
                             total += flush(pg, ps, chunk, pgTypes);
@@ -191,7 +194,7 @@ public class TableMigrator {
                 }
             }
 
-            // 6) 건수 검증
+            // 7) 건수 검증
             long oraCnt = count(ora, "SELECT COUNT(*) FROM " + q(oraTable));
             long pgCnt = count(pg, "SELECT COUNT(*) FROM " + pgFull);
             boolean match = oraCnt == pgCnt && failed == 0;
@@ -227,6 +230,27 @@ public class TableMigrator {
             default:
                 return rs.getObject(i);
         }
+    }
+
+    private static boolean isCharType(int t) {
+        return t == Types.VARCHAR || t == Types.CHAR || t == Types.NVARCHAR || t == Types.NCHAR;
+    }
+
+    private static boolean isTsType(int t) {
+        return t == Types.TIMESTAMP || t == Types.TIMESTAMP_WITH_TIMEZONE;
+    }
+
+    /** 'yyyyMMddHHmmss' / 'yyyyMMdd' 문자열 -> Timestamp. 비었거나 잘못된 값은 null (JVM 시간대 기준) */
+    private static Timestamp parseTs(String s, String col) {
+        if (s == null) return null;
+        s = s.trim();
+        if (s.isEmpty()) return null;
+        try {
+            if (s.length() == 14) return Timestamp.valueOf(LocalDateTime.parse(s, F14));
+            if (s.length() == 8) return Timestamp.valueOf(LocalDateTime.parse(s + "000000", F14));
+        } catch (Exception ignore) { }
+        System.err.println("[WARN] 날짜 변환 실패, NULL 처리: " + col + " = '" + s + "'");
+        return null;
     }
 
     private static void bind(PreparedStatement ps, Object[] row, int[] types) throws SQLException {
